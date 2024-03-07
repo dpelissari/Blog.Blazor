@@ -1,7 +1,28 @@
 ﻿@page "/"
 
+@using Blog.Blazor.Interfaces
+@using Blog.Blazor.Models
+@using Microsoft.AspNetCore.Components.Web
+
+@inject IAutorService AutorService;
+
 <PageTitle>Home</PageTitle>
 
-<h1>Hello, world!</h1>
+<NavLink href="/int/autor/novo/">Add Autor</NavLink>
 
-Welcome to your new app.
+
+@foreach (var item in autores)
+{
+    <p>Autor nome: @item.Nome | Autor ID: @item.Id | <a href="/int/autor/editar/@item.Id">Edit</a></p>
+    <p>@item.Cadastro</p>
+}
+
+@code {
+
+    private IQueryable<Autor> autores;
+
+    protected override async Task OnInitializedAsync()
+    {
+        autores = await AutorService.BuscarTodos();
+    }
+}

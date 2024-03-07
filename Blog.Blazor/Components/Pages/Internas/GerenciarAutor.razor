@@ -1,0 +1,132 @@
+﻿@page "/int/autor/editar/{id?}"
+@page "/int/autor/novo/"
+
+﻿@using Blog.Blazor.Interfaces
+@using Blog.Blazor.Models
+
+@rendermode InteractiveServer
+@inject NavigationManager NavigationManager
+@inject IAutorService AutorService
+
+<h3>Gerenciar Autor</h3>
+
+<div>
+
+    @if (modoEdicao)
+    {
+        <h1>Editar autor</h1>
+
+        <EditForm Model="@autor" OnValidSubmit="@AtualizarAutor" FormName="AtualizaAutor" Enhance>
+            <DataAnnotationsValidator />
+
+            <div>
+                <label>Nome</label>
+                <InputText @bind-Value="autor.Nome"></InputText>
+                <ValidationMessage For="@(() => autor.Nome)" />
+            </div>
+            <div>
+                <label>Biografia</label>
+                <InputText @bind-Value="autor.Biografia"></InputText>
+                <ValidationMessage For="@(() => autor.Biografia)" />
+            </div>
+            <div>
+                <label>Caminho imagem</label>
+                <InputText @bind-Value="autor.CaminhoImagem"></InputText>
+                <ValidationMessage For="@(() => autor.CaminhoImagem)" />
+            </div>
+            <div>
+                <label>Autor ativo?</label>
+                <InputSelect @bind-Value="autor.Ativo">
+                    <option value="true">Sim</option>
+                    <option value="false">Não</option>
+                </InputSelect>
+            </div>
+
+            <ValidationMessage For="@(() => autor.Ativo)" />
+            <div>
+                <button type="submit">ATUALIZAR</button>
+                <NavLink href="/">CANCELAR</NavLink>
+            </div>
+
+        </EditForm>
+    }
+    else
+    {
+        <h3>Incluir Autor</h3>
+
+        <EditForm Model="@autor" OnValidSubmit="@CriarAutor" FormName="IncluiAutor" Enhance>
+            <DataAnnotationsValidator />
+            <div>
+                <label>Nome</label>
+                <InputText @bind-Value="autor.Nome"></InputText>
+                <ValidationMessage For="@(() => autor.Nome)" />
+            </div>
+            <div>
+                <label>Biografia</label>
+                <InputText @bind-Value="autor.Biografia"></InputText>
+                <ValidationMessage For="@(() => autor.Biografia)" />
+            </div>
+            <div>
+                <label>Caminho imagem</label>
+                <InputText @bind-Value="autor.CaminhoImagem"></InputText>
+                <ValidationMessage For="@(() => autor.CaminhoImagem)" />
+            </div>
+            <div>
+                <div>
+                    <label>Autor ativo?</label>
+                    <InputSelect @bind-Value="autor.Ativo">
+                        <option value="true">Sim</option>
+                        <option value="false">Não</option>
+                    </InputSelect>
+                </div>
+                <ValidationMessage For="@(() => autor.Ativo)" />
+            </div>
+
+            <div>
+                <button type="submit">INCLUIR</button>
+                <NavLink href="/">CANCELAR</NavLink>
+            </div>
+        </EditForm>
+    }
+</div>
+
+@code {
+
+    [SupplyParameterFromForm]
+    private Autor? autor { get; set; } = new();
+
+    bool modoEdicao = false;
+
+    [Parameter]
+    public string? id { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (!string.IsNullOrEmpty(id))
+        {
+
+            if (Guid.TryParse(id, out Guid idAutor))
+            {
+                autor = await AutorService.BuscarPor(idAutor);
+                modoEdicao = true;
+            }
+            else
+            {
+                // id inválido, redireciona para listagem de autores
+                NavigationManager.NavigateTo("/");
+            }
+        }
+    }
+
+    async Task CriarAutor()
+    {
+        await AutorService.Adicionar(autor);
+        NavigationManager.NavigateTo("/");
+    }
+
+    async Task AtualizarAutor()
+    {
+        await AutorService.Atualizar(autor);
+        NavigationManager.NavigateTo("/");
+    }
+}
