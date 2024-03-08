@@ -1,0 +1,15 @@
+﻿﻿@if (Visible && ChildContent != null)
+{
+    @ChildContent
+}
+
+@code {
+    [Parameter] public bool Visible { get; set; }
+    [Parameter] public RenderFragment ChildContent { get; set; }
+
+    protected override void OnParametersSet()
+    {
+        if (ChildContent == null)
+            return;
+    }
+}
