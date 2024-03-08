@@ -31,7 +31,7 @@
             </div>
             <div>
                 <label>Caminho imagem</label>
-                <InputText @bind-Value="autor.CaminhoImagem"></InputText>
+                <ImagemUpload Modelo="autor"></ImagemUpload>
                 <ValidationMessage For="@(() => autor.CaminhoImagem)" />
             </div>
             <div>
@@ -68,7 +68,8 @@
             </div>
             <div>
                 <label>Caminho imagem</label>
-                <InputText @bind-Value="autor.CaminhoImagem"></InputText>
+                @* <InputText @bind-Value="autor.CaminhoImagem"></InputText> *@
+                <ImagemUpload Modelo="autor" DiretorioImagem="autores"></ImagemUpload>
                 <ValidationMessage For="@(() => autor.CaminhoImagem)" />
             </div>
             <div>
