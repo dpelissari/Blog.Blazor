@@ -68,7 +68,6 @@
             </div>
             <div>
                 <label>Caminho imagem</label>
-                @* <InputText @bind-Value="autor.CaminhoImagem"></InputText> *@
                 <ImagemUpload Modelo="autor" DiretorioImagem="autores"></ImagemUpload>
                 <ValidationMessage For="@(() => autor.CaminhoImagem)" />
             </div>
@@ -113,7 +112,7 @@
             }
             else
             {
-                // id inválido, redireciona para listagem de autores
+                // id inválido, redireciona 
                 NavigationManager.NavigateTo("/");
             }
         }

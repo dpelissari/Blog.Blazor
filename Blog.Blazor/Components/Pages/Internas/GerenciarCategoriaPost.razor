@@ -1,0 +1,125 @@
+﻿@page "/int/categoria/editar/{id?}"
+@page "/int/categoria/nova/"
+
+﻿@using Blog.Blazor.Interfaces
+@using Blog.Blazor.Models
+
+@rendermode InteractiveServer
+@inject NavigationManager NavigationManager
+@inject ICategoriaService CategoriaService
+
+<h3>Gerenciar Categoria</h3>
+
+<div>
+
+    @if (modoEdicao)
+    {
+        <h1>Editar categoria</h1>
+
+        <EditForm Model="@categoria" OnValidSubmit="@AtualizarCategoria" FormName="AtualizaCategoria" Enhance>
+            <DataAnnotationsValidator />
+
+            <div>
+                <label>Nome</label>
+                <InputText @bind-Value="categoria.Nome"></InputText>
+                <ValidationMessage For="@(() => categoria.Nome)" />
+            </div>
+            <div>
+                <label>Descrição</label>
+                <InputText @bind-Value="categoria.Descricao"></InputText>
+                <ValidationMessage For="@(() => categoria.Descricao)" />
+            </div>
+            <div>
+                <div>
+                    <label>Categoria ativa?</label>
+                    <InputSelect @bind-Value="categoria.Ativo">
+                        <option value="true">Sim</option>
+                        <option value="false">Não</option>
+                    </InputSelect>
+                </div>
+                <ValidationMessage For="@(() => categoria.Ativo)" />
+            </div>
+
+            <div>
+                <button type="submit">INCLUIR</button>
+                <NavLink href="/">CANCELAR</NavLink>
+            </div>
+
+        </EditForm>
+    }
+    else
+    {
+        <h3>Incluir Categoria</h3>
+
+        <EditForm Model="@categoria" OnValidSubmit="@CriarCategoria" FormName="IncluirCategoria" Enhance>
+            <DataAnnotationsValidator />
+            <div>
+                <label>Nome</label>
+                <InputText @bind-Value="categoria.Nome"></InputText>
+                <ValidationMessage For="@(() => categoria.Nome)" />
+            </div>
+            <div>
+                <label>Descrição</label>
+                <InputText @bind-Value="categoria.Descricao"></InputText>
+                <ValidationMessage For="@(() => categoria.Descricao)" />
+            </div>
+ 
+            <div>
+                <div>
+                    <label>Categoria ativa?</label>
+                    <InputSelect @bind-Value="categoria.Ativo">
+                        <option value="true">Sim</option>
+                        <option value="false">Não</option>
+                    </InputSelect>
+                </div>
+                <ValidationMessage For="@(() => categoria.Ativo)" />
+            </div>
+
+            <div>
+                <button type="submit">INCLUIR</button>
+                <NavLink href="/">CANCELAR</NavLink>
+            </div>
+        </EditForm>
+    }
+</div>
+
+@code {
+
+    [SupplyParameterFromForm]
+    private Categoria? categoria { get; set; } = new();
+
+    bool modoEdicao = false;
+
+    [Parameter]
+    public string? id { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (!string.IsNullOrEmpty(id))
+        {
+
+            if (Guid.TryParse(id, out Guid idCategoria))
+            {
+                categoria = await CategoriaService.BuscarPor(idCategoria);
+                modoEdicao = true;
+            }
+            else
+            {
+                // id inválido, redireciona para listagem de autores
+                NavigationManager.NavigateTo("/");
+            }
+        }
+    }
+
+    async Task CriarCategoria()
+    {
+        await CategoriaService.Adicionar(categoria);
+        NavigationManager.NavigateTo("/");
+    }
+
+    async Task AtualizarCategoria()
+    {
+        await CategoriaService.Atualizar(categoria);
+        NavigationManager.NavigateTo("/");
+    }
+}
