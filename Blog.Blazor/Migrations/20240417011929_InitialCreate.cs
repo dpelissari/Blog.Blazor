@@ -17,6 +17,7 @@ namespace Blog.Blazor.Migrations
                 {
                     Id = table.Column<Guid>(type: "TEXT", nullable: false),
                     Nome = table.Column<string>(type: "TEXT", maxLength: 250, nullable: false),
+                    Biografia = table.Column<string>(type: "TEXT", maxLength: 250, nullable: false),
                     Cadastro = table.Column<DateTime>(type: "TEXT", nullable: false),
                     CaminhoImagem = table.Column<string>(type: "TEXT", nullable: false),
                     Ativo = table.Column<bool>(type: "INTEGER", nullable: false)
@@ -74,6 +75,8 @@ namespace Blog.Blazor.Migrations
                     DescricaoSEO = table.Column<string>(type: "TEXT", maxLength: 250, nullable: false),
                     TituloPaginaSEO = table.Column<string>(type: "TEXT", maxLength: 150, nullable: false),
                     CaminhoImagem = table.Column<string>(type: "TEXT", nullable: false),
+                    IdAutor = table.Column<Guid>(type: "TEXT", nullable: false),
+                    IdCategoria = table.Column<Guid>(type: "TEXT", nullable: false),
                     Ativo = table.Column<bool>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>

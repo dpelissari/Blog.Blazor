@@ -127,6 +127,12 @@ namespace Blog.Blazor.Migrations
                         .HasMaxLength(250)
                         .HasColumnType("TEXT");
 
+                    b.Property<Guid>("IdAutor")
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("IdCategoria")
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("Titulo")
                         .IsRequired()
                         .HasMaxLength(250)

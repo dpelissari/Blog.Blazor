@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Blog.Blazor.Migrations
 {
     [DbContext(typeof(AplicacaoDbContexto))]
-    [Migration("20240307131921_InitialCreate")]
+    [Migration("20240417011929_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -28,6 +28,11 @@ namespace Blog.Blazor.Migrations
 
                     b.Property<bool>("Ativo")
                         .HasColumnType("INTEGER");
+
+                    b.Property<string>("Biografia")
+                        .IsRequired()
+                        .HasMaxLength(250)
+                        .HasColumnType("TEXT");
 
                     b.Property<DateTime>("Cadastro")
                         .HasColumnType("TEXT");
@@ -123,6 +128,12 @@ namespace Blog.Blazor.Migrations
                     b.Property<string>("DescricaoSEO")
                         .IsRequired()
                         .HasMaxLength(250)
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("IdAutor")
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("IdCategoria")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Titulo")

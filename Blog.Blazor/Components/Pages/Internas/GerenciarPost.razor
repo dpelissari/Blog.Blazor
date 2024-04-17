@@ -1,0 +1,200 @@
+﻿@page "/int/post/editar/{id?}"
+@page "/int/post/novo/"
+
+﻿@using Blog.Blazor.Interfaces
+@using Blog.Blazor.Models
+@using Blog.Blazor.Services
+
+@rendermode InteractiveServer
+@inject NavigationManager NavigationManager
+@inject IAutorService AutorService
+@inject ICategoriaService CategoriaService
+@inject IPostService PostService
+
+<h3>Gerenciar post</h3>
+
+<div>
+
+    @if (modoEdicao)
+    {
+        <h1>Editar post</h1>
+
+        <EditForm Model="@post" OnValidSubmit="@AtualizarPost" FormName="AtualizaPost" Enhance>
+            <DataAnnotationsValidator />
+            <div>
+                <label>Categoria</label>
+                <InputSelect @bind-Value="post.IdCategoria">
+                    <Repeater DataSource="categorias" Context="c">
+                        <ItemTemplate>
+                            <option value="@c.Id">@c.Nome</option>
+                        </ItemTemplate>
+                    </Repeater>
+                </InputSelect>
+                <ValidationMessage For="@(() => post.Categoria)" />
+            </div>
+            <div>
+                <label>Autor</label>
+                <InputSelect @bind-Value="post.IdCategoria">
+                    <Repeater DataSource="autores" Context="a">
+                        <ItemTemplate>
+                            <option value="@a.Id">@a.Nome</option>
+                        </ItemTemplate>
+                    </Repeater>
+                </InputSelect>
+                <ValidationMessage For="@(() => post.Autor)" />
+            </div>
+            <div>
+                <label>Caminho imagem</label>
+                <ImagemUpload Modelo="post" DiretorioImagem="posts"></ImagemUpload>
+                <ValidationMessage For="@(() => post.CaminhoImagem)" />
+            </div>
+            <div>
+                <label>Titulo</label>
+                <InputTextArea @bind-Value="post.Titulo" rows="5"></InputTextArea>
+                <ValidationMessage For="@(() => post.Titulo)" />
+            </div>
+            <div>
+                <label>Conteudo</label>
+                <InputTextArea @bind-Value="post.Conteudo" rows="5"></InputTextArea>
+                <ValidationMessage For="@(() => post.Conteudo)" />
+            </div>
+            <div>
+                <label>Descrição SEO</label>
+                <InputTextArea @bind-Value="post.DescricaoSEO" rows="5"></InputTextArea>
+                <ValidationMessage For="@(() => post.DescricaoSEO)" />
+            </div>
+            <div>
+                <label>Tittle SEO</label>
+                <InputTextArea @bind-Value="post.TituloPaginaSEO" rows="5"></InputTextArea>
+                <ValidationMessage For="@(() => post.TituloPaginaSEO)" />
+            </div>
+            <div>
+                <label>Ativo?</label>
+                <InputSelect @bind-Value="post.Ativo">
+                    <option value="true">Sim</option>
+                    <option value="false">Não</option>
+                </InputSelect>
+            </div>
+            <div>
+                <button type="submit">INCLUIR</button>
+                <NavLink href="/">CANCELAR</NavLink>
+            </div>
+
+        </EditForm>
+    }
+    else
+    {
+        <h3>Incluir post</h3>
+
+        <EditForm Model="@post" OnValidSubmit="@CriarPost" FormName="IncluirPost" Enhance>
+            <DataAnnotationsValidator />
+            <div>
+                <label>Categoria</label>
+                <InputSelect @bind-Value="post.IdCategoria">
+                    <Repeater DataSource="categorias" Context="c">
+                        <ItemTemplate>
+                            <option value="@c.Id">@c.Nome</option>
+                        </ItemTemplate>
+                    </Repeater>
+                </InputSelect>
+                <ValidationMessage For="@(() => post.Categoria)" />
+            </div>
+            <div>
+                <label>Autor</label>
+                <InputSelect @bind-Value="post.IdCategoria">
+                    <Repeater DataSource="autores" Context="a">
+                        <ItemTemplate>
+                            <option value="@a.Id">@a.Nome</option>
+                        </ItemTemplate>
+                    </Repeater>
+                </InputSelect>
+                <ValidationMessage For="@(() => post.Autor)" />
+            </div>
+            <div>
+                <label>Caminho imagem</label>
+                <ImagemUpload Modelo="post" DiretorioImagem="posts"></ImagemUpload>
+                <ValidationMessage For="@(() => post.CaminhoImagem)" />
+            </div>
+            <div>
+                <label>Titulo</label>
+                <InputTextArea @bind-Value="post.Titulo" rows="5"></InputTextArea>
+                <ValidationMessage For="@(() => post.Titulo)" />
+            </div>
+            <div>
+                <label>Conteudo</label>
+                <InputTextArea @bind-Value="post.Conteudo" rows="5"></InputTextArea>
+                <ValidationMessage For="@(() => post.Conteudo)" />
+            </div>
+            <div>
+                <label>Descrição SEO</label>
+                <InputTextArea @bind-Value="post.DescricaoSEO" rows="5"></InputTextArea>
+                <ValidationMessage For="@(() => post.DescricaoSEO)" />
+            </div>
+            <div>
+                <label>Tittle SEO</label>
+                <InputTextArea @bind-Value="post.TituloPaginaSEO" rows="5"></InputTextArea>
+                <ValidationMessage For="@(() => post.TituloPaginaSEO)" />
+            </div>
+            <div>
+                <label>Ativo?</label>
+                <InputSelect @bind-Value="post.Ativo">
+                    <option value="true">Sim</option>
+                    <option value="false">Não</option>
+                </InputSelect>
+            </div>
+            <div>
+                <button type="submit">INCLUIR</button>
+                <NavLink href="/">CANCELAR</NavLink>
+            </div>
+        </EditForm>
+    }
+</div>
+
+@code {
+    Post post = new();
+    private IQueryable<Autor> autores;
+    private IQueryable<Categoria> categorias;
+    bool modoEdicao = false;
+
+    [Parameter]
+
+    public string id { get; set; }
+    protected override async Task OnInitializedAsync()
+    {
+        autores = await AutorService.BuscarTodos();
+        categorias = await CategoriaService.BuscarTodas();
+
+        if (!string.IsNullOrEmpty(id))
+        {
+            if (Guid.TryParse(id, out Guid idPost))
+            {
+                post = await PostService.BuscarPor(idPost);
+                modoEdicao = true;
+            }
+            else
+            {
+                // ID inválido, redireciona para listagem de frases
+                NavigationManager.NavigateTo("/");
+            }
+        }
+        else
+        {
+            // Define valores iniciais para autor e categoria
+            post.IdAutor = autores.FirstOrDefault()?.Id ?? Guid.Empty;
+            post.IdCategoria = categorias.FirstOrDefault()?.Id ?? Guid.Empty;
+        }
+    }
+
+    async Task CriarPost()
+    {
+
+        await PostService.Adicionar(post);
+        NavigationManager.NavigateTo("/");
+    }
+
+    async Task AtualizarPost()
+    {
+        await PostService.Atualizar(post);
+        NavigationManager.NavigateTo("/");
+    }
+}

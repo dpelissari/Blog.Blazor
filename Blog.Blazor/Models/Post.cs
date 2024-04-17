@@ -32,9 +32,13 @@ namespace Blog.Blazor.Models
         public string CaminhoImagem { get; set; }
 
         [Required(ErrorMessage = "O campo autor é obrigatório")]
+        public Guid IdAutor { get; set; }
+
         public Autor Autor { get; set; }
 
         [Required(ErrorMessage = "O campo categoria é obrigatório")]
+        public Guid IdCategoria { get; set; }
+
         public Categoria Categoria { get; set; }
 
         [Required(ErrorMessage = "O campo ativo é obrigatório")]

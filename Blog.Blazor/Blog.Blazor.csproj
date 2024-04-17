@@ -16,7 +16,14 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Migrations\" />
     <Folder Include="wwwroot\autores\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Update="Components\Pages\Internas\GerenciarPost.razor">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+    </Content>
   </ItemGroup>
 
 </Project>
