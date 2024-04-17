@@ -1,0 +1,31 @@
+﻿@page "/posts/";
+@using Blog.Blazor.Interfaces
+@using Blog.Blazor.Models
+
+@inject IPostService PostService;
+
+
+@foreach (var item in posts)
+{
+    <div>
+        <h1>Post</h1>
+        <img src="@item.CaminhoImagem" alt="@item.Titulo" />
+        <p>Titulo: @item.Titulo | <a href="/int/post/editar/@item.Id">Edit</a></p>
+        <p>Conteudo: @item.Conteudo</p>
+        <p>Cadastro: @item.Cadastro</p>
+        <p>Autor: @item.Autor?.Nome</p>
+        <p>Categoria: @item.Categoria?.Nome</p>
+    </div>
+}
+
+
+@code {
+
+    private IQueryable<Post> posts;
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        posts = await PostService.BuscarTodos();
+    }
+}

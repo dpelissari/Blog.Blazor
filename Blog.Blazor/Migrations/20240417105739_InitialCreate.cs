@@ -43,27 +43,6 @@ namespace Blog.Blazor.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Comentario",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
-                    Conteudo = table.Column<string>(type: "TEXT", maxLength: 250, nullable: false),
-                    AutorId = table.Column<Guid>(type: "TEXT", nullable: false),
-                    Cadastro = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    Aprovado = table.Column<bool>(type: "INTEGER", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Comentario", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Comentario_Autor_AutorId",
-                        column: x => x.AutorId,
-                        principalTable: "Autor",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Post",
                 columns: table => new
                 {
@@ -83,31 +62,33 @@ namespace Blog.Blazor.Migrations
                 {
                     table.PrimaryKey("PK_Post", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Post_Autor_Id",
-                        column: x => x.Id,
+                        name: "FK_Post_Autor_IdAutor",
+                        column: x => x.IdAutor,
                         principalTable: "Autor",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Post_Categoria_Id",
-                        column: x => x.Id,
+                        name: "FK_Post_Categoria_IdCategoria",
+                        column: x => x.IdCategoria,
                         principalTable: "Categoria",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Comentario_AutorId",
-                table: "Comentario",
-                column: "AutorId");
+                name: "IX_Post_IdAutor",
+                table: "Post",
+                column: "IdAutor");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Post_IdCategoria",
+                table: "Post",
+                column: "IdCategoria");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable(
-                name: "Comentario");
-
             migrationBuilder.DropTable(
                 name: "Post");
 

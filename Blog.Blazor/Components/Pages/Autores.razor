@@ -1,0 +1,26 @@
+﻿@page "/autores/";
+
+@using Blog.Blazor.Interfaces
+@using Blog.Blazor.Models
+
+@inject IAutorService AutorService;
+
+@foreach (var item in autores)
+{
+    <div>
+        <h1>Autor</h1>
+        <img src="@item.CaminhoImagem" alt="@item.Nome" />
+        <p>Autor nome: @item.Nome | Autor ID: @item.Id | <a href="/int/autor/editar/@item.Id">Edit</a></p>
+        <p>@item.Cadastro</p>
+    </div>
+}
+
+@code {
+
+    private IQueryable<Autor> autores;
+
+    protected override async Task OnInitializedAsync()
+    {
+        autores = await AutorService.BuscarTodos();
+    }
+}

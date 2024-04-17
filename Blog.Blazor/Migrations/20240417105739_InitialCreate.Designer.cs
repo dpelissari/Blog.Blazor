@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Blog.Blazor.Migrations
 {
     [DbContext(typeof(AplicacaoDbContexto))]
-    [Migration("20240417011929_InitialCreate")]
+    [Migration("20240417105739_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -78,36 +78,10 @@ namespace Blog.Blazor.Migrations
                     b.ToTable("Categoria");
                 });
 
-            modelBuilder.Entity("Blog.Blazor.Models.Comentario", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("TEXT");
-
-                    b.Property<bool?>("Aprovado")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<Guid>("AutorId")
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateTime>("Cadastro")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Conteudo")
-                        .IsRequired()
-                        .HasMaxLength(250)
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("AutorId");
-
-                    b.ToTable("Comentario");
-                });
-
             modelBuilder.Entity("Blog.Blazor.Models.Post", b =>
                 {
                     b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT");
 
                     b.Property<bool>("Ativo")
@@ -151,31 +125,24 @@ namespace Blog.Blazor.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("IdAutor");
+
+                    b.HasIndex("IdCategoria");
+
                     b.ToTable("Post");
-                });
-
-            modelBuilder.Entity("Blog.Blazor.Models.Comentario", b =>
-                {
-                    b.HasOne("Blog.Blazor.Models.Autor", "Autor")
-                        .WithMany()
-                        .HasForeignKey("AutorId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Autor");
                 });
 
             modelBuilder.Entity("Blog.Blazor.Models.Post", b =>
                 {
                     b.HasOne("Blog.Blazor.Models.Autor", "Autor")
                         .WithMany("Posts")
-                        .HasForeignKey("Id")
+                        .HasForeignKey("IdAutor")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Blog.Blazor.Models.Categoria", "Categoria")
                         .WithMany("Posts")
-                        .HasForeignKey("Id")
+                        .HasForeignKey("IdCategoria")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

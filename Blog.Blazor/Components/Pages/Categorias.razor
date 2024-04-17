@@ -1,0 +1,25 @@
+﻿@page "/categorias/";
+
+@using Blog.Blazor.Interfaces
+@using Blog.Blazor.Models
+@using Blog.Blazor.Services
+
+@inject ICategoriaService CategoriaService;
+
+@foreach (var item in categorias)
+{
+    <div>
+        <h1>Categoria</h1>
+        <p>Categoria nome: @item.Nome | <a href="/int/categoria/editar/@item.Id">Edit</a></p>
+        <p>@item.Cadastro</p>
+    </div>
+}
+
+@code {
+    private IQueryable<Categoria> categorias;
+
+    protected override async Task OnInitializedAsync()
+    {
+        categorias = await CategoriaService.BuscarTodas();
+    }
+}
