@@ -10,7 +10,6 @@ namespace Blog.Blazor.Data
         public DbSet<Post>? Post { get; set; }
         public DbSet<Autor>? Autor { get; set; }
         public DbSet<Categoria>? Categoria { get; set; }
-        public DbSet<Comentario>? Comentario { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -23,14 +22,14 @@ namespace Blog.Blazor.Data
             modelBuilder.Entity<Autor>()
             .HasMany(g => g.Posts)
             .WithOne(s => s.Autor)
-            .HasForeignKey(s => s.Id)
+            .HasForeignKey(s => s.IdAutor)
             .OnDelete(DeleteBehavior.Cascade);
 
             // configura a relação onde uma categoria pode pertencer a varios posts, mas um post só pode ter uma categoria
             modelBuilder.Entity<Categoria>()
             .HasMany(c => c.Posts)
             .WithOne(f => f.Categoria)
-            .HasForeignKey(f => f.Id)
+            .HasForeignKey(f => f.IdCategoria)
             .OnDelete(DeleteBehavior.Cascade);
 
             base.OnModelCreating(modelBuilder);
