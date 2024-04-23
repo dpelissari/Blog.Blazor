@@ -43,7 +43,7 @@
             </div>
             <div>
                 <label>Caminho imagem</label>
-                <ImagemUpload Modelo="post" DiretorioImagem="posts"></ImagemUpload>
+                <ImagemUpload Modelo="post" DiretorioImagem="posts" LarguraImagem="600"></ImagemUpload>
                 <ValidationMessage For="@(() => post.CaminhoImagem)" />
             </div>
             <div>
@@ -74,7 +74,7 @@
                 </InputSelect>
             </div>
             <div>
-                <button type="submit">INCLUIR</button>
+                <button type="submit">SALVAR</button>
                 <NavLink href="/">CANCELAR</NavLink>
             </div>
 
@@ -110,7 +110,7 @@
             </div>
             <div>
                 <label>Caminho imagem</label>
-                <ImagemUpload Modelo="post" DiretorioImagem="posts"></ImagemUpload>
+                <ImagemUpload Modelo="post" DiretorioImagem="posts" LarguraImagem="600"></ImagemUpload>
                 <ValidationMessage For="@(() => post.CaminhoImagem)" />
             </div>
             <div>
@@ -141,7 +141,7 @@
                 </InputSelect>
             </div>
             <div>
-                <button type="submit">INCLUIR</button>
+                <button type="submit">SALVAR</button>
                 <NavLink href="/">CANCELAR</NavLink>
             </div>
         </EditForm>
@@ -171,8 +171,8 @@
             }
             else
             {
-                // ID inválido, redireciona para listagem de frases
-                NavigationManager.NavigateTo("/");
+                // ID inválido, redireciona para listagem de posts
+                NavigationManager.NavigateTo("/posts");
             }
         }
         else
@@ -187,12 +187,12 @@
     {
 
         await PostService.Adicionar(post);
-        NavigationManager.NavigateTo("/");
+        NavigationManager.NavigateTo("/posts");
     }
 
     async Task AtualizarPost()
     {
         await PostService.Atualizar(post);
-        NavigationManager.NavigateTo("/");
+        NavigationManager.NavigateTo("/posts");
     }
 }

@@ -45,8 +45,6 @@
     [Parameter]
     public int LarguraImagem { get; set; } = 150;
 
-    // altura padrão para redimensionamento da imagem
-    public int AlturaImagem { get; set; } = 150;
 
     // texto exibido no botão de envio de imagem
     [Parameter]
@@ -89,36 +87,44 @@
     {
         if (Arquivo != null && ArquivoEhImagem(Arquivo))
         {
-            // Combina o caminho do diretório com um nome único para a imagem
-            var diretorio = Path.Combine(_ambiente.WebRootPath, DiretorioImagem);
-            var nomeUnico = $"{Guid.NewGuid()}{Path.GetExtension(Arquivo.Name)}";
-            var caminhoArquivo = Path.Combine(diretorio, nomeUnico);
-
-            // cria o diretório se não existir
-            if (!Directory.Exists(diretorio)) Directory.CreateDirectory(diretorio);
-
-            // copia o conteúdo do arquivo para um fluxo de memória
-            using (var stream = Arquivo.OpenReadStream())
+            using (var memoryStream = new MemoryStream())
             {
-                using (var memoryStream = new MemoryStream())
+                await Arquivo.OpenReadStream().CopyToAsync(memoryStream);
+
+                // Abre a imagem para verificar suas dimensões
+                using (var image = Image.FromStream(memoryStream))
                 {
-                    await stream.CopyToAsync(memoryStream);
-
-                    // abre a imagem a partir do fluxo de memória
-                    using (var image = Image.FromStream(memoryStream))
+                    // Verifica se a imagem tem a largura mínima desejada
+                    if (image.Width < LarguraImagem)
                     {
-                        // redimensiona a imagem
-                        var resizedImage = new Bitmap(image, new Size(LarguraImagem, AlturaImagem));
+                        Erro = $"A largura da imagem é menor do que o desejado ({LarguraImagem}px)";
+                        return;
+                    }
 
+                    // Calcula a altura proporcionalmente à largura desejada
+                    var proporcao = (double)LarguraImagem / image.Width;
+                    var novaAltura = (int)(image.Height * proporcao);
+
+                    // Combina o caminho do diretório com um nome único para a imagem
+                    var diretorio = Path.Combine(_ambiente.WebRootPath, DiretorioImagem);
+                    var nomeUnico = $"{Guid.NewGuid()}{Path.GetExtension(Arquivo.Name)}";
+                    var caminhoArquivo = Path.Combine(diretorio, nomeUnico);
+
+                    // cria o diretório se não existir
+                    if (!Directory.Exists(diretorio)) Directory.CreateDirectory(diretorio);
+
+                    // redimensiona a imagem
+                    using (var resizedImage = new Bitmap(image, new Size(LarguraImagem, novaAltura)))
+                    {
                         // salva a imagem redimensionada no caminho especificado
                         await Task.Run(() => resizedImage.Save(caminhoArquivo));
                     }
+
+                    // define a propriedade "caminhoimagem" do modelo com o caminho da imagem salva
+                    Modelo.GetType().GetProperty("CaminhoImagem")?.SetValue(Modelo, $"/{DiretorioImagem}/{nomeUnico}");
+                    Erro = string.Empty;
                 }
             }
-
-            // define a propriedade "caminhoimagem" do modelo com o caminho da imagem salva
-            Modelo.GetType().GetProperty("CaminhoImagem")?.SetValue(Modelo, $"/{DiretorioImagem}/{nomeUnico}");
-            Erro = string.Empty;
         }
         else
         {
@@ -126,6 +132,7 @@
             Erro = "Arquivo não selecionado ou inválido (Arquivos aceitos: .jpg e .png)";
         }
     }
+
 
     // remove a imagem do modelo
     private async Task RemoverImagem()

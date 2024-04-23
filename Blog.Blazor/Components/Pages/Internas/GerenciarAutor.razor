@@ -31,7 +31,7 @@
             </div>
             <div>
                 <label>Caminho imagem</label>
-                <ImagemUpload Modelo="autor" DiretorioImagem="autores"></ImagemUpload>
+                <ImagemUpload Modelo="autor" DiretorioImagem="autores" LarguraImagem="120"></ImagemUpload>
                 <ValidationMessage For="@(() => autor.CaminhoImagem)" />
             </div>
             <div>
@@ -44,7 +44,7 @@
 
             <ValidationMessage For="@(() => autor.Ativo)" />
             <div>
-                <button type="submit">ATUALIZAR</button>
+                <button type="submit">SALVAR</button>
                 <NavLink href="/">CANCELAR</NavLink>
             </div>
 
@@ -68,7 +68,7 @@
             </div>
             <div>
                 <label>Caminho imagem</label>
-                <ImagemUpload Modelo="autor" DiretorioImagem="autores"></ImagemUpload>
+                <ImagemUpload Modelo="autor" DiretorioImagem="autores" LarguraImagem="120"></ImagemUpload>
                 <ValidationMessage For="@(() => autor.CaminhoImagem)" />
             </div>
             <div>
@@ -83,7 +83,7 @@
             </div>
 
             <div>
-                <button type="submit">INCLUIR</button>
+                <button type="submit">SALVAR</button>
                 <NavLink href="/">CANCELAR</NavLink>
             </div>
         </EditForm>
@@ -113,7 +113,7 @@
             else
             {
                 // id inválido, redireciona 
-                NavigationManager.NavigateTo("/");
+                NavigationManager.NavigateTo("/autores");
             }
         }
     }
@@ -121,12 +121,12 @@
     async Task CriarAutor()
     {
         await AutorService.Adicionar(autor);
-        NavigationManager.NavigateTo("/");
+        NavigationManager.NavigateTo("/autores");
     }
 
     async Task AtualizarAutor()
     {
         await AutorService.Atualizar(autor);
-        NavigationManager.NavigateTo("/");
+        NavigationManager.NavigateTo("/autores");
     }
 }

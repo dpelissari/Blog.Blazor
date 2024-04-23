@@ -41,7 +41,7 @@
             </div>
 
             <div>
-                <button type="submit">INCLUIR</button>
+                <button type="submit">SALVAR</button>
                 <NavLink href="/">CANCELAR</NavLink>
             </div>
 
@@ -76,7 +76,7 @@
             </div>
 
             <div>
-                <button type="submit">INCLUIR</button>
+                <button type="submit">SALVAR</button>
                 <NavLink href="/">CANCELAR</NavLink>
             </div>
         </EditForm>
@@ -106,7 +106,7 @@
             else
             {
                 // id inválido, redireciona para listagem de autores
-                NavigationManager.NavigateTo("/");
+                NavigationManager.NavigateTo("/categorias");
             }
         }
     }
@@ -114,12 +114,12 @@
     async Task CriarCategoria()
     {
         await CategoriaService.Adicionar(categoria);
-        NavigationManager.NavigateTo("/");
+        NavigationManager.NavigateTo("/categorias");
     }
 
     async Task AtualizarCategoria()
     {
         await CategoriaService.Atualizar(categoria);
-        NavigationManager.NavigateTo("/");
+        NavigationManager.NavigateTo("/categorias");
     }
 }
