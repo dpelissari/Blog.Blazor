@@ -1,0 +1,49 @@
+﻿@page "/post/";
+@page "/post/{Id}";
+
+@using Blog.Blazor.Interfaces
+@using Blog.Blazor.Models
+
+@inject NavigationManager NavigationManager
+@inject IPostService PostService;
+@inject ICategoriaService CategoriaService;
+@inject IAutorService AutorService;
+
+<div class="container p-4">
+    <div class="content">
+    <img src="@post.CaminhoImagem" />
+    <h1 class="title">@post.Titulo</h1>
+        <p>@post.Conteudo</p>
+    </div>
+    <NavLink class="button is-black is-medium" href="/">
+        <FeatherArrowLeft Size="25" Color="#FFF" StrokeWidth="1.8f" />
+     </NavLink>
+</div>
+
+@code {
+
+    [Parameter] public string? Id { get; set; }
+
+    private Post post = new();
+    private IQueryable<Post>? posts;
+
+    protected override async Task OnInitializedAsync()
+    {
+
+        if (!string.IsNullOrEmpty(Id))
+        {
+            if (Guid.TryParse(Id, out Guid idPost))
+            {
+                // busca post e alimenta autor e categoria
+                post = await PostService.BuscarPor(idPost);
+                post.Categoria = await CategoriaService.BuscarPor(post.IdCategoria);
+                post.Autor = await AutorService.BuscarPor(post.IdCategoria);
+            }
+            else
+            {
+                // ID inválido, redireciona para listagem de autores
+                NavigationManager.NavigateTo("/");
+            }
+        }
+    }
+}

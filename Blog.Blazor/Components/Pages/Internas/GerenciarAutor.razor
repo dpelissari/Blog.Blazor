@@ -8,44 +8,47 @@
 @inject NavigationManager NavigationManager
 @inject IAutorService AutorService
 
-<h3>Gerenciar Autor</h3>
 
-<div>
+<div class="container p-4">
 
     @if (modoEdicao)
     {
-        <h1>Editar autor</h1>
+        <h1>Editand o autor "@autor.Nome"</h1>
 
         <EditForm Model="@autor" OnValidSubmit="@AtualizarAutor" FormName="AtualizaAutor" Enhance>
             <DataAnnotationsValidator />
 
             <div>
-                <label>Nome</label>
-                <InputText @bind-Value="autor.Nome"></InputText>
-                <ValidationMessage For="@(() => autor.Nome)" />
-            </div>
-            <div>
-                <label>Biografia</label>
-                <InputText @bind-Value="autor.Biografia"></InputText>
-                <ValidationMessage For="@(() => autor.Biografia)" />
-            </div>
-            <div>
-                <label>Caminho imagem</label>
+                <label>Imagem</label>
                 <ImagemUpload Modelo="autor" DiretorioImagem="autores" LarguraImagem="120"></ImagemUpload>
                 <ValidationMessage For="@(() => autor.CaminhoImagem)" />
             </div>
             <div>
+                <label>Nome</label>
+                <InputText @bind-Value="autor.Nome" class="input"></InputText>
+                <ValidationMessage For="@(() => autor.Nome)" />
+            </div>
+            <div>
+                <label>Biografia</label>
+                <InputTextArea @bind-Value="autor.Biografia" rows="5" class="textarea"></InputTextArea>
+                <ValidationMessage For="@(() => autor.Biografia)" />
+            </div>
+       
+            <div>
                 <label>Autor ativo?</label>
-                <InputSelect @bind-Value="autor.Ativo">
-                    <option value="true">Sim</option>
-                    <option value="false">Não</option>
-                </InputSelect>
+                <div class="select">
+                    <InputSelect @bind-Value="autor.Ativo">
+                        <option value="true">Sim</option>
+                        <option value="false">Não</option>
+                    </InputSelect>
+                </div>
             </div>
 
             <ValidationMessage For="@(() => autor.Ativo)" />
             <div>
-                <button type="submit">SALVAR</button>
-                <NavLink href="/">CANCELAR</NavLink>
+
+                <button class="button is-success" type="submit">SALVAR</button>
+                <NavLink href="/" class="button is-danger">CANCELAR</NavLink>
             </div>
 
         </EditForm>
@@ -58,12 +61,12 @@
             <DataAnnotationsValidator />
             <div>
                 <label>Nome</label>
-                <InputText @bind-Value="autor.Nome"></InputText>
+                <InputText @bind-Value="autor.Nome" class="input"></InputText>
                 <ValidationMessage For="@(() => autor.Nome)" />
             </div>
             <div>
                 <label>Biografia</label>
-                <InputText @bind-Value="autor.Biografia"></InputText>
+                <InputTextArea @bind-Value="autor.Biografia" rows="5" class="textarea"></InputTextArea>
                 <ValidationMessage For="@(() => autor.Biografia)" />
             </div>
             <div>
@@ -74,17 +77,19 @@
             <div>
                 <div>
                     <label>Autor ativo?</label>
-                    <InputSelect @bind-Value="autor.Ativo">
-                        <option value="true">Sim</option>
-                        <option value="false">Não</option>
-                    </InputSelect>
+                    <div class="select">
+                        <InputSelect @bind-Value="autor.Ativo">
+                            <option value="true">Sim</option>
+                            <option value="false">Não</option>
+                        </InputSelect>
+                    </div>
                 </div>
                 <ValidationMessage For="@(() => autor.Ativo)" />
             </div>
 
             <div>
-                <button type="submit">SALVAR</button>
-                <NavLink href="/">CANCELAR</NavLink>
+                <button class="button is-success" type="submit">SALVAR</button>
+                <NavLink href="/" class="button is-danger">CANCELAR</NavLink>
             </div>
         </EditForm>
     }

@@ -4,23 +4,33 @@
 
 <div>
     <PlaceHolder Visible="!ExibeImagem">
-        <label>@TextoLabel</label>
-        <InputFile OnChange="HandleFileSelection" />
+        <div class="file">
+            <label class="file-label">
+                <InputFile OnChange="HandleFileSelection" class="file-input" />
+                <input class="file-input" type="file" name="resume" />
+                <span class="file-cta">
+                    <span class="file-icon">
+                        <FeatherFile Size="36" Color="#000" StrokeWidth="1.8f" />
+                    </span>
+                    <span class="file-label">@TextoLabel </span>
+                </span>
+            </label>
+        </div>
     </PlaceHolder>
 
     <PlaceHolder Visible="ExibeImagem">
         <div>
-            <img src="@CaminhoImagem" style="width:100px; height:100px; border-radius:50%;" />
+            <img src="@CaminhoImagem" />
         </div>
     </PlaceHolder>
 
     <div>
         <PlaceHolder Visible="ExibeBotaoUpload">
-            <button @onclick="EnviarImagem" type="button">UPLOAD</button>
+            <button class="button is-warning" @onclick="EnviarImagem">UPLOAD</button>
         </PlaceHolder>
 
         <PlaceHolder Visible="ExibeBotaoRemover">
-            <button @onclick="RemoverImagem" type="button">REMOVER</button>
+            <button class="button is-danger" @onclick="RemoverImagem">REMOVER</button>
         </PlaceHolder>
     </div>
 

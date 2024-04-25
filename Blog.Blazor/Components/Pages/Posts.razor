@@ -1,31 +1,79 @@
-﻿@page "/posts/";
+﻿@page "/";
 @using Blog.Blazor.Interfaces
 @using Blog.Blazor.Models
 
 @inject IPostService PostService;
+@inject IAutorService AutorService;
+@inject ICategoriaService CategoriaService;
 
+<div class="container p-4">
 
-@foreach (var item in posts)
-{
-    <div>
-        <h1>Post</h1>
-        <img src="@item.CaminhoImagem" alt="@item.Titulo" />
-        <p>Titulo: @item.Titulo | <a href="/int/post/editar/@item.Id">Edit</a></p>
-        <p>Conteudo: @item.Conteudo</p>
-        <p>Cadastro: @item.Cadastro</p>
-        <p>Autor: @item.Autor?.Nome</p>
-        <p>Categoria: @item.Categoria?.Nome</p>
-    </div>
-}
+    @if (posts != null && posts.Any())
+    {
+        <div class="fixed-grid has-4-cols-desktop has-2-cols-tablet has-1-cols-mobile">
+            <div class="grid">
+                <Repeater DataSource="posts" Context="item">
+                    <ItemTemplate>
+                        <NavLink href="@($"post/{item.Id}")">
+                            <div class="cell">
+                                <div class="card">
+                                    <div class="card-image">
+                                        <figure class="image">
+                                            <img src="@item.CaminhoImagem" alt="@item.Titulo" />
+                                        </figure>
+                                    </div>
+                                    <div class="card-content">
+                                        <div class="media">
+                                            <div class="media-content">
+                                                <p class="title is-4">@item.Titulo</p>
+                                            </div>
+                                        </div>
+                                        <div class="content">
+                                            @(item.Conteudo.Length > 100 ? item.Conteudo.Substring(0, 100) + "..." : item.Conteudo)
+                                        </div>
+                                        <div class="grid">
+                                            <div class="cell">
+                                                <figure class="image is-48x48">
+                                                    <img src="@item.Autor.CaminhoImagem" alt="@item.Titulo" class="is-rounded" />
+                                                </figure>
+                                            </div>
+                                            <div class="cell">
+                                                <p class="subtitle is-6">@item.Autor.Nome</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </NavLink>
+                    </ItemTemplate>
+                </Repeater>
+            </div>
+        </div>
+    }
+    else
+    {
+        <article class="message is-warning">
+            <div class="message-body">
+                No momento, não há publicações disponíveis para exibição.
+            </div>
+        </article>
+    }
+</div>
 
 
 @code {
 
     private IQueryable<Post> posts;
 
-
     protected override async Task OnInitializedAsync()
     {
         posts = await PostService.BuscarTodos();
+
+        // alimenta autores e categoria
+        foreach (var post in posts)
+        {
+            post.Autor = await AutorService.BuscarPor(post.IdAutor);
+            post.Categoria = await CategoriaService.BuscarPor(post.IdCategoria);
+        }
     }
 }

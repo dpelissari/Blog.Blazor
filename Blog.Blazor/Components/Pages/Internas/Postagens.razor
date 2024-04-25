@@ -1,0 +1,111 @@
+﻿@page "/int/posts/";
+
+
+
+@using Blog.Blazor.Interfaces
+@using Blog.Blazor.Models
+
+@rendermode InteractiveServer
+@inject IJSRuntime JSRuntime;
+@inject IPostService PostagemService;
+@inject ICategoriaService CategoriaService;
+@inject IAutorService AutorService;
+
+<div class="container p-4">
+
+
+    @if (posts != null && posts.Any())
+    {
+        <table class="table is-bordered">
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Categoria</th>
+                    <th>Autor</th>
+                    <th>Cadastro</th>
+                    <th colspan="2">#</th>
+                </tr>
+            </thead>
+            <tbody>
+                <Repeater DataSource="posts" Context="post">
+                    <ItemTemplate>
+                        <tr>
+                            <td>@post.Id</td>
+                            <td>@post.Categoria.Nome</td>
+                            <td>@post.Autor.Nome</td>
+                            <td>@post.Cadastro.ToShortDateString()</td>
+                            <td>
+                                <NavLink href="@($"int/post/editar/{post.Id}")"><FeatherEdit Size="20" Color="#000" StrokeWidth="1.8f" /></NavLink>
+                            </td>
+                            <td>
+
+                                <a @onclick="async () => await RemoverPost(post.Id)" class="btn btn-vermelho"><FeatherTrash Size="20" Color="#000" StrokeWidth="1.8f" /></a>
+                            </td>
+                        </tr>
+
+                    </ItemTemplate>
+                </Repeater>
+            </tbody>
+        </table>
+    } else
+    {
+        <article class="message is-warning">
+            <div class="message-body">
+                No momento, não há publicações disponíveis para exibição.
+                <div class="block mt-3 mb-3">
+                    <NavLink href="/int/post/novo" class="button is-info">
+                        <FeatherPlusCircle Size="20" Color="#000" StrokeWidth="1.8f" />&nbsp;Nova publicação
+                    </NavLink>
+                </div>
+            </div>
+        </article>
+    }
+
+</div>
+
+@code {
+
+    private Categoria categoria = new();
+    private Autor Autor = new();
+
+    private IQueryable<Post> posts;
+
+    protected override async Task OnInitializedAsync()
+    {
+
+        posts = await PostagemService.BuscarTodos();
+
+        foreach (var post in posts)
+        {
+            post.Autor = await AutorService.BuscarPor(post.IdAutor);
+            post.Categoria = await CategoriaService.BuscarPor(post.IdCategoria);
+        }
+
+    }
+
+    async Task RemoverPost(Guid id)
+    {
+
+        Console.WriteLine("chamou");
+
+        // exibe um alerta de confirmacao
+        bool confirm = await JSRuntime.InvokeAsync<bool>("confirm", "Tem certeza que deseja excluir esse post?");
+
+        // se a confirmacao for false para por aqui
+        if (confirm is false) return;
+
+        // se a confirmacao for true logaliza  pelo id
+        var post = await PostagemService.BuscarPor(id);
+
+        // apaga o post
+        await PostagemService.Apagar(post);
+
+        // atualiza a lista
+        posts = await PostagemService.BuscarTodos();
+
+        StateHasChanged();
+    }
+
+}
+
+

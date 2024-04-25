@@ -12,7 +12,7 @@ namespace Blog.Blazor.Models
         public string Titulo { get; set; }
 
         [Required(ErrorMessage = "O campo conteudo é obrigatório")]
-        [MaxLength(500)]
+        [MaxLength(1500)]
         public string Conteudo { get; set; }
 
         [Required(ErrorMessage = "O campo data de cadastro é obrigatório")]

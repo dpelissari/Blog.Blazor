@@ -11,8 +11,8 @@
 @inject ICategoriaService CategoriaService
 @inject IPostService PostService
 
-<div>
-
+<div class="container p-4">
+    
     @if (modoEdicao)
     {
         <h1>Editar post</h1>
@@ -21,25 +21,29 @@
             <DataAnnotationsValidator />
             <div>
                 <label>Categoria</label>
-                <InputSelect @bind-Value="post.IdCategoria">
-                    <Repeater DataSource="categorias" Context="c">
-                        <ItemTemplate>
-                            <option value="@c.Id">@c.Nome</option>
-                        </ItemTemplate>
-                    </Repeater>
-                </InputSelect>
-                <ValidationMessage For="@(() => post.Categoria)" />
+                <div class="select">
+                    <InputSelect @bind-Value="post.IdCategoria" class="input">
+                        <Repeater DataSource="categorias" Context="c">
+                            <ItemTemplate>
+                                <option value="@c.Id">@c.Nome</option>
+                            </ItemTemplate>
+                        </Repeater>
+                    </InputSelect>
+                    <ValidationMessage For="@(() => post.Categoria)" />
+                </div>
             </div>
             <div>
                 <label>Autor</label>
-                <InputSelect @bind-Value="post.IdCategoria">
-                    <Repeater DataSource="autores" Context="a">
-                        <ItemTemplate>
-                            <option value="@a.Id">@a.Nome</option>
-                        </ItemTemplate>
-                    </Repeater>
-                </InputSelect>
-                <ValidationMessage For="@(() => post.Autor)" />
+                <div class="select">
+                    <InputSelect @bind-Value="post.IdCategoria">
+                        <Repeater DataSource="autores" Context="a">
+                            <ItemTemplate>
+                                <option value="@a.Id">@a.Nome</option>
+                            </ItemTemplate>
+                        </Repeater>
+                    </InputSelect>
+                    <ValidationMessage For="@(() => post.Autor)" />
+                </div>
             </div>
             <div>
                 <label>Caminho imagem</label>
@@ -48,34 +52,36 @@
             </div>
             <div>
                 <label>Titulo</label>
-                <InputTextArea @bind-Value="post.Titulo" rows="5"></InputTextArea>
+                <InputTextArea @bind-Value="post.Titulo" rows="5" class="textarea"></InputTextArea>
                 <ValidationMessage For="@(() => post.Titulo)" />
             </div>
             <div>
                 <label>Conteudo</label>
-                <InputTextArea @bind-Value="post.Conteudo" rows="5"></InputTextArea>
+                <InputTextArea @bind-Value="post.Conteudo" rows="5" class="textarea"></InputTextArea>
                 <ValidationMessage For="@(() => post.Conteudo)" />
             </div>
             <div>
                 <label>Descrição SEO</label>
-                <InputTextArea @bind-Value="post.DescricaoSEO" rows="5"></InputTextArea>
+                <InputTextArea @bind-Value="post.DescricaoSEO" rows="5" class="textarea"></InputTextArea>
                 <ValidationMessage For="@(() => post.DescricaoSEO)" />
             </div>
             <div>
                 <label>Tittle SEO</label>
-                <InputTextArea @bind-Value="post.TituloPaginaSEO" rows="5"></InputTextArea>
+                <InputTextArea @bind-Value="post.TituloPaginaSEO" rows="5" class="textarea"></InputTextArea>
                 <ValidationMessage For="@(() => post.TituloPaginaSEO)" />
             </div>
             <div>
                 <label>Ativo?</label>
-                <InputSelect @bind-Value="post.Ativo">
-                    <option value="true">Sim</option>
-                    <option value="false">Não</option>
-                </InputSelect>
+                <div class="select">
+                    <InputSelect @bind-Value="post.Ativo">
+                        <option value="true">Sim</option>
+                        <option value="false">Não</option>
+                    </InputSelect>
+                </div>
             </div>
             <div>
-                <button type="submit">SALVAR</button>
-                <NavLink href="/">CANCELAR</NavLink>
+                <button class="button is-success" type="submit">SALVAR</button>
+                <NavLink href="/" class="button is-danger">CANCELAR</NavLink>
             </div>
 
         </EditForm>
@@ -88,25 +94,29 @@
             <DataAnnotationsValidator />
             <div>
                 <label>Categoria</label>
-                <InputSelect @bind-Value="post.IdCategoria">
-                    <Repeater DataSource="categorias" Context="c">
-                        <ItemTemplate>
-                            <option value="@c.Id">@c.Nome</option>
-                        </ItemTemplate>
-                    </Repeater>
-                </InputSelect>
-                <ValidationMessage For="@(() => post.Categoria)" />
+                <div class="select">
+                    <InputSelect @bind-Value="post.IdCategoria" >
+                        <Repeater DataSource="categorias" Context="c">
+                            <ItemTemplate>
+                                <option value="@c.Id">@c.Nome</option>
+                            </ItemTemplate>
+                        </Repeater>
+                    </InputSelect>
+                    <ValidationMessage For="@(() => post.Categoria)" />
+                </div>
             </div>
             <div>
                 <label>Autor</label>
-                <InputSelect @bind-Value="post.IdCategoria">
-                    <Repeater DataSource="autores" Context="a">
-                        <ItemTemplate>
-                            <option value="@a.Id">@a.Nome</option>
-                        </ItemTemplate>
-                    </Repeater>
-                </InputSelect>
-                <ValidationMessage For="@(() => post.Autor)" />
+                <div class="select">
+                    <InputSelect @bind-Value="post.IdCategoria" class="select">
+                        <Repeater DataSource="autores" Context="a">
+                            <ItemTemplate>
+                                <option value="@a.Id">@a.Nome</option>
+                            </ItemTemplate>
+                        </Repeater>
+                    </InputSelect>
+                    <ValidationMessage For="@(() => post.Autor)" />
+                </div>
             </div>
             <div>
                 <label>Caminho imagem</label>
@@ -115,34 +125,36 @@
             </div>
             <div>
                 <label>Titulo</label>
-                <InputTextArea @bind-Value="post.Titulo" rows="5"></InputTextArea>
+                <InputTextArea @bind-Value="post.Titulo" rows="5" class="textarea"></InputTextArea>
                 <ValidationMessage For="@(() => post.Titulo)" />
             </div>
             <div>
                 <label>Conteudo</label>
-                <InputTextArea @bind-Value="post.Conteudo" rows="5"></InputTextArea>
+                <InputTextArea @bind-Value="post.Conteudo" rows="5" class="textarea"></InputTextArea>
                 <ValidationMessage For="@(() => post.Conteudo)" />
             </div>
             <div>
                 <label>Descrição SEO</label>
-                <InputTextArea @bind-Value="post.DescricaoSEO" rows="5"></InputTextArea>
+                <InputTextArea @bind-Value="post.DescricaoSEO" rows="5" class="textarea"></InputTextArea>
                 <ValidationMessage For="@(() => post.DescricaoSEO)" />
             </div>
             <div>
                 <label>Tittle SEO</label>
-                <InputTextArea @bind-Value="post.TituloPaginaSEO" rows="5"></InputTextArea>
+                <InputTextArea @bind-Value="post.TituloPaginaSEO" rows="5" class="textarea"></InputTextArea>
                 <ValidationMessage For="@(() => post.TituloPaginaSEO)" />
             </div>
             <div>
                 <label>Ativo?</label>
-                <InputSelect @bind-Value="post.Ativo">
-                    <option value="true">Sim</option>
-                    <option value="false">Não</option>
-                </InputSelect>
+                <div class="select">
+                    <InputSelect @bind-Value="post.Ativo">
+                        <option value="true">Sim</option>
+                        <option value="false">Não</option>
+                    </InputSelect>
+                </div>
             </div>
             <div>
-                <button type="submit">SALVAR</button>
-                <NavLink href="/">CANCELAR</NavLink>
+                <button class="button is-success" type="submit">SALVAR</button>
+                <NavLink href="/" class="button is-danger">CANCELAR</NavLink>
             </div>
         </EditForm>
     }
@@ -172,7 +184,7 @@
             else
             {
                 // ID inválido, redireciona para listagem de posts
-                NavigationManager.NavigateTo("/posts");
+                NavigationManager.NavigateTo("/");
             }
         }
         else
@@ -187,12 +199,12 @@
     {
 
         await PostService.Adicionar(post);
-        NavigationManager.NavigateTo("/posts");
+        NavigationManager.NavigateTo("/");
     }
 
     async Task AtualizarPost()
     {
         await PostService.Atualizar(post);
-        NavigationManager.NavigateTo("/posts");
+        NavigationManager.NavigateTo("/");
     }
 }
