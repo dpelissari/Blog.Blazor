@@ -35,6 +35,7 @@ app.UseHttpsRedirection();
 
 app.UseStaticFiles();
 app.UseAntiforgery();
+app.UseStatusCodePagesWithRedirects("/404");
 
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode();
