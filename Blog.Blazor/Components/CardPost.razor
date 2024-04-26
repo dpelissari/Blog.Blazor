@@ -1,0 +1,31 @@
+﻿@using Blog.Blazor.Models
+<NavLink href="@($"post/{Post.Id}")">
+    <div class="cell">
+        <div class="card">
+            <div class="card-image">
+                <figure class="image">
+                    <img src="@Post.CaminhoImagem" alt="@Post.Titulo" />
+                </figure>
+            </div>
+            <div class="card-content">
+                <div class="media">
+                    <div class="media-content">
+                        <p class="title is-5">@Post.Titulo</p>
+                    </div>
+                </div>
+                <p class="is-flex is-align-items-center">
+                    <FeatherCalendar Color="#404040" Size="20"></FeatherCalendar>&nbsp;
+                    @(Post.Cadastro.Date == DateTime.Now.Date ? "Hoje ás " + Post.Cadastro.ToString("HH:mm") : Post.Cadastro.Date == DateTime.Now.Date.AddDays(-1) ? "Ontem ás " + Post.Cadastro.ToString("HH:MM") : Post.Cadastro.ToShortDateString() + " ás " + Post.Cadastro.ToString("HH:MM"))
+                </p>
+                <p class="mt-1 is-flex is-align-items-center">
+                    <FeatherUser Color="#404040" Size="20"></FeatherUser>&nbsp;
+                    @Post.Autor.Nome
+                </p>
+            </div>
+        </div>
+    </div>
+</NavLink>
+
+@code {
+    [Parameter] public Post? Post { get; set; }
+}
