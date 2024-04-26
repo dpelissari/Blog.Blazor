@@ -1,0 +1,86 @@
+﻿@page "/int/categorias/";
+
+@using Blog.Blazor.Interfaces
+@using Blog.Blazor.Models
+
+@rendermode InteractiveServer
+@inject IJSRuntime JSRuntime;
+@inject ICategoriaService CategoriaService;
+
+<div class="container p-4">
+    <PlaceHolder Visible="categorias != null && categorias.Any()">
+        <table class="table is-bordered">
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Categoria</th>
+                    <th>Cadastro</th>
+                    <th colspan="2">#</th>
+                </tr>
+            </thead>
+            <tbody>
+                <Repeater DataSource="categorias" Context="item">
+                    <ItemTemplate>
+                        <tr>
+                            <td>@item.Id</td>
+                            <td>@item.Nome</td>
+                            <td>@item.Cadastro.ToShortDateString()</td>
+                            <td>
+                                <NavLink href="@($"int/categoria/editar/{item.Id}")"><FeatherEdit Size="20" Color="#000" StrokeWidth="1.8f" /></NavLink>
+                            </td>
+                            <td>
+                                <a @onclick="async () => await RemoverCategoria(item.Id)" class="btn btn-vermelho"><FeatherTrash Size="20" Color="#000" StrokeWidth="1.8f" /></a>
+                            </td>
+                        </tr>
+                    </ItemTemplate>
+                </Repeater>
+            </tbody>
+        </table>
+    </PlaceHolder>
+
+    <PlaceHolder Visible="!categorias.Any()">
+        <article class="message is-warning">
+            <div class="message-body">
+                No momento, não há publicações disponíveis para exibição.
+                <div class="block mt-3 mb-3">
+                    <NavLink href="/int/categoria/nova" class="button is-info">
+                        <FeatherPlusCircle Size="20" Color="#000" StrokeWidth="1.8f" />&nbsp;Nova categoria
+                    </NavLink>
+                </div>
+            </div>
+        </article>
+    </PlaceHolder>
+
+</div>
+
+@code {
+
+    private IQueryable<Categoria> categorias;
+
+    protected override async Task OnInitializedAsync()
+    {
+        categorias = await CategoriaService.BuscarTodas();
+    }
+
+    async Task RemoverCategoria(Guid id)
+    {
+
+        // exibe um alerta de confirmacao
+        bool confirm = await JSRuntime.InvokeAsync<bool>("confirm", "Tem certeza que deseja excluir esse post?");
+
+        // se a confirmacao for false para por aqui
+        if (confirm is false) return;
+
+        // se a confirmacao for true logaliza  pelo id
+        var categoria = await CategoriaService.BuscarPor(id);
+
+        // apaga o post
+        await CategoriaService.Apagar(categoria);
+
+        // atualiza a lista
+        categorias = await CategoriaService.BuscarTodas();
+
+        StateHasChanged();
+    }
+
+}
