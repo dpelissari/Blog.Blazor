@@ -1,0 +1,57 @@
+﻿@using Blog.Blazor.Interfaces
+@using Blog.Blazor.Models
+@using Blog.Blazor.Services
+
+@rendermode InteractiveServer
+@inject ICategoriaService CategoriaService
+
+<nav class="navbar is-transparent">
+    <div class="navbar-brand">
+        <NavLink class="navbar-item" href="/">
+            <img src="imagens/logo.svg" alt="logo" width="100" />
+        </NavLink>
+        <button role="button" class="navbar-burger" data-target="navMenu" aria-label="menu" aria-expanded="false" @onclick="ToogleMenu">
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+        </button>
+    </div>
+    <div class="navbar-menu">
+        <div class="navbar-start">
+            <NavLink class="navbar-item" href="/" @onclick="FecharMenu">Publicações</NavLink>
+            <NavLink class="navbar-item" href="/autores/" @onclick="FecharMenu">Autores</NavLink>
+            <Repeater DataSource="categorias.Where(x => x.ExibirItemMenu == true).OrderBy(x => x.Nome)" Context="item">
+                <ItemTemplate>
+                    <NavLink class="navbar-item" href="@($"/categoria/{item.Id}/")" @onclick="FecharMenu">@item.Nome</NavLink>
+                </ItemTemplate>
+            </Repeater>
+            <NavLink class="navbar-item" href="/categorias/" @onclick="FecharMenu">Todas categorias</NavLink>
+        </div>
+        <div class="navbar-end">
+            <div class="navbar-item">
+                <div class="field is-grouped">
+                    <p class="control">
+                        <NavLink class="button is-link" href="/" title="Login">
+                            <FeatherLogIn Color="#FFF" Size="25"></FeatherLogIn>
+                        </NavLink>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>
+
+@inject IJSRuntime JSRuntime
+
+@code {
+
+    private IQueryable<Categoria>? categorias;
+    private async Task ToogleMenu() => await JSRuntime.InvokeVoidAsync("toogleMenu");
+    private async Task FecharMenu() => await JSRuntime.InvokeVoidAsync("closeMenu");
+
+    protected override async Task OnInitializedAsync()
+    {
+        categorias = await CategoriaService.BuscarTodas();
+    }
+}
