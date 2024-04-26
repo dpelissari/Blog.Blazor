@@ -21,6 +21,17 @@ namespace Blog.Blazor.Models
 
         public ICollection<Post>? Posts { get; set; }
 
+        [Required(ErrorMessage = "O campo descrição SEO é obrigatório")]
+        [MaxLength(250)]
+        public string DescricaoSEO { get; set; }
+
+        [Required(ErrorMessage = "O campo descrição SEO é obrigatório")]
+        [MaxLength(150)]
+        public string TituloPaginaSEO { get; set; }
+
+        [Required(ErrorMessage = "O campo exibir item no menu é obrigatório")]
+        public bool ExibirItemMenu { get; set; } = true;
+
         [Required(ErrorMessage = "O campo ativo é obrigatório")]
         public bool Ativo { get; set; } = true;
     }
