@@ -8,79 +8,56 @@
 @inject NavigationManager NavigationManager
 @inject ICategoriaService CategoriaService
 
-<h3>Gerenciar Categoria</h3>
+<div class="container p-3">
 
-<div>
+    <h1 class="title">@(modoEdicao ? "Editar" : "Incluir") categoria</h1>
 
-    @if (modoEdicao)
-    {
-        <h1>Editar categoria</h1>
+    <EditForm Model="@categoria" OnValidSubmit="modoEdicao ? AtualizarCategoria : CriarCategoria" FormName="categoria" Enhance>
+        <DataAnnotationsValidator />
 
-        <EditForm Model="@categoria" OnValidSubmit="@AtualizarCategoria" FormName="AtualizaCategoria" Enhance>
-            <DataAnnotationsValidator />
+        <div class="field">
+            <label class="label">Nome</label>
+            <InputText @bind-Value="categoria.Nome" class="input"></InputText>
+            <ValidationMessage For="@(() => categoria.Nome)" />
+        </div>
+        <div class="field">
+            <label class="label">Descrição</label>
+            <InputTextArea @bind-Value="categoria.Descricao" rows="5" class="textarea"></InputTextArea>
+            <ValidationMessage For="@(() => categoria.Descricao)" />
+        </div>
+        <div class="field">
+            <label class="label">Descrição SEO</label>
+            <InputTextArea @bind-Value="categoria.DescricaoSEO" rows="5" class="textarea"></InputTextArea>
+            <ValidationMessage For="@(() => categoria.DescricaoSEO)" />
+        </div>
+        <div class="field">
+            <label class="label">Tittle SEO</label>
+            <InputTextArea @bind-Value="categoria.TituloPaginaSEO" rows="5" class="textarea"></InputTextArea>
+            <ValidationMessage For="@(() => categoria.TituloPaginaSEO)" />
+        </div>
+        <div class="field">
+            <label class="label">Exibir no menu?</label>
+            <div class="select">
+                <InputSelect @bind-Value="categoria.ExibirItemMenu">
+                    <option value="true">Sim</option>
+                    <option value="false">Não</option>
+                </InputSelect>
+            </div>
+        </div>
+        <div class="field">
+            <label class="label">Categoria ativa?</label>
+            <div class="select">
+                <InputSelect @bind-Value="categoria.Ativo">
+                    <option value="true">Sim</option>
+                    <option value="false">Não</option>
+                </InputSelect>
+            </div>
+        </div>
 
-            <div>
-                <label>Nome</label>
-                <InputText @bind-Value="categoria.Nome"></InputText>
-                <ValidationMessage For="@(() => categoria.Nome)" />
-            </div>
-            <div>
-                <label>Descrição</label>
-                <InputText @bind-Value="categoria.Descricao"></InputText>
-                <ValidationMessage For="@(() => categoria.Descricao)" />
-            </div>
-            <div>
-                <div>
-                    <label>Categoria ativa?</label>
-                    <InputSelect @bind-Value="categoria.Ativo">
-                        <option value="true">Sim</option>
-                        <option value="false">Não</option>
-                    </InputSelect>
-                </div>
-                <ValidationMessage For="@(() => categoria.Ativo)" />
-            </div>
+        <NavLink href="/" class="button is-danger">CANCELAR</NavLink>
+        <button class="button is-success" type="submit">SALVAR</button>
 
-            <div>
-                <button type="submit">SALVAR</button>
-                <NavLink href="/">CANCELAR</NavLink>
-            </div>
-
-        </EditForm>
-    }
-    else
-    {
-        <h3>Incluir Categoria</h3>
-
-        <EditForm Model="@categoria" OnValidSubmit="@CriarCategoria" FormName="IncluirCategoria" Enhance>
-            <DataAnnotationsValidator />
-            <div>
-                <label>Nome</label>
-                <InputText @bind-Value="categoria.Nome"></InputText>
-                <ValidationMessage For="@(() => categoria.Nome)" />
-            </div>
-            <div>
-                <label>Descrição</label>
-                <InputText @bind-Value="categoria.Descricao"></InputText>
-                <ValidationMessage For="@(() => categoria.Descricao)" />
-            </div>
- 
-            <div>
-                <div>
-                    <label>Categoria ativa?</label>
-                    <InputSelect @bind-Value="categoria.Ativo">
-                        <option value="true">Sim</option>
-                        <option value="false">Não</option>
-                    </InputSelect>
-                </div>
-                <ValidationMessage For="@(() => categoria.Ativo)" />
-            </div>
-
-            <div>
-                <button type="submit">SALVAR</button>
-                <NavLink href="/">CANCELAR</NavLink>
-            </div>
-        </EditForm>
-    }
+    </EditForm>
 </div>
 
 @code {

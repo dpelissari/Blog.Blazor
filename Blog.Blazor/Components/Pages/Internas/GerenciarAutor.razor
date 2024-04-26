@@ -8,91 +8,45 @@
 @inject NavigationManager NavigationManager
 @inject IAutorService AutorService
 
-
 <div class="container p-4">
 
-    @if (modoEdicao)
-    {
-        <h1>Editand o autor "@autor.Nome"</h1>
+    <h1 class="title">@(modoEdicao ? "Editar" : "Incluir") autor</h1>
 
-        <EditForm Model="@autor" OnValidSubmit="@AtualizarAutor" FormName="AtualizaAutor" Enhance>
-            <DataAnnotationsValidator />
+    <EditForm Model="@autor" OnValidSubmit="modoEdicao ? AtualizarAutor : CriarAutor" FormName="autor" Enhance>
+        <DataAnnotationsValidator />
 
-            <div>
-                <label>Imagem</label>
-                <ImagemUpload Modelo="autor" DiretorioImagem="autores" LarguraImagem="120"></ImagemUpload>
-                <ValidationMessage For="@(() => autor.CaminhoImagem)" />
-            </div>
-            <div>
-                <label>Nome</label>
-                <InputText @bind-Value="autor.Nome" class="input"></InputText>
-                <ValidationMessage For="@(() => autor.Nome)" />
-            </div>
-            <div>
-                <label>Biografia</label>
-                <InputTextArea @bind-Value="autor.Biografia" rows="5" class="textarea"></InputTextArea>
-                <ValidationMessage For="@(() => autor.Biografia)" />
-            </div>
-       
-            <div>
-                <label>Autor ativo?</label>
-                <div class="select">
-                    <InputSelect @bind-Value="autor.Ativo">
-                        <option value="true">Sim</option>
-                        <option value="false">Não</option>
-                    </InputSelect>
-                </div>
-            </div>
+        <div class="field">
+            <ImagemUpload Modelo="autor" DiretorioImagem="autores" LarguraImagem="120"></ImagemUpload>
+            <ValidationMessage For="@(() => autor.CaminhoImagem)" />
+        </div>
+        <div class="field">
+            <label class="label">Nome</label>
+            <InputText @bind-Value="autor.Nome" class="input"></InputText>
+            <ValidationMessage For="@(() => autor.Nome)" />
+        </div>
+        <div class="field">
+            <label class="label">Biografia</label>
+            <InputTextArea @bind-Value="autor.Biografia" rows="5" class="textarea"></InputTextArea>
+            <ValidationMessage For="@(() => autor.Biografia)" />
+        </div>
 
+        <div class="field">
+            <label class="label">Autor ativo?</label>
+            <div class="select">
+                <InputSelect @bind-Value="autor.Ativo">
+                    <option value="true">Sim</option>
+                    <option value="false">Não</option>
+                </InputSelect>
+            </div>
             <ValidationMessage For="@(() => autor.Ativo)" />
-            <div>
+        </div>
+        <div>
+            <NavLink href="/" class="button is-danger">CANCELAR</NavLink>
+            <button class="button is-success" type="submit">SALVAR</button>
+        </div>
 
-                <button class="button is-success" type="submit">SALVAR</button>
-                <NavLink href="/" class="button is-danger">CANCELAR</NavLink>
-            </div>
+    </EditForm>
 
-        </EditForm>
-    }
-    else
-    {
-        <h3>Incluir Autor</h3>
-
-        <EditForm Model="@autor" OnValidSubmit="@CriarAutor" FormName="IncluiAutor" Enhance>
-            <DataAnnotationsValidator />
-            <div>
-                <label>Nome</label>
-                <InputText @bind-Value="autor.Nome" class="input"></InputText>
-                <ValidationMessage For="@(() => autor.Nome)" />
-            </div>
-            <div>
-                <label>Biografia</label>
-                <InputTextArea @bind-Value="autor.Biografia" rows="5" class="textarea"></InputTextArea>
-                <ValidationMessage For="@(() => autor.Biografia)" />
-            </div>
-            <div>
-                <label>Caminho imagem</label>
-                <ImagemUpload Modelo="autor" DiretorioImagem="autores" LarguraImagem="120"></ImagemUpload>
-                <ValidationMessage For="@(() => autor.CaminhoImagem)" />
-            </div>
-            <div>
-                <div>
-                    <label>Autor ativo?</label>
-                    <div class="select">
-                        <InputSelect @bind-Value="autor.Ativo">
-                            <option value="true">Sim</option>
-                            <option value="false">Não</option>
-                        </InputSelect>
-                    </div>
-                </div>
-                <ValidationMessage For="@(() => autor.Ativo)" />
-            </div>
-
-            <div>
-                <button class="button is-success" type="submit">SALVAR</button>
-                <NavLink href="/" class="button is-danger">CANCELAR</NavLink>
-            </div>
-        </EditForm>
-    }
 </div>
 
 @code {
@@ -117,7 +71,7 @@
             }
             else
             {
-                // id inválido, redireciona 
+                // id inválido, redireciona
                 NavigationManager.NavigateTo("/autores");
             }
         }
