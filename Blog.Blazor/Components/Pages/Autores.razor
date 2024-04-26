@@ -3,20 +3,39 @@
 @using Blog.Blazor.Interfaces
 @using Blog.Blazor.Models
 
-@inject IAutorService AutorService;
+@inject IAutorService AutorService
+@inject IPostService PostService
+@rendermode InteractiveServer
 
-@foreach (var item in autores)
-{
-    <div>
-        <h1>Autor</h1>
-        <img src="@item.CaminhoImagem" alt="@item.Nome" />
-        <p>Autor nome: @item.Nome | Autor ID: @item.Id | <a href="/int/autor/editar/@item.Id">Edit</a></p>
-        <p>@item.Cadastro</p>
+<div class="container p-4">
+    <h1 class="title">Autores</h1>
+    <div class="fixed-grid has-4-cols-desktop has-3-cols-tablet has-1-cols-mobile">
+        <div class="grid">
+            <Repeater DataSource="autores.Where(x => x.Ativo == true).OrderBy(x => x.Nome)" Context="item">
+                <ItemTemplate>
+                    <div class="cell">
+                        <div class="box is-flex is-flex-direction-column is-align-items-center">
+                            <figure class="image is-128x128">
+                                <img class="is-rounded" src="@item.CaminhoImagem" alt="@item.Nome" />
+                            </figure>
+                            <h3 class="title is-5">@item.Nome</h3>
+                            <h4 class="subtitle is-6">@item.Biografia</h4>
+                        </div>
+                    </div>
+                </ItemTemplate>
+            </Repeater>
+        </div>
     </div>
-}
+    <PlaceHolder Visible="!autores.Any()">
+        <article class="message is-warning">
+            <div class="message-body">
+                No momento, não há autores disponíveis para exibição.
+            </div>
+        </article>
+    </PlaceHolder>
+</div>
 
 @code {
-
     private IQueryable<Autor> autores;
 
     protected override async Task OnInitializedAsync()

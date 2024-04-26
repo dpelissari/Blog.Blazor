@@ -16,54 +16,55 @@ namespace Blog.Blazor.Services
             dbContexto = appDbContexto;
         }
 
-        // metodo asincrono para adicionar frases
+        // metodo asincrono para adicionar post
         public async Task Adicionar(Post post)
         {
             await dbContexto.AddAsync(post);
             await dbContexto.SaveChangesAsync();
         }
 
-        // metodo asincrono para atualizar frases
+        // metodo asincrono para atualizar post
         public async Task Atualizar(Post post)
         {
+            post.UltimaAtualizacao = DateTime.Now;
             dbContexto.Update(post);
             await dbContexto.SaveChangesAsync();
         }
 
-        // metodo asincrono para apagar frases
+        // metodo asincrono para apagar posts
         public async Task Apagar(Post post)
         {
             dbContexto.Remove(post);
             await dbContexto.SaveChangesAsync();
         }
 
-        // metodo para retornar uma frase com base no id
+        // metodo para retornar um post com base no id
         public async Task<Post> BuscarPor(Guid id)
         {
             var post = await dbContexto.Post.FirstOrDefaultAsync(f => f.Id == id);
             return post;
         }
 
-        // metodo para listar todas frases
+        // metodo para listar todos posts
         public async Task<IQueryable<Post>> BuscarTodos()
         {
             var post = await dbContexto.Post.ToListAsync();
             return post.AsQueryable();
         }
 
-        // metodo para listar todas frases de um autor
+        // metodo para listar todos posts de um autor
         public async Task<IQueryable<Post>> BuscarPorAutorId(Guid autorId)
         {
-            var frases = await dbContexto.Post
+            var posts = await dbContexto.Post
                 .Where(f => f.Id == autorId)
                 .ToListAsync();
-            return frases.AsQueryable();
+            return posts.AsQueryable();
         }
 
         public async Task<IQueryable<Post>> BuscarPorIdCategoria(Guid categoriaId)
         {
             var post = await dbContexto.Post
-                .Where(f => f.Id == categoriaId)
+                .Where(f => f.IdCategoria == categoriaId)
                 .ToListAsync();
 
             return post.AsQueryable();

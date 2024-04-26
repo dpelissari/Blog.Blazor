@@ -65,9 +65,22 @@ namespace Blog.Blazor.Migrations
                         .HasMaxLength(500)
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("DescricaoSEO")
+                        .IsRequired()
+                        .HasMaxLength(250)
+                        .HasColumnType("TEXT");
+
+                    b.Property<bool>("ExibirItemMenu")
+                        .HasColumnType("INTEGER");
+
                     b.Property<string>("Nome")
                         .IsRequired()
                         .HasMaxLength(250)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("TituloPaginaSEO")
+                        .IsRequired()
+                        .HasMaxLength(150)
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
@@ -93,7 +106,7 @@ namespace Blog.Blazor.Migrations
 
                     b.Property<string>("Conteudo")
                         .IsRequired()
-                        .HasMaxLength(500)
+                        .HasMaxLength(1500)
                         .HasColumnType("TEXT");
 
                     b.Property<string>("DescricaoSEO")

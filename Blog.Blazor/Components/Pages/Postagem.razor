@@ -1,5 +1,4 @@
-﻿@page "/post/";
-@page "/post/{Id}";
+﻿@page "/post/{Id}";
 
 @using Blog.Blazor.Interfaces
 @using Blog.Blazor.Models
@@ -13,7 +12,15 @@
     <div class="content">
     <img src="@post.CaminhoImagem" />
     <h1 class="title">@post.Titulo</h1>
-        <p>@post.Conteudo</p>
+        <p>@post.Categoria.Nome</p>
+        <p>Por: @post.Autor.Nome</p>
+        <p>Publicado @(post.Cadastro.Date == DateTime.Now.Date ? "Hoje ás " + post.Cadastro.ToString("HH:MM") :
+           post.Cadastro.Date == DateTime.Now.Date.AddDays(-1) ? "Ontem ás " + post.Cadastro.ToString("HH:MM") :
+           "em " + post.Cadastro.ToShortDateString() + " ás " + post.Cadastro.ToString("HH:MM"))</p>
+        <p>@((MarkupString)post.Conteudo)</p>
+        <PlaceHolder Visible="post.UltimaAtualizacao > post.Cadastro">
+            Atualizado em: @post.UltimaAtualizacao.ToShortDateString();
+        </PlaceHolder>
     </div>
     <NavLink class="button is-black is-medium" href="/">
         <FeatherArrowLeft Size="25" Color="#FFF" StrokeWidth="1.8f" />
@@ -25,7 +32,6 @@
     [Parameter] public string? Id { get; set; }
 
     private Post post = new();
-    private IQueryable<Post>? posts;
 
     protected override async Task OnInitializedAsync()
     {
@@ -37,7 +43,7 @@
                 // busca post e alimenta autor e categoria
                 post = await PostService.BuscarPor(idPost);
                 post.Categoria = await CategoriaService.BuscarPor(post.IdCategoria);
-                post.Autor = await AutorService.BuscarPor(post.IdCategoria);
+                post.Autor = await AutorService.BuscarPor(post.IdAutor);
             }
             else
             {

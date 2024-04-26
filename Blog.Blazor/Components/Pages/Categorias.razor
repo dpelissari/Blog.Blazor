@@ -5,21 +5,39 @@
 @using Blog.Blazor.Services
 
 @inject ICategoriaService CategoriaService;
+@inject IPostService PostService;
 
-@foreach (var item in categorias)
-{
-    <div>
-        <h1>Categoria</h1>
-        <p>Categoria nome: @item.Nome | <a href="/int/categoria/editar/@item.Id">Edit</a></p>
-        <p>@item.Cadastro</p>
-    </div>
-}
+<div class="container p-4"> 
+    <Repeater DataSource="categorias.Where(x => x.Posts.Count() > 0)" Context="item">
+        <ItemTemplate>
+            <NavLink href="@($"categoria/{item.Id}")">
+                <div class="box mt-4">
+                    <h3 class="title">@item.Nome (@(item.Posts.Count > 0 ? item.Posts.Count() : ""))</h3>
+                    <p class="subtitle">@item.Descricao</p>
+                </div>
+            </NavLink>
+        </ItemTemplate>
+    </Repeater>
+    <PlaceHolder Visible="!categorias.Any()">
+        <article class="message is-warning">
+            <div class="message-body">
+                No momento, não há categorias disponíveis para exibição.
+            </div>
+        </article>
+    </PlaceHolder>
+</div>
 
-@code {
+@code{
     private IQueryable<Categoria> categorias;
 
     protected override async Task OnInitializedAsync()
     {
         categorias = await CategoriaService.BuscarTodas();
+
+        // alimenta posts
+        foreach (var categoria in categorias)
+        {
+            categoria.Posts = (await PostService.BuscarPorIdCategoria(categoria.Id)).ToList();
+        }
     }
 }

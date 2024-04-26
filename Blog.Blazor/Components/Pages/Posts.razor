@@ -2,64 +2,31 @@
 @using Blog.Blazor.Interfaces
 @using Blog.Blazor.Models
 
+@rendermode InteractiveServer
 @inject IPostService PostService;
 @inject IAutorService AutorService;
 @inject ICategoriaService CategoriaService;
 
 <div class="container p-4">
-
-    @if (posts != null && posts.Any())
-    {
-        <div class="fixed-grid has-4-cols-desktop has-2-cols-tablet has-1-cols-mobile">
+    <PlaceHolder Visible="posts != null && posts.Any()">
+        <div class="fixed-grid has-4-cols-desktop has-3-cols-tablet has-1-cols-mobile">
             <div class="grid">
-                <Repeater DataSource="posts" Context="item">
+                <Repeater DataSource="posts.OrderByDescending(x => x.Cadastro).Where(x => x.Ativo == true)" Context="item">
                     <ItemTemplate>
-                        <NavLink href="@($"post/{item.Id}")">
-                            <div class="cell">
-                                <div class="card">
-                                    <div class="card-image">
-                                        <figure class="image">
-                                            <img src="@item.CaminhoImagem" alt="@item.Titulo" />
-                                        </figure>
-                                    </div>
-                                    <div class="card-content">
-                                        <div class="media">
-                                            <div class="media-content">
-                                                <p class="title is-4">@item.Titulo</p>
-                                            </div>
-                                        </div>
-                                        <div class="content">
-                                            @(item.Conteudo.Length > 100 ? item.Conteudo.Substring(0, 100) + "..." : item.Conteudo)
-                                        </div>
-                                        <div class="grid">
-                                            <div class="cell">
-                                                <figure class="image is-48x48">
-                                                    <img src="@item.Autor.CaminhoImagem" alt="@item.Titulo" class="is-rounded" />
-                                                </figure>
-                                            </div>
-                                            <div class="cell">
-                                                <p class="subtitle is-6">@item.Autor.Nome</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </NavLink>
+                        <CardPost Post="item"></CardPost>
                     </ItemTemplate>
                 </Repeater>
             </div>
         </div>
-    }
-    else
-    {
+    </PlaceHolder>
+    <PlaceHolder Visible="!posts.Any()">
         <article class="message is-warning">
             <div class="message-body">
                 No momento, não há publicações disponíveis para exibição.
             </div>
         </article>
-    }
+    </PlaceHolder>
 </div>
-
 
 @code {
 
