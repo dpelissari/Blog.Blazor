@@ -8,14 +8,16 @@
     <link rel="stylesheet" href="app.css" />
     <link rel="stylesheet" href="Blog.Blazor.styles.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.0/css/bulma.min.css">
+    <link rel="stylesheet" href="_content/Radzen.Blazor/css/default-base.css">
     <HeadOutlet />
 </head>
 
 
 <body>
-    <Routes />
+    <Routes @rendermode="InteractiveServer" />
 
     <script src="_framework/blazor.web.js"></script>
     <script src="script.js"></script>
+    <script src="_content/Radzen.Blazor/Radzen.Blazor.js?v=@(typeof(Radzen.Colors).Assembly.GetName().Version)"></script>
 </body>
 </html>

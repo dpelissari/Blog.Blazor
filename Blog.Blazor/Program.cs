@@ -2,19 +2,20 @@ using Blog.Blazor.Components;
 using Blog.Blazor.Data;
 using Blog.Blazor.Interfaces;
 using Blog.Blazor.Services;
+using Radzen;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // conection string
 var connectionString = builder.Configuration.GetConnectionString("Blog") ?? "Data Source=Blog.db";
 
+builder.Services.AddRadzenComponents();
+
 // Add services to the container.
-builder.Services.AddRazorComponents()
-    .AddInteractiveServerComponents();
+builder.Services.AddRazorComponents().AddInteractiveServerComponents();
 
 // sqlite
 builder.Services.AddSqlite<AplicacaoDbContexto>(connectionString);
-
 
 // configurando a injeção de dependencia dos nossos serviços
 builder.Services.AddScoped<IPostService, PostService>();
