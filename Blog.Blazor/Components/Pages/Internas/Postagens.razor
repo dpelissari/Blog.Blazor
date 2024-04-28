@@ -1,7 +1,5 @@
 ﻿@page "/int/posts/";
 
-
-
 @using Blog.Blazor.Interfaces
 @using Blog.Blazor.Models
 
@@ -12,10 +10,7 @@
 @inject IAutorService AutorService;
 
 <div class="container p-4">
-
-
-    @if (posts != null && posts.Any())
-    {
+    <PlaceHolder Visible="posts != null && posts.Any()">
         <table class="table is-bordered">
             <thead>
                 <tr>
@@ -23,7 +18,7 @@
                     <th>Categoria</th>
                     <th>Autor</th>
                     <th>Cadastro</th>
-                    <th colspan="2">#</th>
+                    <th colspan="2">Ações</th>
                 </tr>
             </thead>
             <tbody>
@@ -38,17 +33,15 @@
                                 <NavLink href="@($"int/post/editar/{post.Id}")"><FeatherEdit Size="20" Color="#000" StrokeWidth="1.8f" /></NavLink>
                             </td>
                             <td>
-
-                                <a @onclick="async () => await RemoverPost(post.Id)" class="btn btn-vermelho"><FeatherTrash Size="20" Color="#000" StrokeWidth="1.8f" /></a>
+                                <a @onclick="async () => await RemoverPost(post.Id)"><FeatherTrash Size="20" Color="#000" StrokeWidth="1.8f" /></a>
                             </td>
                         </tr>
-
                     </ItemTemplate>
                 </Repeater>
             </tbody>
         </table>
-    } else
-    {
+    </PlaceHolder>
+    <PlaceHolder Visible="!posts.Any()">
         <article class="message is-warning">
             <div class="message-body">
                 No momento, não há publicações disponíveis para exibição.
@@ -59,8 +52,7 @@
                 </div>
             </div>
         </article>
-    }
-
+    </PlaceHolder>
 </div>
 
 @code {
@@ -86,8 +78,6 @@
     async Task RemoverPost(Guid id)
     {
 
-        Console.WriteLine("chamou");
-
         // exibe um alerta de confirmacao
         bool confirm = await JSRuntime.InvokeAsync<bool>("confirm", "Tem certeza que deseja excluir esse post?");
 
@@ -105,7 +95,4 @@
 
         StateHasChanged();
     }
-
 }
-
-

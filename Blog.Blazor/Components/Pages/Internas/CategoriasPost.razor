@@ -29,7 +29,7 @@
                                 <NavLink href="@($"int/categoria/editar/{item.Id}")"><FeatherEdit Size="20" Color="#000" StrokeWidth="1.8f" /></NavLink>
                             </td>
                             <td>
-                                <a @onclick="async () => await RemoverCategoria(item.Id)" class="btn btn-vermelho"><FeatherTrash Size="20" Color="#000" StrokeWidth="1.8f" /></a>
+                                <a @onclick="async () => await RemoverCategoria(item.Id)"><FeatherTrash Size="20" Color="#000" StrokeWidth="1.8f" /></a>
                             </td>
                         </tr>
                     </ItemTemplate>
