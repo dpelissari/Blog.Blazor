@@ -15,6 +15,7 @@
             <thead>
                 <tr>
                     <th>Id</th>
+                    <th>Titulo</th>
                     <th>Categoria</th>
                     <th>Autor</th>
                     <th>Cadastro</th>
@@ -26,6 +27,7 @@
                     <ItemTemplate>
                         <tr>
                             <td>@post.Id</td>
+                            <td>@post.Titulo</td>
                             <td>@post.Categoria.Nome</td>
                             <td>@post.Autor.Nome</td>
                             <td>@post.Cadastro.ToShortDateString()</td>
