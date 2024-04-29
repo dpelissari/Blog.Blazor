@@ -21,6 +21,7 @@ builder.Services.AddSqlite<AplicacaoDbContexto>(connectionString);
 builder.Services.AddScoped<IPostService, PostService>();
 builder.Services.AddScoped<IAutorService, AutorService>();
 builder.Services.AddScoped<ICategoriaService, CategoriaService>();
+builder.Services.AddControllers();
 
 var app = builder.Build();
 
@@ -38,7 +39,7 @@ app.UseStaticFiles();
 app.UseAntiforgery();
 app.UseStatusCodePagesWithRedirects("/404");
 
-app.MapRazorComponents<App>()
-    .AddInteractiveServerRenderMode();
+app.MapRazorComponents<App>().AddInteractiveServerRenderMode();
+app.MapControllers();
 
 app.Run();

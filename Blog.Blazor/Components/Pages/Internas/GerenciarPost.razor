@@ -4,7 +4,7 @@
 ﻿@using Blog.Blazor.Interfaces
 @using Blog.Blazor.Models
 @using Blog.Blazor.Services
-@using Radzen.Blazor
+
 
 @rendermode InteractiveServer
 @inject NavigationManager NavigationManager
@@ -56,7 +56,32 @@
         </div>
         <div class="field">
             <label class="label">Conteudo</label>
-            <RadzenHtmlEditor @bind-Value="post.Conteudo" UploadUrl="upload/image" style="height:300px;" />
+            <RadzenHtmlEditor @bind-Value="post.Conteudo" UploadUrl="upload/image" style="height:600px;" >
+                <RadzenHtmlEditorBold />
+                <RadzenHtmlEditorItalic />
+                <RadzenHtmlEditorUnderline />
+                <RadzenHtmlEditorStrikeThrough />
+                <RadzenHtmlEditorIndent />
+                <RadzenHtmlEditorAlignLeft />
+                <RadzenHtmlEditorAlignCenter />
+                <RadzenHtmlEditorAlignRight />
+                <RadzenHtmlEditorJustify />
+                <RadzenHtmlEditorFontSize />
+                <RadzenHtmlEditorColor />
+                <RadzenHtmlEditorLink />
+                <RadzenHtmlEditorOrderedList />
+                <RadzenHtmlEditorUnorderedList />
+                <RadzenHtmlEditorRemoveFormat />
+                <RadzenHtmlEditorImage
+                    SelectText="Selecionar" 
+                    CancelText="Cancelar" 
+                    HeightText="Altura"
+                    WidthText="Tamanho"
+                    OkText="OK"
+                    UrlText="Inserir link da web" AltText="Texto imagem" Title="Inserir imagem" UploadChooseText="Procurar"
+                />
+            </RadzenHtmlEditor>
+            <RadzenDialog />
             <ValidationMessage For="@(() => post.Conteudo)" />
         </div>
         <div class="field">
