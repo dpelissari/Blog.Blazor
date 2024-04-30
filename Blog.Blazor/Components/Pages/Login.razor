@@ -1,0 +1,73 @@
+﻿@page "/login/"
+
+@using Blog.Blazor.Interfaces
+@using Blog.Blazor.Models
+@using Blog.Blazor.Services
+@using System.Text.Json
+
+@rendermode InteractiveServer
+@inject IUsuarioService UsuarioService
+@inject NavigationManager NavigationManager
+@inject IJSRuntime JSRuntime
+
+<div class="container">
+    <div class="fixed-grid has-3-cols"
+    <div class="grid">
+          <div class="box">
+        <h1 class="title">Acessar painel</h1>
+        <h2 class="subtitle">Para acessar o painel de administração informe suas credenciais.</h2>
+        <EditForm OnValidSubmit="Autenticar" Model="usuario" FormName="login">
+            <DataAnnotationsValidator />
+            <div class="field">
+                <InputText @bind-Value="usuario.Email" class="input mb-2" />
+                <ValidationMessage For="@(() => usuario.Email)" />
+            </div>
+            <div class="field">
+                <InputText @bind-Value="usuario.Senha" type="password" class="input mb-2" />
+                <ValidationMessage For="@(() => usuario.Senha)" />
+            </div>
+            <button type="submit" class="button is-primary">Login</button>
+        </EditForm>
+    </div>
+    </div>
+            <PlaceHolder Visible="!string.IsNullOrEmpty(mensagemErro)">
+            <section class="hero is-medium is-warning">
+                <div class="hero-body">
+                    <FeatherAlertTriangle Color="#000" Size="100" />
+                    <h1 class="title">@mensagemErro</h1>
+                </div>
+            </section>
+        </PlaceHolder>
+    </div>
+</div>
+
+@code {
+    [SupplyParameterFromForm]
+    private UsuarioLogin usuario { get; set; } = new();
+
+    private string mensagemErro;
+
+    private async Task Autenticar()
+    {
+        try
+        {
+            string senhaHash = await UsuarioService.HashSenhaAsync(usuario.Senha);
+
+            var usuarioAutenticado = await UsuarioService.AutenticarUsuario(usuario.Email, senhaHash);
+
+            if (usuarioAutenticado != null)
+            {
+                await JSRuntime.InvokeVoidAsync("localStorage.setItem", "currentUser", JsonSerializer.Serialize(usuarioAutenticado));
+                NavigationManager.NavigateTo("/int/posts/");
+            }
+            else
+            {
+                mensagemErro = "Credenciais inválidas. Por favor, tente novamente.";
+            }
+        }
+        catch (Exception ex)
+        {
+            mensagemErro = "Ocorreu um erro ao autenticar o usuário. Detalhes: " + ex;
+        }
+    }
+}

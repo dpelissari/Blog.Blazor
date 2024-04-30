@@ -21,7 +21,7 @@ namespace Blog.Blazor.Services
         public async Task Adicionar(Usuario usuario, string senha)
         {
             // Criptografar a senha antes de armazená-la no banco de dados
-            usuario.SenhaHash = HashSenha(senha);
+            usuario.SenhaHash = await HashSenhaAsync(senha);
 
             await dbContexto.AddAsync(usuario);
             await dbContexto.SaveChangesAsync();
@@ -51,12 +51,12 @@ namespace Blog.Blazor.Services
             return usuario.AsQueryable();
         }
 
-        // Método para criptografar a senha usando SHA256
-        private string HashSenha(string senha)
+
+        public async Task<string> HashSenhaAsync(string senha)
         {
             using (var sha256 = SHA256.Create())
             {
-                var hashedBytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(senha));
+                var hashedBytes = await Task.Run(() => sha256.ComputeHash(Encoding.UTF8.GetBytes(senha)));
                 var hashString = new StringBuilder();
                 foreach (byte b in hashedBytes)
                 {
@@ -65,5 +65,29 @@ namespace Blog.Blazor.Services
                 return hashString.ToString();
             }
         }
+
+
+        public async Task<Usuario> AutenticarUsuario(string email, string senha)
+        {
+            // Busca o usuário pelo e-mail
+            var usuario = await dbContexto.Usuario.FirstOrDefaultAsync(u => u.Email == email);
+
+            // Verifica se o usuário foi encontrado
+            if (usuario != null)
+            {
+
+                // Compara o hash da senha fornecida com o hash armazenado no banco de dados
+                if (usuario.SenhaHash.Equals(senha))
+                {
+                    return usuario; // Retorna o usuário autenticado se os hashes coincidirem
+                }
+            }
+
+            return null; // Retorna null se a autenticação falhar
+        }
+
+
+
+
     }
 }

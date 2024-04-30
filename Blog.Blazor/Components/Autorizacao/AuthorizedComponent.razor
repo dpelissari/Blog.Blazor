@@ -1,0 +1,41 @@
+﻿@using Blog.Blazor.Enums
+@using Blog.Blazor.Models
+@using System.Text.Json
+
+@inject NavigationManager NavigationManager
+@inject IJSRuntime JSRuntime
+
+<div>
+    @ChildContent
+</div>
+
+@code {
+
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
+    private Usuario? usuarioSessao;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            // recupera usuario da sessao
+            usuarioSessao = await ObterUsuarioLogado();
+
+            // se nao estiver autenticado direciona para o login
+            if (usuarioSessao == null)
+                NavigationManager.NavigateTo("/login");
+        }
+    }
+
+    private async Task<Usuario> ObterUsuarioLogado()
+    {
+        var usuarioSessao = await JSRuntime.InvokeAsync<string>("localStorage.getItem", "currentUser");
+
+        if (!string.IsNullOrEmpty(usuarioSessao))
+            return JsonSerializer.Deserialize<Usuario>(usuarioSessao);
+        else
+            return null;
+    }
+}

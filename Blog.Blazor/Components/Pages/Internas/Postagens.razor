@@ -1,5 +1,6 @@
 ﻿@page "/int/posts/";
 
+@using Blog.Blazor.Components.Autorizacao
 @using Blog.Blazor.Interfaces
 @using Blog.Blazor.Models
 
@@ -9,53 +10,56 @@
 @inject ICategoriaService CategoriaService;
 @inject IAutorService AutorService;
 
-<div class="container p-4">
-    <PlaceHolder Visible="posts != null && posts.Any()">
-        <table class="table is-bordered">
-            <thead>
-                <tr>
-                    <th>Id</th>
-                    <th>Titulo</th>
-                    <th>Categoria</th>
-                    <th>Autor</th>
-                    <th>Cadastro</th>
-                    <th colspan="2">Ações</th>
-                </tr>
-            </thead>
-            <tbody>
-                <Repeater DataSource="posts" Context="post">
-                    <ItemTemplate>
-                        <tr>
-                            <td>@post.Id</td>
-                            <td>@post.Titulo</td>
-                            <td>@post.Categoria.Nome</td>
-                            <td>@post.Autor.Nome</td>
-                            <td>@post.Cadastro.ToShortDateString()</td>
-                            <td>
-                                <NavLink href="@($"int/post/editar/{post.Id}")"><FeatherEdit Size="20" Color="#000" StrokeWidth="1.8f" /></NavLink>
-                            </td>
-                            <td>
-                                <a @onclick="async () => await RemoverPost(post.Id)"><FeatherTrash Size="20" Color="#000" StrokeWidth="1.8f" /></a>
-                            </td>
-                        </tr>
-                    </ItemTemplate>
-                </Repeater>
-            </tbody>
-        </table>
-    </PlaceHolder>
-    <PlaceHolder Visible="!posts.Any()">
-        <article class="message is-warning">
-            <div class="message-body">
-                No momento, não há publicações disponíveis para exibição.
-                <div class="block mt-3 mb-3">
-                    <NavLink href="/int/post/novo" class="button is-info">
-                        <FeatherPlusCircle Size="20" Color="#000" StrokeWidth="1.8f" />&nbsp;Nova publicação
-                    </NavLink>
+<AuthorizedComponent>
+    <div class="container p-4">
+        <PlaceHolder Visible="posts != null && posts.Any()">
+            <table class="table is-bordered">
+                <thead>
+                    <tr>
+                        <th>Id</th>
+                        <th>Titulo</th>
+                        <th>Categoria</th>
+                        <th>Autor</th>
+                        <th>Cadastro</th>
+                        <th colspan="2">Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <Repeater DataSource="posts" Context="post">
+                        <ItemTemplate>
+                            <tr>
+                                <td>@post.Id</td>
+                                <td>@post.Titulo</td>
+                                <td>@post.Categoria.Nome</td>
+                                <td>@post.Autor.Nome</td>
+                                <td>@post.Cadastro.ToShortDateString()</td>
+                                <td>
+                                    <NavLink href="@($"int/post/editar/{post.Id}")"><FeatherEdit Size="20" Color="#000" StrokeWidth="1.8f" /></NavLink>
+                                </td>
+                                <td>
+                                    <a @onclick="async () => await RemoverPost(post.Id)"><FeatherTrash Size="20" Color="#000" StrokeWidth="1.8f" /></a>
+                                </td>
+                            </tr>
+                        </ItemTemplate>
+                    </Repeater>
+                </tbody>
+            </table>
+        </PlaceHolder>
+        <PlaceHolder Visible="!posts.Any()">
+            <article class="message is-warning">
+                <div class="message-body">
+                    No momento, não há publicações disponíveis para exibição.
+                    <div class="block mt-3 mb-3">
+                        <NavLink href="/int/post/novo" class="button is-info">
+                            <FeatherPlusCircle Size="20" Color="#000" StrokeWidth="1.8f" />&nbsp;Nova publicação
+                        </NavLink>
+                    </div>
                 </div>
-            </div>
-        </article>
-    </PlaceHolder>
-</div>
+            </article>
+        </PlaceHolder>
+    </div>
+</AuthorizedComponent>
+
 
 @code {
 

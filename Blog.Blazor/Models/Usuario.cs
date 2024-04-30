@@ -7,9 +7,7 @@ namespace Blog.Blazor.Models
     {
         [Key]
         public Guid Id { get; set; } = Guid.NewGuid();
-
         public string Email { get; set; }
-
         public TipoUsuario Tipo { get; set; }
         public string SenhaHash { get; set; }
     }
