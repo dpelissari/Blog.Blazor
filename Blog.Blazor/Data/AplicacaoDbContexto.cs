@@ -10,6 +10,7 @@ namespace Blog.Blazor.Data
         public DbSet<Post>? Post { get; set; }
         public DbSet<Autor>? Autor { get; set; }
         public DbSet<Categoria>? Categoria { get; set; }
+        public DbSet<Usuario>? Usuario { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

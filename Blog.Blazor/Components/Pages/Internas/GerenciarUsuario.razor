@@ -1,0 +1,117 @@
+﻿@page "/int/usuarios/novo"
+@page "/int/usuarios/editar/{id?}"
+
+@using Blog.Blazor.Enums
+@using Blog.Blazor.Interfaces
+@using Blog.Blazor.Models
+@using System.Security.Cryptography
+@using System.Text
+@inject NavigationManager NavigationManager
+@inject IUsuarioService UsuarioService
+
+<div class="container p-4">
+
+    <h1 class="title">@(modoEdicao ? "Editar" : "Adicionar") Usuário</h1>
+
+    <EditForm Model="@usuario" OnValidSubmit="modoEdicao ? AtualizarUsuario : CriarUsuario" FormName="usuario" EnhancedSubmit="true">
+
+        <DataAnnotationsValidator />
+
+        <!-- Email -->
+        <div class="field">
+            <label class="label">Email</label>
+            <InputText @bind-Value="usuario.Email" class="input" />
+            <ValidationMessage For="@(() => usuario.Email)" />
+        </div>
+
+        <!-- Senha (opcional) -->
+        <div class="field">
+            <label class="label">Senha</label>
+            <InputText @bind-Value="senha" class="input" />
+            <ValidationMessage For="@(() => senha)" />
+        </div>
+
+        <!-- Tipo de Usuário (opcional) -->
+        <div class="field">
+            <label class="label">Tipo de Usuário</label>
+            <div class="select">
+                <InputSelect @bind-Value="usuario.Tipo">
+                    <option value="@TipoUsuario.Editor">Normal</option>
+                    <option value="@TipoUsuario.Administrador">Admin</option>
+                </InputSelect>
+            </div>
+            <ValidationMessage For="@(() => usuario.Tipo)" />
+        </div>
+
+
+        <!-- Botões -->
+        <div class="field">
+            <NavLink href="/int/usuarios" class="button is-danger">Cancelar</NavLink>
+            <button type="submit" class="button is-success">Salvar</button>
+        </div>
+
+    </EditForm>
+
+</div>
+
+@code {
+
+    [SupplyParameterFromForm]
+    private Usuario usuario { get; set; } = new Usuario();
+
+    private string senha { get; set;  } = string.Empty; // Para armazenar temporariamente a senha
+
+    bool modoEdicao = false;
+
+    [Parameter]
+    public string? id { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (!string.IsNullOrEmpty(id))
+        {
+            if (Guid.TryParse(id, out Guid idUsuario))
+            {
+                usuario = await UsuarioService.BuscarPor(idUsuario);
+                modoEdicao = true;
+            }
+            else
+            {
+                // ID inválido, redireciona
+                NavigationManager.NavigateTo("/int/usuarios");
+            }
+        }
+    }
+
+    async Task CriarUsuario()
+    {
+        // Criptografa a senha antes de salvar
+        if (!string.IsNullOrEmpty(senha))
+        {
+            usuario.SenhaHash = HashSenha(senha);
+        }
+        await UsuarioService.Adicionar(usuario, senha);
+        NavigationManager.NavigateTo("/int/usuarios");
+    }
+
+    async Task AtualizarUsuario()
+    {
+        await UsuarioService.Atualizar(usuario);
+        NavigationManager.NavigateTo("/int/usuarios");
+    }
+
+    // Método para criptografar a senha usando SHA256
+    private string HashSenha(string senha)
+    {
+        using (var sha256 = SHA256.Create())
+        {
+            var hashedBytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(senha));
+            var hashString = new StringBuilder();
+            foreach (byte b in hashedBytes)
+            {
+                hashString.Append(b.ToString("x2"));
+            }
+            return hashString.ToString();
+        }
+    }
+}
