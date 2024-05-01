@@ -1,8 +1,10 @@
-﻿@using Blog.Blazor.Interfaces
+﻿
+@using Blog.Blazor.Interfaces
 @using Blog.Blazor.Models
 @using Blog.Blazor.Services
 @rendermode InteractiveServer
 @inject ICategoriaService CategoriaService
+@inject UsuarioAutenticadoService UsuarioAutenticadoService
 
 <nav class="navbar is-transparent">
     <div class="navbar-brand">
@@ -32,9 +34,17 @@
                 <div class="field is-grouped">
                     <p class="control">
                         
+                        <PlaceHolder Visible="UsuarioAutenticadoService.IsUserLoggedIn">
+                            <NavLink class="button is-link" href="/logout/" title="Login">
+                                <FeatherLogOut Color="#FFF" Size="25"></FeatherLogOut>
+                            </NavLink>
+                        </PlaceHolder>
+                        <PlaceHolder Visible="!UsuarioAutenticadoService.IsUserLoggedIn">
                             <NavLink class="button is-link" href="/login/" title="Login">
                                 <FeatherLogIn Color="#FFF" Size="25"></FeatherLogIn>
                             </NavLink>
+                        </PlaceHolder>
+                    
                      
                       
                     </p>
