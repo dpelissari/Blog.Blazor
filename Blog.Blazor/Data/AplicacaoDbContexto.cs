@@ -26,6 +26,10 @@ namespace Blog.Blazor.Data
             .HasForeignKey(s => s.IdAutor)
             .OnDelete(DeleteBehavior.Cascade);
 
+            modelBuilder.Entity<Usuario>().HasData(
+                new Usuario { Id = Guid.NewGuid(), Email = "dpelissari1", Tipo = Enums.TipoUsuario.Administrador, SenhaHash = "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855" }
+            );
+
             // configura a relação onde uma categoria pode pertencer a varios posts, mas um post só pode ter uma categoria
             modelBuilder.Entity<Categoria>()
             .HasMany(c => c.Posts)
