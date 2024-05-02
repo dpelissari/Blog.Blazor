@@ -162,6 +162,15 @@ namespace Blog.Blazor.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Usuario");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("c6b45372-4165-4012-b440-76cc693df96b"),
+                            Email = "root",
+                            SenhaHash = "0ee484c7d01b93fe9ff6dec76671dda6e08d5d8c8a052f83db29fa898b8bacb1",
+                            Tipo = 20
+                        });
                 });
 
             modelBuilder.Entity("Blog.Blazor.Models.Post", b =>

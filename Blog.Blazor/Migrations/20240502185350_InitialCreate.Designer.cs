@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Blog.Blazor.Migrations
 {
     [DbContext(typeof(AplicacaoDbContexto))]
-    [Migration("20240426135458_opcoesCategoria")]
-    partial class opcoesCategoria
+    [Migration("20240502185350_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -109,7 +109,7 @@ namespace Blog.Blazor.Migrations
 
                     b.Property<string>("Conteudo")
                         .IsRequired()
-                        .HasMaxLength(1500)
+                        .HasMaxLength(5000)
                         .HasColumnType("TEXT");
 
                     b.Property<string>("DescricaoSEO")
@@ -143,6 +143,37 @@ namespace Blog.Blazor.Migrations
                     b.HasIndex("IdCategoria");
 
                     b.ToTable("Post");
+                });
+
+            modelBuilder.Entity("Blog.Blazor.Models.Usuario", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("SenhaHash")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("Tipo")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Usuario");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("c6b45372-4165-4012-b440-76cc693df96b"),
+                            Email = "root",
+                            SenhaHash = "0ee484c7d01b93fe9ff6dec76671dda6e08d5d8c8a052f83db29fa898b8bacb1",
+                            Tipo = 20
+                        });
                 });
 
             modelBuilder.Entity("Blog.Blazor.Models.Post", b =>

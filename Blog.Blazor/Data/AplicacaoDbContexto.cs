@@ -27,7 +27,7 @@ namespace Blog.Blazor.Data
             .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<Usuario>().HasData(
-                new Usuario { Id = Guid.NewGuid(), Email = "dpelissari1", Tipo = Enums.TipoUsuario.Administrador, SenhaHash = "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855" }
+                new Usuario { Id = Guid.NewGuid(), Email = "root", Tipo = Enums.TipoUsuario.Administrador, SenhaHash = "0ee484c7d01b93fe9ff6dec76671dda6e08d5d8c8a052f83db29fa898b8bacb1" }
             );
 
             // configura a relação onde uma categoria pode pertencer a varios posts, mas um post só pode ter uma categoria
