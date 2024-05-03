@@ -2,6 +2,7 @@
 
 @using Blog.Blazor.Interfaces
 @using Blog.Blazor.Models
+@using Microsoft.AspNetCore.Authorization
 
 @rendermode InteractiveServer
 @inject IJSRuntime JSRuntime;
@@ -9,7 +10,8 @@
 @inject ICategoriaService CategoriaService;
 @inject IAutorService AutorService;
 
-<AuthorizedComponent>
+@attribute [Authorize(Roles = "Administrador")]
+
     <div class="container p-4">
         <PlaceHolder Visible="posts != null && posts.Any()">
             <table class="table is-bordered">
@@ -57,7 +59,7 @@
             </article>
         </PlaceHolder>
     </div>
-</AuthorizedComponent>
+
 
 
 @code {

@@ -2,11 +2,13 @@
 
 @using Blog.Blazor.Interfaces
 @using Blog.Blazor.Models
+@using Microsoft.AspNetCore.Authorization
 
 @rendermode InteractiveServer
 @inject IJSRuntime JSRuntime;
 @inject ICategoriaService CategoriaService;
 
+@attribute [Authorize(Roles = "Administrador")]
 <div class="container p-4">
     <PlaceHolder Visible="categorias != null && categorias.Any()">
         <table class="table is-bordered">

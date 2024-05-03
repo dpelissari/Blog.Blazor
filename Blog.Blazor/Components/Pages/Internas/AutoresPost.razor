@@ -2,11 +2,13 @@
 
 @using Blog.Blazor.Interfaces
 @using Blog.Blazor.Models
+@using Microsoft.AspNetCore.Authorization
 
 @rendermode InteractiveServer
 @inject IJSRuntime JSRuntime;
 @inject IAutorService AutorService;
 
+@attribute [Authorize(Roles = "Administrador")]
 <div class="container p-4">
     <PlaceHolder Visible="autores != null && autores.Any()">
         <table class="table is-bordered">

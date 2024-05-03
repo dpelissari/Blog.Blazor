@@ -4,7 +4,7 @@
 ﻿@using Blog.Blazor.Interfaces
 @using Blog.Blazor.Models
 @using Blog.Blazor.Services
-
+@using Microsoft.AspNetCore.Authorization
 
 @rendermode InteractiveServer
 @inject NavigationManager NavigationManager
@@ -12,6 +12,7 @@
 @inject ICategoriaService CategoriaService
 @inject IPostService PostService
 
+@attribute [Authorize(Roles = "Administrador")]
 <div class="container p-4">
 
     <h1 class="title">@(modoEdicao ? "Editar" : "Incluir") post</h1>

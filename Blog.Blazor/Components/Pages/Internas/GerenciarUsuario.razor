@@ -6,9 +6,12 @@
 @using Blog.Blazor.Models
 @using System.Security.Cryptography
 @using System.Text
+@using Microsoft.AspNetCore.Authorization
 @inject NavigationManager NavigationManager
 @inject IUsuarioService UsuarioService
 
+
+@attribute [Authorize(Roles = "Administrador")]
 <div class="container p-4">
 
     <h1 class="title">@(modoEdicao ? "Editar" : "Adicionar") Usuário</h1>

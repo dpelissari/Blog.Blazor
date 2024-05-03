@@ -1,21 +1,34 @@
-﻿using Blog.Blazor.Models;
+﻿using Microsoft.JSInterop;
+using System.Threading.Tasks;
 
 namespace Blog.Blazor.Services
 {
     public class UsuarioAutenticadoService
     {
-        private Usuario _currentUser;
+        private readonly IJSRuntime _jsRuntime;
 
-        public Usuario CurrentUser => _currentUser;
-
-        public bool IsUserLoggedIn => _currentUser != null;
-
-        public event Action OnUserChanged;
-
-        public void SetCurrentUser(Usuario user)
+        public UsuarioAutenticadoService(IJSRuntime jsRuntime)
         {
-            _currentUser = user;
-            OnUserChanged?.Invoke();
+            _jsRuntime = jsRuntime;
+        }
+
+        public async Task<bool> IsUserLoggedIn()
+        {
+            try
+            {
+                var currentUserJson = await _jsRuntime.InvokeAsync<string>("localStorage.getItem", "currentUser");
+
+                if (!string.IsNullOrEmpty(currentUserJson))
+                    return true;
+                else
+                    return false;
+            }
+            catch (Exception ex)
+            {
+                // Se ocorrer um erro ao acessar o armazenamento local, registre o erro para depuração
+                Console.WriteLine($"Erro ao acessar o armazenamento local: {ex.Message}");
+                return false;
+            }
         }
     }
 }

@@ -2,17 +2,33 @@ using Blog.Blazor.Components;
 using Blog.Blazor.Data;
 using Blog.Blazor.Interfaces;
 using Blog.Blazor.Services;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.EntityFrameworkCore;
 using Radzen;
 
 var builder = WebApplication.CreateBuilder(args);
+
+
+// Add services to the container.
+builder.Services.AddRazorComponents().AddInteractiveServerComponents();
 
 // conection string
 var connectionString = builder.Configuration.GetConnectionString("Blog") ?? "Data Source=Blog.db";
 
 builder.Services.AddRadzenComponents();
 
-// Add services to the container.
-builder.Services.AddRazorComponents().AddInteractiveServerComponents();
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(options =>
+    {
+        options.Cookie.Name = "auth_token";
+        options.LoginPath = "/login/";
+        options.Cookie.MaxAge = TimeSpan.FromMinutes(30);
+        options.AccessDeniedPath = "/acesso-negado/";
+    });
+
+builder.Services.AddAuthentication();
+builder.Services.AddCascadingAuthenticationState();
 
 // sqlite
 builder.Services.AddSqlite<AplicacaoDbContexto>(connectionString);
@@ -22,7 +38,7 @@ builder.Services.AddScoped<IPostService, PostService>();
 builder.Services.AddScoped<IAutorService, AutorService>();
 builder.Services.AddScoped<ICategoriaService, CategoriaService>();
 builder.Services.AddScoped<IUsuarioService, UsuarioService>();
-builder.Services.AddSingleton<UsuarioAutenticadoService>();
+builder.Services.AddScoped<UsuarioAutenticadoService>();
 builder.Services.AddControllers();
 
 var app = builder.Build();
@@ -38,7 +54,12 @@ if (!app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseStaticFiles();
+
 app.UseAntiforgery();
+app.UseAuthentication();
+app.UseAuthorization();
+
+
 app.UseStatusCodePagesWithRedirects("/404");
 
 app.MapRazorComponents<App>().AddInteractiveServerRenderMode();

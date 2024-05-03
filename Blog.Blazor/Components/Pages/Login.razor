@@ -1,11 +1,15 @@
 ﻿@page "/login/"
 
+@using Blog.Blazor.Data
 @using Blog.Blazor.Interfaces
 @using Blog.Blazor.Models
 @using Blog.Blazor.Services
 @using System.Text.Json
+@using System.Security.Claims
+@using Microsoft.AspNetCore.Authentication.Cookies
+@using Microsoft.AspNetCore.Authentication
 
-@rendermode InteractiveServer
+@inject AplicacaoDbContexto appDbContext
 @inject IUsuarioService UsuarioService
 @inject NavigationManager NavigationManager
 @inject IJSRuntime JSRuntime
@@ -42,32 +46,39 @@
 </div>
 
 @code {
+
+    [CascadingParameter]
+    public HttpContext? HttpContext { get; set; }
+
     [SupplyParameterFromForm]
     private UsuarioLogin usuario { get; set; } = new();
 
-    private string mensagemErro;
+    private string? mensagemErro;
 
     private async Task Autenticar()
     {
-        try
-        {
-            string senhaHash = await UsuarioService.HashSenhaAsync(usuario.Senha);
 
-            var usuarioAutenticado = await UsuarioService.AutenticarUsuario(usuario.Email, senhaHash);
+        string senhaHash = await UsuarioService.HashSenhaAsync(usuario.Senha);
 
-            if (usuarioAutenticado != null)
-            {
-                await JSRuntime.InvokeVoidAsync("localStorage.setItem", "currentUser", JsonSerializer.Serialize(usuarioAutenticado));
-                NavigationManager.NavigateTo("/int/posts/");
-            }
-            else
-            {
-                mensagemErro = "Credenciais inválidas. Por favor, tente novamente.";
-            }
-        }
-        catch (Exception ex)
+        var contaUsuario = appDbContext.Usuario.Where(x => x.Email == usuario.Email).FirstOrDefault();
+
+
+        if(contaUsuario is null || contaUsuario.SenhaHash != senhaHash)
         {
-            mensagemErro = "Ocorreu um erro ao autenticar o usuário. Detalhes: " + ex;
+            mensagemErro = "E-mail ou senha invalidos";
+            return;
         }
+
+        var claims = new List<Claim>
+        {
+            new Claim(ClaimTypes.Name, usuario.Email),
+            new Claim(ClaimTypes.Role, contaUsuario.Tipo.ToString())
+        };
+
+        var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+        var principal = new ClaimsPrincipal(identity);
+
+        await HttpContext.SignInAsync(principal);
+        NavigationManager.NavigateTo("/int/posts");
     }
 }

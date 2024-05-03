@@ -3,11 +3,13 @@
 
 ﻿@using Blog.Blazor.Interfaces
 @using Blog.Blazor.Models
+@using Microsoft.AspNetCore.Authorization
 
 @rendermode InteractiveServer
 @inject NavigationManager NavigationManager
 @inject ICategoriaService CategoriaService
 
+@attribute [Authorize(Roles = "Administrador")]
 <div class="container p-3">
 
     <h1 class="title">@(modoEdicao ? "Editar" : "Incluir") categoria</h1>
