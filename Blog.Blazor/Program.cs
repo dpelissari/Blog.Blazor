@@ -62,7 +62,7 @@ app.UseAuthorization();
 
 app.UseStatusCodePagesWithRedirects("/404");
 
-app.MapRazorComponents<App>().AddInteractiveServerRenderMode();
+app.MapRazorComponents<App>().DisableAntiforgery().AddInteractiveServerRenderMode();
 app.MapControllers();
 
 app.Run();
