@@ -10,7 +10,7 @@
 @inject ICategoriaService CategoriaService;
 @inject IAutorService AutorService;
 
-@attribute [Authorize(Roles = "Administrador")]
+@attribute [Authorize(Roles = "Administrador, Editor")]
 
     <div class="container p-4">
         <PlaceHolder Visible="posts != null && posts.Any()">

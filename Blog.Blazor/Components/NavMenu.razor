@@ -5,7 +5,6 @@
 
 @rendermode InteractiveServer
 @inject ICategoriaService CategoriaService
-@inject UsuarioAutenticadoService UsuarioAutenticadoService
 
 <nav class="navbar is-transparent">
     <div class="navbar-brand">
@@ -36,13 +35,12 @@
                     <p class="control">
                         <AuthorizeView>
                             <NotAuthorized>
-                                <NavLink class="button is-link" href="/login/" title="Login">
+                                <NavLink class="button is-link" href="/login/" title="Efetuar login">
                                     <FeatherLogIn Color="#FFF" Size="25"></FeatherLogIn>
                                 </NavLink>
-                              
                             </NotAuthorized>
                             <Authorized>
-                                <NavLink class="button is-link" href="/logout/" title="Login">
+                                <NavLink class="button is-link" href="/logout/" title="Efetuar logout">
                                     <FeatherLogOut Color="#FFF" Size="25"></FeatherLogOut>
                                 </NavLink>
                             </Authorized>
