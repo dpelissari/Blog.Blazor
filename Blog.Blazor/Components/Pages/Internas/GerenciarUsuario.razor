@@ -1,5 +1,5 @@
-﻿@page "/int/usuarios/novo"
-@page "/int/usuarios/editar/{id?}"
+﻿@page "/int/usuario/novo"
+@page "/int/usuario/editar/{id?}"
 
 @using Blog.Blazor.Enums
 @using Blog.Blazor.Interfaces
@@ -7,34 +7,25 @@
 @using System.Security.Cryptography
 @using System.Text
 @using Microsoft.AspNetCore.Authorization
+
 @inject NavigationManager NavigationManager
 @inject IUsuarioService UsuarioService
-
-
 @attribute [Authorize(Roles = "Administrador")]
+
 <div class="container p-4">
-
     <h1 class="title">@(modoEdicao ? "Editar" : "Adicionar") Usuário</h1>
-
     <EditForm Model="@usuario" OnValidSubmit="modoEdicao ? AtualizarUsuario : CriarUsuario" FormName="usuario" EnhancedSubmit="true">
-
         <DataAnnotationsValidator />
-
-        <!-- Email -->
         <div class="field">
             <label class="label">Email</label>
             <InputText @bind-Value="usuario.Email" class="input" />
             <ValidationMessage For="@(() => usuario.Email)" />
         </div>
-
-        <!-- Senha (opcional) -->
         <div class="field">
             <label class="label">Senha</label>
             <InputText @bind-Value="senha" class="input" />
             <ValidationMessage For="@(() => senha)" />
         </div>
-
-        <!-- Tipo de Usuário (opcional) -->
         <div class="field">
             <label class="label">Tipo de Usuário</label>
             <div class="select">
@@ -45,16 +36,11 @@
             </div>
             <ValidationMessage For="@(() => usuario.Tipo)" />
         </div>
-
-
-        <!-- Botões -->
         <div class="field">
             <NavLink href="/int/usuarios" class="button is-danger">Cancelar</NavLink>
             <button type="submit" class="button is-success">Salvar</button>
         </div>
-
     </EditForm>
-
 </div>
 
 @code {
@@ -63,7 +49,7 @@
     private Usuario usuario { get; set; } = new Usuario();
 
     [SupplyParameterFromForm]
-    private string senha { get; set;  } = string.Empty; // Para armazenar temporariamente a senha
+    private string senha { get; set;  } = string.Empty;
 
     bool modoEdicao = false;
 
@@ -81,7 +67,7 @@
             }
             else
             {
-                // ID inválido, redireciona
+                // id inválido, redireciona
                 NavigationManager.NavigateTo("/int/usuarios");
             }
         }
@@ -89,7 +75,7 @@
 
     async Task CriarUsuario()
     {
-        // Criptografa a senha antes de salvar
+        // criptografa a senha antes de salvar
         if (!string.IsNullOrEmpty(senha))
         {
             usuario.SenhaHash = HashSenha(senha);
@@ -104,7 +90,7 @@
         NavigationManager.NavigateTo("/int/usuarios");
     }
 
-    // Método para criptografar a senha usando SHA256
+    // método para criptografar a senha usando sha256
     private string HashSenha(string senha)
     {
         using (var sha256 = SHA256.Create())

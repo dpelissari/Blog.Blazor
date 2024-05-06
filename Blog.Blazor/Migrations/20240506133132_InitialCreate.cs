@@ -52,7 +52,8 @@ namespace Blog.Blazor.Migrations
                     Id = table.Column<Guid>(type: "TEXT", nullable: false),
                     Email = table.Column<string>(type: "TEXT", nullable: false),
                     Tipo = table.Column<int>(type: "INTEGER", nullable: false),
-                    SenhaHash = table.Column<string>(type: "TEXT", nullable: false)
+                    SenhaHash = table.Column<string>(type: "TEXT", nullable: false),
+                    Cadastro = table.Column<DateTime>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -65,7 +66,7 @@ namespace Blog.Blazor.Migrations
                 {
                     Id = table.Column<Guid>(type: "TEXT", nullable: false),
                     Titulo = table.Column<string>(type: "TEXT", maxLength: 250, nullable: false),
-                    Conteudo = table.Column<string>(type: "TEXT", maxLength: 5000, nullable: false),
+                    Conteudo = table.Column<string>(type: "TEXT", nullable: false),
                     Cadastro = table.Column<DateTime>(type: "TEXT", nullable: false),
                     UltimaAtualizacao = table.Column<DateTime>(type: "TEXT", nullable: false),
                     DescricaoSEO = table.Column<string>(type: "TEXT", maxLength: 250, nullable: false),
@@ -94,8 +95,8 @@ namespace Blog.Blazor.Migrations
 
             migrationBuilder.InsertData(
                 table: "Usuario",
-                columns: new[] { "Id", "Email", "SenhaHash", "Tipo" },
-                values: new object[] { new Guid("c6b45372-4165-4012-b440-76cc693df96b"), "root", "0ee484c7d01b93fe9ff6dec76671dda6e08d5d8c8a052f83db29fa898b8bacb1", 20 });
+                columns: new[] { "Id", "Cadastro", "Email", "SenhaHash", "Tipo" },
+                values: new object[] { new Guid("a5f0fc8e-d94b-468c-8d30-11fe8c151bc2"), new DateTime(2024, 5, 6, 10, 31, 30, 848, DateTimeKind.Local).AddTicks(1415), "root", "0ee484c7d01b93fe9ff6dec76671dda6e08d5d8c8a052f83db29fa898b8bacb1", 20 });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Post_IdAutor",

@@ -8,15 +8,17 @@
 @inject ICategoriaService CategoriaService;
 @inject IAutorService AutorService;
 
+<PageTitle>@post.Titulo</PageTitle>
+<HeadContent><meta name="description" content="@post.DescricaoSEO" /></HeadContent>
+
 <div class="container p-4">
     <div class="content">
-    <img src="@post.CaminhoImagem" />
-    <h1 class="title">@post.Titulo</h1>
+        <img src="@post.CaminhoImagem" />
+        <h1 class="title">@post.Titulo</h1>
         <p>@post.Categoria.Nome</p>
-        <p>Por: @post.Autor.Nome</p>
         <p>Publicado @(post.Cadastro.Date == DateTime.Now.Date ? "Hoje ás " + post.Cadastro.ToString("HH:MM") :
-           post.Cadastro.Date == DateTime.Now.Date.AddDays(-1) ? "Ontem ás " + post.Cadastro.ToString("HH:MM") :
-           "em " + post.Cadastro.ToShortDateString() + " ás " + post.Cadastro.ToString("HH:MM"))</p>
+        post.Cadastro.Date == DateTime.Now.Date.AddDays(-1) ? "Ontem ás " + post.Cadastro.ToString("HH:MM") :
+        "em " + post.Cadastro.ToShortDateString() + " ás " + post.Cadastro.ToString("HH:MM")) por @post.Autor.Nome</p>
         <p>@((MarkupString)post.Conteudo)</p>
         <PlaceHolder Visible="post.UltimaAtualizacao > post.Cadastro">
             Atualizado em: @post.UltimaAtualizacao.ToShortDateString();
@@ -24,7 +26,7 @@
     </div>
     <NavLink class="button is-black is-medium" href="/">
         <FeatherArrowLeft Size="25" Color="#FFF" StrokeWidth="1.8f" />
-     </NavLink>
+    </NavLink>
 </div>
 
 @code {

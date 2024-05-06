@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Blog.Blazor.Migrations
 {
     [DbContext(typeof(AplicacaoDbContexto))]
-    [Migration("20240502185350_InitialCreate")]
+    [Migration("20240506133132_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -109,7 +109,6 @@ namespace Blog.Blazor.Migrations
 
                     b.Property<string>("Conteudo")
                         .IsRequired()
-                        .HasMaxLength(5000)
                         .HasColumnType("TEXT");
 
                     b.Property<string>("DescricaoSEO")
@@ -151,6 +150,9 @@ namespace Blog.Blazor.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT");
 
+                    b.Property<DateTime>("Cadastro")
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasColumnType("TEXT");
@@ -169,7 +171,8 @@ namespace Blog.Blazor.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("c6b45372-4165-4012-b440-76cc693df96b"),
+                            Id = new Guid("a5f0fc8e-d94b-468c-8d30-11fe8c151bc2"),
+                            Cadastro = new DateTime(2024, 5, 6, 10, 31, 30, 848, DateTimeKind.Local).AddTicks(1415),
                             Email = "root",
                             SenhaHash = "0ee484c7d01b93fe9ff6dec76671dda6e08d5d8c8a052f83db29fa898b8bacb1",
                             Tipo = 20

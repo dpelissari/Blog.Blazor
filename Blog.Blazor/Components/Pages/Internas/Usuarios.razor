@@ -1,4 +1,4 @@
-﻿@page "/int/categorias/";
+﻿@page "/int/usuarios/";
 
 @using Blog.Blazor.Interfaces
 @using Blog.Blazor.Models
@@ -6,33 +6,35 @@
 
 @rendermode InteractiveServer
 @inject IJSRuntime JSRuntime;
-@inject ICategoriaService CategoriaService;
+@inject IUsuarioService UsuarioService;
 @attribute [Authorize(Roles = "Administrador")]
 
 <div class="container p-4">
-    <h1 class="title">Gerenciar categorias</h1>
-    <PlaceHolder Visible="categorias != null && categorias.Any()">
+    <h1 class="title">Gerenciar usuários</h1>
+    <PlaceHolder Visible="usuarios != null && usuarios.Any()">
         <div class="table-container">
-            <NavLink class="button is-dark is-normal is-responsive mt-4 mb-4" href="/int/categoria/nova">
-                <FeatherPlusCircle Size="20" Color="#FFF" StrokeWidth="1.8f" />&nbsp; NOVA CATEGORIA
+            <NavLink class="button is-dark is-normal is-responsive mt-4 mb-4" href="/int/usuario/novo">
+                <FeatherPlusCircle Size="20" Color="#FFF" StrokeWidth="1.8f" />&nbsp; NOVO USUÁRIO
             </NavLink>
-            <table class="table is-bordered is-fullwidth">
+            <table class="table is-bordered is-fullwidth is-hoverable">
                 <thead>
                     <tr>
                         <th>Id</th>
-                        <th>Categoria</th>
+                        <th>E-mail</th>
+                        <th>Tipo</th>
                         <th>Cadastro</th>
                         <th colspan="2">Ações</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <Repeater DataSource="categorias" Context="item">
+                    <Repeater DataSource="usuarios" Context="item">
                         <ItemTemplate>
                             <tr>
                                 <td>@item.Id</td>
-                                <td>@item.Nome</td>
+                                <td>@item.Email</td>
+                                <td>@item.Tipo</td>
                                 <td>@item.Cadastro.ToShortDateString()</td>
-                                <td><NavLink href="@($"int/categoria/editar/{item.Id}")"><FeatherEdit Size="20" Color="#000" StrokeWidth="1.8f" /></NavLink></td>
+                                <td><NavLink href="@($"int/usuario/editar/{item.Id}")"><FeatherEdit Size="20" Color="#000" StrokeWidth="1.8f" /></NavLink></td>
                                 <td><NavLink @onclick="async () => await Remover(item.Id)"><FeatherTrash Size="20" Color="#000" StrokeWidth="1.8f" /></NavLink></td>
                             </tr>
                         </ItemTemplate>
@@ -41,13 +43,13 @@
             </table>
         </div>
     </PlaceHolder>
-    <PlaceHolder Visible="!categorias.Any()">
+    <PlaceHolder Visible="!usuarios.Any()">
         <article class="message is-warning">
             <div class="message-body">
-                No momento, não há categorias disponíveis para exibição.
+                No momento, não há usuários disponíveis para exibição.
                 <div class="block mt-3 mb-3">
-                    <NavLink href="/int/categoria/nova" class="button is-info">
-                        <FeatherPlusCircle Size="20" Color="#000" StrokeWidth="1.8f" />&nbsp;Nova categoria
+                    <NavLink href="/int/usuario/novo" class="button is-info">
+                        <FeatherPlusCircle Size="20" Color="#000" StrokeWidth="1.8f" />&nbsp;Novo usuário
                     </NavLink>
                 </div>
             </div>
@@ -56,33 +58,31 @@
 </div>
 
 @code {
-
-    private IQueryable<Categoria> categorias;
+    private IQueryable<Usuario> usuarios;
 
     protected override async Task OnInitializedAsync()
     {
-        categorias = await CategoriaService.BuscarTodas();
+        usuarios = await UsuarioService.BuscarTodos();
     }
 
     async Task Remover(Guid id)
     {
 
         // exibe um alerta de confirmacao
-        bool confirm = await JSRuntime.InvokeAsync<bool>("confirm", "Tem certeza que deseja excluir esse post?");
+        bool confirm = await JSRuntime.InvokeAsync<bool>("confirm", "Tem certeza que deseja excluir esse usuário?");
 
         // se a confirmacao for false para por aqui
         if (confirm is false) return;
 
         // se a confirmacao for true logaliza  pelo id
-        var categoria = await CategoriaService.BuscarPor(id);
+        var usuario = await UsuarioService.BuscarPor(id);
 
-        // apaga o post
-        await CategoriaService.Apagar(categoria);
+        // apaga o usuario
+        await UsuarioService.Apagar(usuario);
 
         // atualiza a lista
-        categorias = await CategoriaService.BuscarTodas();
+        usuarios = await UsuarioService.BuscarTodos();
 
         StateHasChanged();
     }
-
 }

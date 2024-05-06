@@ -1,10 +1,10 @@
-﻿
-@using Blog.Blazor.Interfaces
+﻿@using Blog.Blazor.Interfaces
 @using Blog.Blazor.Models
 @using Blog.Blazor.Services
 
 @rendermode InteractiveServer
 @inject ICategoriaService CategoriaService
+@inject NavigationManager NavigationManager
 
 <nav class="navbar is-transparent">
     <div class="navbar-brand">
@@ -28,6 +28,30 @@
                 </ItemTemplate>
             </Repeater>
             <NavLink class="navbar-item" href="/categorias/" @onclick="FecharMenu">Todas categorias</NavLink>
+            <AuthorizeView Roles="Editor">
+                <Authorized>
+                    <div class="navbar-item has-dropdown is-hoverable">
+                        <a class="navbar-link is-arrowless">Gerenciar</a>
+                        <div class="navbar-dropdown">
+                            <NavLink href="/int/posts/" class="navbar-item">Publicações</NavLink>
+                        </div>
+                    </div>
+                </Authorized>
+            </AuthorizeView>
+
+            <AuthorizeView Roles="Administrador">
+                <Authorized>
+                    <div class="navbar-item has-dropdown is-hoverable">
+                        <a class="navbar-link is-arrowless">Gerenciar</a>
+                        <div class="navbar-dropdown">
+                            <NavLink href="/int/posts/" class="navbar-item">Publicações</NavLink>
+                            <NavLink href="/int/autores/" class="navbar-item">Autores</NavLink>
+                            <NavLink href="int/categorias/" class="navbar-item">Categorias</NavLink>
+                            <NavLink href="int/usuarios/" class="navbar-item">Usuários</NavLink>
+                        </div>
+                    </div>
+                </Authorized>
+            </AuthorizeView>
         </div>
         <div class="navbar-end">
             <div class="navbar-item">
@@ -40,9 +64,9 @@
                                 </NavLink>
                             </NotAuthorized>
                             <Authorized>
-                                <NavLink class="button is-link" href="/logout/" title="Efetuar logout">
+                                <button class="button is-link" href="/logout/" title="Efetuar logout" @onclick="Logout">
                                     <FeatherLogOut Color="#FFF" Size="25"></FeatherLogOut>
-                                </NavLink>
+                                </button>
                             </Authorized>
                         </AuthorizeView>
                     </p>
@@ -63,5 +87,10 @@
     protected override async Task OnInitializedAsync()
     {
         categorias = await CategoriaService.BuscarTodas();
+    }
+
+    private void Logout()
+    {
+        NavigationManager.NavigateTo("/logout/", true);
     }
 }

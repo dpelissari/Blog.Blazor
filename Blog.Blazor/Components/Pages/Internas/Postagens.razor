@@ -9,12 +9,16 @@
 @inject IPostService PostagemService;
 @inject ICategoriaService CategoriaService;
 @inject IAutorService AutorService;
-
 @attribute [Authorize(Roles = "Administrador, Editor")]
 
-    <div class="container p-4">
-        <PlaceHolder Visible="posts != null && posts.Any()">
-            <table class="table is-bordered">
+<div class="container p-4">
+    <h1 class="title">Gerenciar posts</h1>
+    <PlaceHolder Visible="posts != null && posts.Any()">
+        <div class="table-container">
+            <NavLink class="button is-dark is-normal is-responsive mt-4 mb-4" href="/int/post/novo">
+                <FeatherPlusCircle Size="20" Color="#FFF" StrokeWidth="1.8f" />&nbsp; NOVO POST
+            </NavLink>
+            <table class="table is-bordered is-fullwidth">
                 <thead>
                     <tr>
                         <th>Id</th>
@@ -34,33 +38,28 @@
                                 <td>@post.Categoria.Nome</td>
                                 <td>@post.Autor.Nome</td>
                                 <td>@post.Cadastro.ToShortDateString()</td>
-                                <td>
-                                    <NavLink href="@($"int/post/editar/{post.Id}")"><FeatherEdit Size="20" Color="#000" StrokeWidth="1.8f" /></NavLink>
-                                </td>
-                                <td>
-                                    <a @onclick="async () => await RemoverPost(post.Id)"><FeatherTrash Size="20" Color="#000" StrokeWidth="1.8f" /></a>
-                                </td>
+                                <td><NavLink href="@($"int/post/editar/{post.Id}")"><FeatherEdit Size="20" Color="#000" StrokeWidth="1.8f" /></NavLink></td>
+                                <td><NavLink @onclick="async () => await RemoverPost(post.Id)"><FeatherTrash Size="20" Color="#000" StrokeWidth="1.8f" /></NavLink></td>
                             </tr>
                         </ItemTemplate>
                     </Repeater>
                 </tbody>
             </table>
-        </PlaceHolder>
-        <PlaceHolder Visible="!posts.Any()">
-            <article class="message is-warning">
-                <div class="message-body">
-                    No momento, não há publicações disponíveis para exibição.
-                    <div class="block mt-3 mb-3">
-                        <NavLink href="/int/post/novo" class="button is-info">
-                            <FeatherPlusCircle Size="20" Color="#000" StrokeWidth="1.8f" />&nbsp;Nova publicação
-                        </NavLink>
-                    </div>
+        </div>
+    </PlaceHolder>
+    <PlaceHolder Visible="!posts.Any()">
+        <article class="message is-warning">
+            <div class="message-body">
+                No momento, não há publicações disponíveis para exibição.
+                <div class="block mt-3 mb-3">
+                    <NavLink href="/int/post/novo" class="button is-info">
+                        <FeatherPlusCircle Size="20" Color="#000" StrokeWidth="1.8f" />&nbsp;Nova publicação
+                    </NavLink>
                 </div>
-            </article>
-        </PlaceHolder>
-    </div>
-
-
+            </div>
+        </article>
+    </PlaceHolder>
+</div>
 
 @code {
 
@@ -71,7 +70,6 @@
 
     protected override async Task OnInitializedAsync()
     {
-
         posts = await PostagemService.BuscarTodos();
 
         foreach (var post in posts)
@@ -79,7 +77,6 @@
             post.Autor = await AutorService.BuscarPor(post.IdAutor);
             post.Categoria = await CategoriaService.BuscarPor(post.IdCategoria);
         }
-
     }
 
     async Task RemoverPost(Guid id)

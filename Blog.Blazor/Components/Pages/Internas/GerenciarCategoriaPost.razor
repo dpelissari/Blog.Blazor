@@ -11,12 +11,9 @@
 
 @attribute [Authorize(Roles = "Administrador")]
 <div class="container p-3">
-
     <h1 class="title">@(modoEdicao ? "Editar" : "Incluir") categoria</h1>
-
     <EditForm Model="@categoria" OnValidSubmit="modoEdicao ? AtualizarCategoria : CriarCategoria" FormName="categoria" Enhance>
         <DataAnnotationsValidator />
-
         <div class="field">
             <label class="label">Nome</label>
             <InputText @bind-Value="categoria.Nome" class="input"></InputText>
@@ -55,10 +52,8 @@
                 </InputSelect>
             </div>
         </div>
-
-        <NavLink href="/" class="button is-danger">CANCELAR</NavLink>
+        <NavLink href="/int/categorias/" class="button is-danger">CANCELAR</NavLink>
         <button class="button is-success" type="submit">SALVAR</button>
-
     </EditForm>
 </div>
 

@@ -8,27 +8,26 @@
 @inject IAutorService AutorService;
 @inject ICategoriaService CategoriaService;
  
-        <div class="container p-4">
-            <PlaceHolder Visible="posts != null && posts.Any()">
-                <div class="fixed-grid has-4-cols-desktop has-3-cols-tablet has-1-cols-mobile">
-                    <div class="grid">
-                        <Repeater DataSource="posts.OrderByDescending(x => x.Cadastro).Where(x => x.Ativo == true)" Context="item">
-                            <ItemTemplate>
-                                <CardPost Post="item"></CardPost>
-                            </ItemTemplate>
-                        </Repeater>
-                    </div>
-                </div>
-            </PlaceHolder>
-            <PlaceHolder Visible="!posts.Any()">
-                <article class="message is-warning">
-                    <div class="message-body">
-                        No momento, não há publicações disponíveis para exibição.
-                    </div>
-                </article>
-            </PlaceHolder>
+<div class="container p-4">
+    <PlaceHolder Visible="posts != null && posts.Any()">
+        <div class="fixed-grid has-4-cols-desktop has-3-cols-tablet has-1-cols-mobile">
+            <div class="grid">
+                <Repeater DataSource="posts.OrderByDescending(x => x.Cadastro).Where(x => x.Ativo == true)" Context="item">
+                    <ItemTemplate>
+                        <CardPost Post="item"></CardPost>
+                    </ItemTemplate>
+                </Repeater>
+            </div>
         </div>
-
+    </PlaceHolder>
+    <PlaceHolder Visible="!posts.Any()">
+        <article class="message is-warning">
+            <div class="message-body">
+                No momento, não há publicações disponíveis para exibição.
+            </div>
+        </article>
+    </PlaceHolder>
+</div>
 
 @code {
 

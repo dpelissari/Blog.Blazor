@@ -14,34 +14,46 @@
 @inject NavigationManager NavigationManager
 @inject IJSRuntime JSRuntime
 
-<div class="container">
-    <div class="fixed-grid has-3-cols"
-    <div class="grid">
-          <div class="box">
-        <h1 class="title">Acessar painel</h1>
-        <h2 class="subtitle">Para acessar o painel de administração informe suas credenciais.</h2>
-        <EditForm OnValidSubmit="Autenticar" Model="usuario" FormName="login">
-            <DataAnnotationsValidator />
-            <div class="field">
-                <InputText @bind-Value="usuario.Email" class="input mb-2" />
-                <ValidationMessage For="@(() => usuario.Email)" />
+<div class="container p-4">
+    <div class="fixed-grid has-3-cols has-1-cols-mobile">
+        <div class="grid">
+            <div class="box cell is-col-start-2">
+                <h1 class="title">Acessar painel</h1>
+                <h2 class="subtitle mt-3">Para acessar o painel de administração informe suas credenciais.</h2>
+                <EditForm OnValidSubmit="Autenticar" Model="usuario" FormName="login">
+                    <DataAnnotationsValidator />
+                    <div class="field">
+                        <label class="label">E-mail</label>
+                        <div class="control has-icons-left has-icons-right">
+                            <InputText @bind-Value="usuario.Email" class="input mb-2" />
+                            <span class="icon is-small is-left">
+                                <FeatherMail Size="20" Color="#404040" />
+                            </span>
+                        </div>
+                        <ValidationMessage For="@(() => usuario.Email)" />
+                    </div>
+                    <div class="field">
+                        <label class="label">Senha</label>
+                        <div class="control has-icons-left has-icons-right">
+                            <InputText @bind-Value="usuario.Senha" type="password" class="input mb-2" />
+                            <span class="icon is-small is-left">
+                                <FeatherLock Size="20" Color="#404040" />
+                            </span>
+                        </div>
+                        <ValidationMessage For="@(() => usuario.Senha)" />
+                    </div>
+                    <button type="submit" class="button is-light">Acessar</button>
+                </EditForm>
+
+                <PlaceHolder Visible="!string.IsNullOrEmpty(mensagemErro)">
+                    <article class="message is-warning mt-4">
+                        <div class="message-body">
+                            <p>@mensagemErro</p>
+                        </div>
+                    </article>
+                </PlaceHolder>
             </div>
-            <div class="field">
-                <InputText @bind-Value="usuario.Senha" type="password" class="input mb-2" />
-                <ValidationMessage For="@(() => usuario.Senha)" />
-            </div>
-            <button type="submit" class="button is-primary">Login</button>
-        </EditForm>
-    </div>
-    </div>
-            <PlaceHolder Visible="!string.IsNullOrEmpty(mensagemErro)">
-            <section class="hero is-medium is-warning">
-                <div class="hero-body">
-                    <FeatherAlertTriangle Color="#000" Size="100" />
-                    <h1 class="title">@mensagemErro</h1>
-                </div>
-            </section>
-        </PlaceHolder>
+        </div>
     </div>
 </div>
 
@@ -57,15 +69,13 @@
 
     private async Task Autenticar()
     {
-
         string senhaHash = await UsuarioService.HashSenhaAsync(usuario.Senha);
 
         var contaUsuario = appDbContext.Usuario.Where(x => x.Email == usuario.Email).FirstOrDefault();
 
-
-        if(contaUsuario is null || contaUsuario.SenhaHash != senhaHash)
+        if (contaUsuario is null || contaUsuario.SenhaHash != senhaHash)
         {
-            mensagemErro = "E-mail ou senha invalidos";
+            mensagemErro = "Suas credenciais estão incorretas. Por favor, verifique o e-mail ou a senha fornecidos.";
             return;
         }
 

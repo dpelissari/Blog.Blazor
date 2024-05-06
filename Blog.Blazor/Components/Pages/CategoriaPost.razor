@@ -31,18 +31,14 @@
 </div>
 
 @code {
-
-
     [Parameter] public string? Id { get; set; }
 
     private Categoria categoria = new();
     private Autor autor = new();
-
     private IQueryable<Post> posts;
 
     protected override async Task OnInitializedAsync()
     {
-
         if (!string.IsNullOrEmpty(Id))
         {
             if (Guid.TryParse(Id, out Guid IdCategoria))
@@ -60,8 +56,8 @@
             }
             else
             {
-                // ID inválido, redireciona para listagem de autores
-                NavigationManager.NavigateTo("/");
+                // id inválido, redireciona para listagem de categorias
+                NavigationManager.NavigateTo("/categorias/");
             }
         }
     }

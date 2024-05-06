@@ -9,13 +9,11 @@
 @inject NavigationManager NavigationManager
 @inject IAutorService AutorService
 @attribute [Authorize(Roles = "Administrador")]
+
 <div class="container p-4">
-
     <h1 class="title">@(modoEdicao ? "Editar" : "Incluir") autor</h1>
-
     <EditForm Model="@autor" OnValidSubmit="modoEdicao ? AtualizarAutor : CriarAutor" FormName="autor" Enhance>
         <DataAnnotationsValidator />
-
         <div class="field">
             <ImagemUpload Modelo="autor" DiretorioImagem="autores" LarguraImagem="120"></ImagemUpload>
             <ValidationMessage For="@(() => autor.CaminhoImagem)" />
@@ -30,7 +28,6 @@
             <InputTextArea @bind-Value="autor.Biografia" rows="5" class="textarea"></InputTextArea>
             <ValidationMessage For="@(() => autor.Biografia)" />
         </div>
-
         <div class="field">
             <label class="label">Autor ativo?</label>
             <div class="select">
@@ -42,10 +39,9 @@
             <ValidationMessage For="@(() => autor.Ativo)" />
         </div>
         <div>
-            <NavLink href="/" class="button is-danger">CANCELAR</NavLink>
+            <NavLink href="/int/autores/" class="button is-danger">CANCELAR</NavLink>
             <button class="button is-success" type="submit">SALVAR</button>
         </div>
-
     </EditForm>
 
 </div>
@@ -81,12 +77,12 @@
     async Task CriarAutor()
     {
         await AutorService.Adicionar(autor);
-        NavigationManager.NavigateTo("/autores");
+        NavigationManager.NavigateTo("/int/autores");
     }
 
     async Task AtualizarAutor()
     {
         await AutorService.Atualizar(autor);
-        NavigationManager.NavigateTo("/autores");
+        NavigationManager.NavigateTo("/int/autores");
     }
 }
