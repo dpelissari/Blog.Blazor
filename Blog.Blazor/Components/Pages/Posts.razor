@@ -10,19 +10,22 @@
 
 <div class="container p-4">
     <PlaceHolder Visible="posts != null && posts.Any()">
-        <div class="fixed-grid has-4-cols-desktop has-3-cols-tablet has-1-cols-mobile">
-            <Repeater DataSource="@posts.Where(x => x.Ativo == true).OrderByDescending(x => x.Cadastro).GroupBy(x => x.Categoria.Nome)" Context="grupo">
-                <ItemTemplate>
-                    <h3 class="title">@grupo.Key</h3>
-                    <div class="grid">
+        <Repeater DataSource="@posts.Where(x => x.Ativo == true).OrderByDescending(x => x.Cadastro).GroupBy(x => x.Categoria.Nome)" Context="grupo">
+            <ItemTemplate>
+                <h3 class="title">@grupo.Key</h3>
+                <div class="swiper mySwiper">
+                    <div class="swiper-wrapper">
                         @foreach (var post in grupo)
                         {
-                            <CardPost Post="post"></CardPost>
+                            <div class="swiper-slide">
+                                <CardPost Post="post"></CardPost>
+                            </div>
                         }
                     </div>
-                </ItemTemplate>
-            </Repeater>
-        </div>
+                    <div class="swiper-pagination"></div>
+                </div>
+            </ItemTemplate>
+        </Repeater>
     </PlaceHolder>
     <PlaceHolder Visible="!posts.Any()">
         <article class="message is-warning">
@@ -36,7 +39,6 @@
 @inject IJSRuntime JSRuntime
 
 @code {
-
     private IQueryable<Post> posts;
 
     protected override async Task OnInitializedAsync()
@@ -48,6 +50,14 @@
         {
             post.Autor = await AutorService.BuscarPor(post.IdAutor);
             post.Categoria = await CategoriaService.BuscarPor(post.IdCategoria);
+        }
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await JSRuntime.InvokeVoidAsync("swiperFunctions.initializeSwiper", "mySwiper");
         }
     }
 }

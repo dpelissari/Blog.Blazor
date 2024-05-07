@@ -1,2 +1,4 @@
 ﻿.card:hover { transform:scale(1.02); transition:0.3s; }
-.card, .cell { height:100%; }
+.card { margin-bottom:40px; }
+
+.card p.title {  text-align:left; overflow:hidden; }
