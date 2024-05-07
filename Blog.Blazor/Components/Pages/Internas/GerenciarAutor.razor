@@ -15,7 +15,7 @@
     <EditForm Model="@autor" OnValidSubmit="modoEdicao ? AtualizarAutor : CriarAutor" FormName="autor" Enhance>
         <DataAnnotationsValidator />
         <div class="field">
-            <ImagemUpload Modelo="autor" DiretorioImagem="autores" LarguraImagem="120"></ImagemUpload>
+            <ImagemUpload Modelo="autor" DiretorioImagem="autores" LarguraImagem="120" AlturaImagem="120"></ImagemUpload>
             <ValidationMessage For="@(() => autor.CaminhoImagem)" />
         </div>
         <div class="field">
