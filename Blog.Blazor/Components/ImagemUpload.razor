@@ -54,7 +54,9 @@
     // largura padrão para redimensionamento da imagem
     [Parameter]
     public int LarguraImagem { get; set; } = 150;
-
+    
+    [Parameter]
+    public int AlturaImagem { get; set; } = 0;
 
     // texto exibido no botão de envio de imagem
     [Parameter]
@@ -104,16 +106,18 @@
                 // Abre a imagem para verificar suas dimensões
                 using (var image = Image.FromStream(memoryStream))
                 {
-                    // Verifica se a imagem tem a largura mínima desejada
-                    if (image.Width < LarguraImagem)
+                    int novaAltura;
+                    // Verifica se a altura é passada como parâmetro
+                    if (AlturaImagem != 0)
                     {
-                        Erro = $"A largura da imagem é menor do que o desejado ({LarguraImagem}px)";
-                        return;
+                        novaAltura = AlturaImagem;
                     }
-
-                    // Calcula a altura proporcionalmente à largura desejada
-                    var proporcao = (double)LarguraImagem / image.Width;
-                    var novaAltura = (int)(image.Height * proporcao);
+                    else
+                    {
+                        // Calcula a altura proporcionalmente à largura desejada
+                        var proporcao = (double)LarguraImagem / image.Width;
+                        novaAltura = (int)(image.Height * proporcao);
+                    }
 
                     // Combina o caminho do diretório com um nome único para a imagem
                     var diretorio = Path.Combine(_ambiente.WebRootPath, DiretorioImagem);
@@ -142,6 +146,7 @@
             Erro = "Arquivo não selecionado ou inválido (Arquivos aceitos: .jpg e .png)";
         }
     }
+
 
 
     // remove a imagem do modelo
