@@ -33,7 +33,7 @@
                     <div class="navbar-item has-dropdown is-hoverable">
                         <a class="navbar-link is-arrowless">Gerenciar</a>
                         <div class="navbar-dropdown">
-                            <NavLink href="/int/posts/" class="navbar-item">Publicações</NavLink>
+                            <NavLink href="/int/posts/" class="navbar-item" @onclick="FecharMenu">Publicações</NavLink>
                         </div>
                     </div>
                 </Authorized>
@@ -44,10 +44,10 @@
                     <div class="navbar-item has-dropdown is-hoverable">
                         <a class="navbar-link is-arrowless">Gerenciar</a>
                         <div class="navbar-dropdown">
-                            <NavLink href="/int/posts/" class="navbar-item">Publicações</NavLink>
-                            <NavLink href="/int/autores/" class="navbar-item">Autores</NavLink>
-                            <NavLink href="int/categorias/" class="navbar-item">Categorias</NavLink>
-                            <NavLink href="int/usuarios/" class="navbar-item">Usuários</NavLink>
+                            <NavLink href="/int/posts/" class="navbar-item" @onclick="FecharMenu">Publicações</NavLink>
+                            <NavLink href="/int/autores/" class="navbar-item" @onclick="FecharMenu">Autores</NavLink>
+                            <NavLink href="int/categorias/" class="navbar-item" @onclick="FecharMenu">Categorias</NavLink>
+                            <NavLink href="int/usuarios/" class="navbar-item" @onclick="FecharMenu">Usuários</NavLink>
                         </div>
                     </div>
                 </Authorized>

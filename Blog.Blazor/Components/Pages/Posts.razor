@@ -7,17 +7,21 @@
 @inject IPostService PostService;
 @inject IAutorService AutorService;
 @inject ICategoriaService CategoriaService;
- 
+
 <div class="container p-4">
     <PlaceHolder Visible="posts != null && posts.Any()">
         <div class="fixed-grid has-4-cols-desktop has-3-cols-tablet has-1-cols-mobile">
-            <div class="grid">
-                <Repeater DataSource="posts.OrderByDescending(x => x.Cadastro).Where(x => x.Ativo == true)" Context="item">
-                    <ItemTemplate>
-                        <CardPost Post="item"></CardPost>
-                    </ItemTemplate>
-                </Repeater>
-            </div>
+            <Repeater DataSource="@posts.Where(x => x.Ativo == true).OrderByDescending(x => x.Cadastro).GroupBy(x => x.Categoria.Nome)" Context="grupo">
+                <ItemTemplate>
+                    <h3 class="title">@grupo.Key</h3>
+                    <div class="grid">
+                        @foreach (var post in grupo)
+                        {
+                            <CardPost Post="post"></CardPost>
+                        }
+                    </div>
+                </ItemTemplate>
+            </Repeater>
         </div>
     </PlaceHolder>
     <PlaceHolder Visible="!posts.Any()">
@@ -28,6 +32,8 @@
         </article>
     </PlaceHolder>
 </div>
+
+@inject IJSRuntime JSRuntime
 
 @code {
 

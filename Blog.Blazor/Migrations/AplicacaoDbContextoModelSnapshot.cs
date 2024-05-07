@@ -168,8 +168,8 @@ namespace Blog.Blazor.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("a5f0fc8e-d94b-468c-8d30-11fe8c151bc2"),
-                            Cadastro = new DateTime(2024, 5, 6, 10, 31, 30, 848, DateTimeKind.Local).AddTicks(1415),
+                            Id = new Guid("98c8e1b0-23c3-4b8c-b266-117d6397006a"),
+                            Cadastro = new DateTime(2024, 5, 6, 16, 41, 50, 991, DateTimeKind.Local).AddTicks(1869),
                             Email = "root",
                             SenhaHash = "0ee484c7d01b93fe9ff6dec76671dda6e08d5d8c8a052f83db29fa898b8bacb1",
                             Tipo = 20

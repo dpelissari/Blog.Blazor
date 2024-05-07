@@ -58,7 +58,6 @@ app.UseAntiforgery();
 app.UseAuthentication();
 app.UseAuthorization();
 
-
 app.UseStatusCodePagesWithRedirects("/404");
 
 app.MapRazorComponents<App>().DisableAntiforgery().AddInteractiveServerRenderMode();
