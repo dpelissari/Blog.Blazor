@@ -12,20 +12,21 @@ window.closeMenu = function () {
     navbarMenu.classList.remove('is-active');
 };
 
-
-window.swiperFunctions = {
-    initializeSwiper: function (elementId) {
-        var swiper = new Swiper("." + elementId, {
-
-            pagination: {
-                el: ".swiper-pagination",
-                clickable: true,
-            },
-            breakpoints: {
-                640: { slidesPerView: 1, spaceBetween: 20, },
-                768: { slidesPerView: 2, spaceBetween: 40, },
-                1024: { slidesPerView: 4, spaceBetween: 30, },
-            },
+window.splideFunctions = {
+    initializeSplide: function (className) {
+        var splides = document.querySelectorAll('.' + className);
+        splides.forEach(function (element) {
+            var splide = new Splide(element, {
+                type: 'slid',
+                perPage: 4,
+                perMove: 1,
+                gap: 20,
+                breakpoints: {
+                    640: { perPage: 1 },
+                    840: { perPage: 2 },
+                }
+            });
+            splide.mount();
         });
     }
-};
+}

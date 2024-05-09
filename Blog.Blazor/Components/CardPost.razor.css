@@ -1,4 +1,5 @@
-﻿.card:hover { transform:scale(1.02); transition:0.3s; }
-.card { margin-bottom:40px; }
-
+﻿.card { margin-bottom:40px; }
+.card:hover { transform:scale(1.02); transition:0.3s; }
 .card p.title {  text-align:left; overflow:hidden; }
+.cell { display:flex; height:100%; }
+.image img { height:150px; }

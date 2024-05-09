@@ -12,18 +12,19 @@
     <PlaceHolder Visible="posts != null && posts.Any()">
         <Repeater DataSource="@posts.Where(x => x.Ativo == true).OrderByDescending(x => x.Cadastro).GroupBy(x => x.Categoria.Nome)" Context="grupo">
             <ItemTemplate>
-                <h3 class="title">@grupo.Key</h3>
-                <div class="swiper mySwiper">
-                    <div class="swiper-wrapper">
-                        @foreach (var post in grupo)
-                        {
-                            <div class="swiper-slide">
-                                <CardPost Post="post"></CardPost>
-                            </div>
-                        }
+                <section class="splide">
+                    <h3 class="title">@grupo.Key</h3>
+                    <div class="splide__track">
+                        <ul class="splide__list">
+                            @foreach (var post in grupo)
+                            {
+                                <li class="splide__slide">
+                                    <CardPost Post="post" />
+                                </li>
+                            }
+                        </ul>
                     </div>
-                    <div class="swiper-pagination"></div>
-                </div>
+                </section>
             </ItemTemplate>
         </Repeater>
     </PlaceHolder>
@@ -39,7 +40,7 @@
 @inject IJSRuntime JSRuntime
 
 @code {
-    private IQueryable<Post> posts;
+    private IEnumerable<Post> posts;
 
     protected override async Task OnInitializedAsync()
     {
@@ -57,7 +58,7 @@
     {
         if (firstRender)
         {
-            await JSRuntime.InvokeVoidAsync("swiperFunctions.initializeSwiper", "mySwiper");
+            await JSRuntime.InvokeVoidAsync("splideFunctions.initializeSplide", "splide");
         }
     }
 }
