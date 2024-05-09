@@ -11,6 +11,6 @@ namespace Blog.Blazor.Interfaces
         Task<Usuario> BuscarPor(Guid id);
         Task<string> HashSenhaAsync(string senha);
         Task<Usuario> AutenticarUsuario(string email, string senha);
-        Task<IQueryable<Usuario>> BuscarTodos();
+        Task<IEnumerable<Usuario>> BuscarTodos();
     }
 }

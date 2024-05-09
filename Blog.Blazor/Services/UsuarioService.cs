@@ -41,14 +41,12 @@ namespace Blog.Blazor.Services
 
         public async Task<Usuario> BuscarPor(Guid id)
         {
-            var usuario = await dbContexto.Usuario.FirstOrDefaultAsync(f => f.Id == id);
-            return usuario;
+            return await dbContexto.Usuario.FirstOrDefaultAsync(f => f.Id == id);
         }
 
-        public async Task<IQueryable<Usuario>> BuscarTodos()
+        public async Task<IEnumerable<Usuario>> BuscarTodos()
         {
-            var usuario = await dbContexto.Usuario.ToListAsync();
-            return usuario.AsQueryable();
+            return await dbContexto.Usuario.ToListAsync();
         }
 
 

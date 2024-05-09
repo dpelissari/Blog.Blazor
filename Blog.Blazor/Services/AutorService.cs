@@ -45,28 +45,21 @@ namespace Blog.Blazor.Services
         }
 
         // metodo para listar todas autores
-        public async Task<IQueryable<Autor>> BuscarTodos()
+        public async Task<IEnumerable<Autor>> BuscarTodos()
         {
-            var Autor = await dbContexto.Autor.ToListAsync();
-            return Autor.AsQueryable();
+            return await dbContexto.Autor.ToListAsync();
+
         }
 
         // metodo para listar todas autores de um autor
-        public async Task<IQueryable<Autor>> BuscarPorAutorId(Guid autorId)
+        public async Task<IEnumerable<Autor>> BuscarPorAutorId(Guid autorId)
         {
-            var autores = await dbContexto.Autor
-                .Where(f => f.Id == autorId)
-                .ToListAsync();
-            return autores.AsQueryable();
+            return await dbContexto.Autor.Where(f => f.Id == autorId).ToListAsync();
         }
 
-        public async Task<IQueryable<Autor>> BuscarPorIdCategoria(Guid categoriaId)
+        public async Task<IEnumerable<Autor>> BuscarPorIdCategoria(Guid categoriaId)
         {
-            var Autor = await dbContexto.Autor
-                .Where(f => f.Id == categoriaId)
-                .ToListAsync();
-
-            return Autor.AsQueryable();
+            return await dbContexto.Autor.Where(f => f.Id == categoriaId).ToListAsync();
         }
     }
 }

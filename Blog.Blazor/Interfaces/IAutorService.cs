@@ -9,6 +9,6 @@ namespace Blog.Blazor.Interfaces
         Task Atualizar(Autor autor);
         Task Apagar(Autor autor);
         Task<Autor> BuscarPor(Guid id);
-        Task<IQueryable<Autor>> BuscarTodos();
+        Task<IEnumerable<Autor>> BuscarTodos();
     }
 }

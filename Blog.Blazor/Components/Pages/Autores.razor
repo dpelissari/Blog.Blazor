@@ -14,7 +14,7 @@
                 <ItemTemplate>
                     <div class="cell">
                         <div class="box is-flex is-flex-direction-column is-align-items-center">
-                            <figure class="image is-128x128">
+                            <figure class="image">
                                 <img class="is-rounded" src="@item.CaminhoImagem" alt="@item.Nome" />
                             </figure>
                             <h3 class="title is-5">@item.Nome</h3>
@@ -35,7 +35,7 @@
 </div>
 
 @code {
-    private IQueryable<Autor> autores;
+    private IEnumerable<Autor> autores;
 
     protected override async Task OnInitializedAsync()
     {

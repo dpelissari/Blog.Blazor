@@ -80,7 +80,7 @@
 
 @code {
 
-    private IQueryable<Categoria>? categorias;
+    private IEnumerable<Categoria>? categorias;
     private async Task ToogleMenu() => await JSRuntime.InvokeVoidAsync("toogleMenu");
     private async Task FecharMenu() => await JSRuntime.InvokeVoidAsync("closeMenu");
 

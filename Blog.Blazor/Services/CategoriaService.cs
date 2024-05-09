@@ -2,6 +2,7 @@
 using Blog.Blazor.Interfaces;
 using Blog.Blazor.Models;
 using Microsoft.EntityFrameworkCore;
+using System.Linq.Dynamic.Core;
 
 namespace Blog.Blazor.Services
 {
@@ -45,15 +46,13 @@ namespace Blog.Blazor.Services
         // metodo para retornar um autor com base no id
         public async Task<Categoria> BuscarPor(Guid id)
         {
-            var categorias = await dbContexto.Categoria.FirstOrDefaultAsync(f => f.Id == id);
-            return categorias;
+            return await dbContexto.Categoria.FirstOrDefaultAsync(f => f.Id == id);
         }
 
         // metodo para listar todos categoria
-        public async Task<IQueryable<Categoria>> BuscarTodas()
+        public async Task<IEnumerable<Categoria>> BuscarTodas()
         {
-            var categoria = await dbContexto.Categoria.ToListAsync();
-            return categoria.AsQueryable();
+            return await dbContexto.Categoria.ToListAsync();
         }
     }
 }

@@ -41,33 +41,24 @@ namespace Blog.Blazor.Services
         // metodo para retornar um post com base no id
         public async Task<Post> BuscarPor(Guid id)
         {
-            var post = await dbContexto.Post.FirstOrDefaultAsync(f => f.Id == id);
-            return post;
+            return await dbContexto.Post.FirstOrDefaultAsync(f => f.Id == id);
         }
 
         // metodo para listar todos posts
-        public async Task<IQueryable<Post>> BuscarTodos()
+        public async Task<IEnumerable<Post>> BuscarTodos()
         {
-            var post = await dbContexto.Post.ToListAsync();
-            return post.AsQueryable();
+            return await dbContexto.Post.ToListAsync();
         }
 
         // metodo para listar todos posts de um autor
-        public async Task<IQueryable<Post>> BuscarPorAutorId(Guid autorId)
+        public async Task<IEnumerable<Post>> BuscarPorAutorId(Guid autorId)
         {
-            var posts = await dbContexto.Post
-                .Where(f => f.Id == autorId)
-                .ToListAsync();
-            return posts.AsQueryable();
+            return await dbContexto.Post.Where(f => f.Id == autorId).ToListAsync();
         }
 
-        public async Task<IQueryable<Post>> BuscarPorIdCategoria(Guid categoriaId)
+        public async Task<IEnumerable<Post>> BuscarPorIdCategoria(Guid categoriaId)
         {
-            var post = await dbContexto.Post
-                .Where(f => f.IdCategoria == categoriaId)
-                .ToListAsync();
-
-            return post.AsQueryable();
+            return await dbContexto.Post.Where(f => f.IdCategoria == categoriaId).ToListAsync();
         }
     }
 }
