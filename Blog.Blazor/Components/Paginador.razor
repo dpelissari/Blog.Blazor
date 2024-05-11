@@ -1,0 +1,24 @@
+﻿@code {
+    [Parameter]
+    public int TotalPaginas { get; set; }
+
+    [Parameter]
+    public int PaginaAtual { get; set; }
+
+    [Parameter]
+    public EventCallback<int> OnPaginaSelecionada { get; set; }
+
+    private async Task SelecionarPagina(int pagina)
+    {
+        if (pagina >= 1 && pagina <= TotalPaginas)
+        {
+            await OnPaginaSelecionada.InvokeAsync(pagina);
+        }
+    }
+}
+
+<div>
+    <button @onclick="() => SelecionarPagina(PaginaAtual - 1)" disabled="@(PaginaAtual == 1)">Anterior</button>
+    <span>Página @PaginaAtual de @TotalPaginas</span>
+    <button @onclick="() => SelecionarPagina(PaginaAtual + 1)" disabled="@(PaginaAtual == TotalPaginas)">Próxima</button>
+</div>

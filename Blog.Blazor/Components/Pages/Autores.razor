@@ -1,8 +1,8 @@
-﻿@page "/autores/";
+﻿@page "/autores/"
 
 @using Blog.Blazor.Interfaces
 @using Blog.Blazor.Models
-
+@rendermode InteractiveServer
 @inject IAutorService AutorService
 @inject IPostService PostService
 
@@ -10,7 +10,7 @@
     <h1 class="title">Autores</h1>
     <div class="fixed-grid has-4-cols-desktop has-3-cols-tablet has-1-cols-mobile">
         <div class="grid">
-            <Repeater DataSource="autores.Where(x => x.Ativo == true).OrderBy(x => x.Nome)" Context="item">
+            <Repeater DataSource="autoresPaginaAtual" Context="item">
                 <ItemTemplate>
                     <div class="cell">
                         <div class="box is-flex is-flex-direction-column is-align-items-center">
@@ -25,20 +25,38 @@
             </Repeater>
         </div>
     </div>
-    <PlaceHolder Visible="!autores.Any()">
+    <PlaceHolder Visible="!autoresPaginaAtual.Any()">
         <article class="message is-warning">
             <div class="message-body">
                 No momento, não há autores disponíveis para exibição.
             </div>
         </article>
     </PlaceHolder>
+    <Paginador TotalPaginas="TotalPaginas" PaginaAtual="paginaAtual" OnPaginaSelecionada="OnPageSelected" />
 </div>
 
 @code {
     private IEnumerable<Autor> autores;
+    private IEnumerable<Autor> autoresPaginaAtual;
+    private int paginaAtual = 1;
+    private int itensPorPagina = 1;
 
     protected override async Task OnInitializedAsync()
     {
         autores = await AutorService.BuscarTodos();
+        await CarregarAutoresPaginaAtual();
     }
+
+    private async Task CarregarAutoresPaginaAtual()
+    {
+        autoresPaginaAtual = autores.Skip((paginaAtual - 1) * itensPorPagina).Take(itensPorPagina);
+    }
+
+    private async Task OnPageSelected(int page)
+    {
+        paginaAtual = page;
+        await CarregarAutoresPaginaAtual();
+    }
+
+    private int TotalPaginas => (int)Math.Ceiling((double)autores.Count() / itensPorPagina);
 }
