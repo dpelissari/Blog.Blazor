@@ -10,5 +10,7 @@ namespace Blog.Blazor.Interfaces
         Task Apagar(Autor autor);
         Task<Autor> BuscarPor(Guid id);
         Task<IEnumerable<Autor>> BuscarTodos();
+        Task<IEnumerable<Autor>> BuscarAutoresPaginados(int paginaAtual, int itensPorPagina);
+        Task<int> ObterTotalDeAutores();
     }
 }

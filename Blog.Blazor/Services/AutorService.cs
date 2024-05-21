@@ -62,9 +62,14 @@ namespace Blog.Blazor.Services
             return await dbContexto.Autor.Where(f => f.Id == categoriaId).ToListAsync();
         }
 
-        public async Task<IEnumerable<Autor>> BuscarPorPagina(int pagina, int tamanhoPagina)
+        public async Task<IEnumerable<Autor>> BuscarAutoresPaginados(int paginaAtual, int itensPorPagina)
         {
-            return await dbContexto.Autor.Skip((pagina - 1) * tamanhoPagina).Take(tamanhoPagina).ToListAsync();
+            return await dbContexto.Autor.Skip((paginaAtual - 1) * itensPorPagina).Take(itensPorPagina).ToListAsync();
+        }
+
+        public async Task<int> ObterTotalDeAutores()
+        {
+            return await dbContexto.Autor.CountAsync();
         }
     }
 }
