@@ -16,17 +16,37 @@ window.splideFunctions = {
     initializeSplide: function (className) {
         var splides = document.querySelectorAll('.' + className);
         splides.forEach(function (element) {
-            var splide = new Splide(element, {
-                type: 'slid',
-                perPage: 4,
-                perMove: 1,
-                gap: 20,
-                breakpoints: {
-                    640: { perPage: 1 },
-                    840: { perPage: 2 },
-                }
-            });
-            splide.mount();
+            if (!element.splideInstance) {
+                element.splideInstance = new Splide(element, {
+                    type: 'slide',
+                    perPage: 4,
+                    perMove: 1,
+                    gap: 20,
+                    breakpoints: {
+                        640: { perPage: 1 },
+                        840: { perPage: 2 },
+                    }
+                }).mount();
+            }
+        });
+    },
+    refreshSplide: function (className) {
+        var splides = document.querySelectorAll('.' + className);
+        splides.forEach(function (element) {
+            if (element.splideInstance) {
+                element.splideInstance.refresh();
+            } else {
+                element.splideInstance = new Splide(element, {
+                    type: 'slide',
+                    perPage: 4,
+                    perMove: 1,
+                    gap: 20,
+                    breakpoints: {
+                        640: { perPage: 1 },
+                        840: { perPage: 2 },
+                    }
+                }).mount();
+            }
         });
     }
 }

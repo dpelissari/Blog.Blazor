@@ -60,5 +60,19 @@ namespace Blog.Blazor.Services
         {
             return await dbContexto.Post.Where(f => f.IdCategoria == categoriaId).ToListAsync();
         }
+
+        public async Task<Dictionary<string, List<Post>>> BuscarPostsAgrupadosPorCategoria(int paginaAtual, int categoriasPorPagina)
+        {
+            var todosPosts = await dbContexto.Post.Include(post => post.Categoria).OrderBy(post => post.Categoria.Nome).ToListAsync();
+            var categoriasPaginadas = todosPosts.GroupBy(post => post.Categoria.Nome).Skip((paginaAtual - 1) * categoriasPorPagina).Take(categoriasPorPagina).ToDictionary(group => group.Key, group => group.ToList());
+            return categoriasPaginadas;
+        }
+
+        public async Task<int> ObterTotalDeCategorias()
+        {
+            var allPosts = await dbContexto.Post.Include(post => post.Categoria).ToListAsync();
+            var groupedPosts = allPosts.GroupBy(post => post.Categoria.Nome).Count();
+            return groupedPosts;
+        }
     }
 }
