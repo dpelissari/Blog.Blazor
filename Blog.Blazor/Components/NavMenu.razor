@@ -5,6 +5,7 @@
 @rendermode InteractiveServer
 @inject ICategoriaService CategoriaService
 @inject NavigationManager NavigationManager
+@inject AuthenticationStateProvider _autenticacao
 
 <nav class="navbar is-transparent">
     <div class="navbar-brand">
@@ -64,9 +65,10 @@
                                 </NavLink>
                             </NotAuthorized>
                             <Authorized>
-                                <button class="button is-link" href="/logout/" title="Efetuar logout" @onclick="Logout">
+                                <NavLink class="button is-link" href="/login/" title="Efetuar logout" @onclick="Logout">
                                     <FeatherLogOut Color="#FFF" Size="25"></FeatherLogOut>
-                                </button>
+                                    &nbsp; @context.User.Identity.Name
+                                </NavLink>
                             </Authorized>
                         </AuthorizeView>
                     </p>
