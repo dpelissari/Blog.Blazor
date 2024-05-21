@@ -1,4 +1,18 @@
-﻿@code {
+﻿<div class="pagination is-rounded" role="navigation" aria-label="pagination">
+    <button @onclick="() => SelecionarPagina(PaginaAtual - 1)" class="pagination-previous" disabled="@(PaginaAtual == 1)">Anterior</button>
+    <button @onclick="() => SelecionarPagina(PaginaAtual + 1)" class="pagination-next" disabled="@(PaginaAtual == TotalPaginas)">Próxima</button>
+    <ul class="pagination-list">
+        @for (int i = 1; i <= TotalPaginas; i++)
+        {
+            int pagina = i; 
+            <li>
+                <button class="pagination-link @(PaginaAtual == pagina ? "is-current" : "")" aria-label="Ir para página @pagina" @onclick="() => SelecionarPagina(pagina)">@pagina</button>
+            </li>
+        }
+    </ul>
+</div>
+
+@code {
     [Parameter]
     public int TotalPaginas { get; set; }
 
@@ -16,9 +30,3 @@
         }
     }
 }
-
-<div>
-    <button @onclick="() => SelecionarPagina(PaginaAtual - 1)" disabled="@(PaginaAtual == 1)">Anterior</button>
-    <span>Página @PaginaAtual de @TotalPaginas</span>
-    <button @onclick="() => SelecionarPagina(PaginaAtual + 1)" disabled="@(PaginaAtual == TotalPaginas)">Próxima</button>
-</div>
