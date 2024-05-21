@@ -16,31 +16,16 @@
             <NavLink class="button is-dark is-normal is-responsive mt-4 mb-4" href="/int/usuario/novo">
                 <FeatherPlusCircle Size="20" Color="#FFF" StrokeWidth="1.8f" />&nbsp; NOVO USUÁRIO
             </NavLink>
-            <table class="table is-bordered is-fullwidth is-hoverable">
-                <thead>
-                    <tr>
-                        <th>Id</th>
-                        <th>E-mail</th>
-                        <th>Tipo</th>
-                        <th>Cadastro</th>
-                        <th colspan="2">Ações</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <Repeater DataSource="usuarios" Context="item">
-                        <ItemTemplate>
-                            <tr>
-                                <td>@item.Id</td>
-                                <td>@item.Email</td>
-                                <td>@item.Tipo</td>
-                                <td>@item.Cadastro.ToShortDateString()</td>
-                                <td><NavLink href="@($"int/usuario/editar/{item.Id}")"><FeatherEdit Size="20" Color="#000" StrokeWidth="1.8f" /></NavLink></td>
-                                <td><NavLink @onclick="async () => await Remover(item.Id)"><FeatherTrash Size="20" Color="#000" StrokeWidth="1.8f" /></NavLink></td>
-                            </tr>
-                        </ItemTemplate>
-                    </Repeater>
-                </tbody>
-            </table>
+            <QuickGrid Items="@usuariosIQueryable" Class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth">
+                <PropertyColumn Property="@(a => a.Id)" Sortable="true" />
+                <PropertyColumn Property="@(a => a.Email)" Sortable="true" />
+                <PropertyColumn Property="@(a => a.Tipo)" Sortable="true" />
+                <PropertyColumn Property="@(a => a.Cadastro)" Format="dd/MM/yyyy" Sortable="true" />
+                <TemplateColumn Title="Ações">
+                    <NavLink href="@($"int/usuario/editar/{context.Id}")"><FeatherEdit Size="20" Color="#000" StrokeWidth="1.8f" /></NavLink>
+                    <NavLink @onclick="async () => await Remover(context.Id)"><FeatherTrash Size="20" Color="#000" StrokeWidth="1.8f" /></NavLink>
+                </TemplateColumn>
+            </QuickGrid>
         </div>
     </PlaceHolder>
     <PlaceHolder Visible="!usuarios.Any()">
@@ -59,10 +44,14 @@
 
 @code {
     private IEnumerable<Usuario> usuarios;
+    private IQueryable<Usuario> usuariosIQueryable;
 
     protected override async Task OnInitializedAsync()
     {
         usuarios = await UsuarioService.BuscarTodos();
+
+        // converte os usuarios em iqueryable para usar o quickgrid
+        usuariosIQueryable = usuarios.AsQueryable();
     }
 
     async Task Remover(Guid id)

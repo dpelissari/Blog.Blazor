@@ -18,33 +18,16 @@
             <NavLink class="button is-dark is-normal is-responsive mt-4 mb-4" href="/int/post/novo">
                 <FeatherPlusCircle Size="20" Color="#FFF" StrokeWidth="1.8f" />&nbsp; NOVO POST
             </NavLink>
-            <table class="table is-bordered is-fullwidth">
-                <thead>
-                    <tr>
-                        <th>Id</th>
-                        <th>Titulo</th>
-                        <th>Categoria</th>
-                        <th>Autor</th>
-                        <th>Cadastro</th>
-                        <th colspan="2">Ações</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <Repeater DataSource="posts" Context="post">
-                        <ItemTemplate>
-                            <tr>
-                                <td>@post.Id</td>
-                                <td>@post.Titulo</td>
-                                <td>@post.Categoria.Nome</td>
-                                <td>@post.Autor.Nome</td>
-                                <td>@post.Cadastro.ToShortDateString()</td>
-                                <td><NavLink href="@($"int/post/editar/{post.Id}")"><FeatherEdit Size="20" Color="#000" StrokeWidth="1.8f" /></NavLink></td>
-                                <td><NavLink @onclick="async () => await RemoverPost(post.Id)"><FeatherTrash Size="20" Color="#000" StrokeWidth="1.8f" /></NavLink></td>
-                            </tr>
-                        </ItemTemplate>
-                    </Repeater>
-                </tbody>
-            </table>
+            <QuickGrid Items="@postsIQueryable" Class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth">
+                <PropertyColumn Property="@(a => a.Id)" Sortable="true" />
+                <PropertyColumn Property="@(a => a.Titulo)" Sortable="true" />
+                <PropertyColumn Property="@(a => a.Categoria.Nome)" Sortable="true" />
+                <PropertyColumn Property="@(a => a.Cadastro)" Format="dd/MM/yyyy" Sortable="true" />
+                <TemplateColumn Title="Ações">
+                    <NavLink href="@($"int/post/editar/{context.Id}")"><FeatherEdit Size="20" Color="#000" StrokeWidth="1.8f" /></NavLink>
+                    <NavLink @onclick="async () => await RemoverPost(context.Id)"><FeatherTrash Size="20" Color="#000" StrokeWidth="1.8f" /></NavLink>
+                </TemplateColumn>
+            </QuickGrid>
         </div>
     </PlaceHolder>
     <PlaceHolder Visible="!posts.Any()">
@@ -65,8 +48,8 @@
 
     private Categoria categoria = new();
     private Autor Autor = new();
-
     private IEnumerable<Post> posts;
+    private IQueryable<Post> postsIQueryable;
 
     protected override async Task OnInitializedAsync()
     {
@@ -77,6 +60,9 @@
             post.Autor = await AutorService.BuscarPor(post.IdAutor);
             post.Categoria = await CategoriaService.BuscarPor(post.IdCategoria);
         }
+
+        // converte os posts em iqueryable para usar o quickgrid
+        postsIQueryable = posts.AsQueryable();
     }
 
     async Task RemoverPost(Guid id)

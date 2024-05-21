@@ -16,29 +16,15 @@
             <NavLink class="button is-dark is-normal is-responsive mt-4 mb-4" href="/int/categoria/nova">
                 <FeatherPlusCircle Size="20" Color="#FFF" StrokeWidth="1.8f" />&nbsp; NOVA CATEGORIA
             </NavLink>
-            <table class="table is-bordered is-fullwidth">
-                <thead>
-                    <tr>
-                        <th>Id</th>
-                        <th>Categoria</th>
-                        <th>Cadastro</th>
-                        <th colspan="2">Ações</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <Repeater DataSource="categorias" Context="item">
-                        <ItemTemplate>
-                            <tr>
-                                <td>@item.Id</td>
-                                <td>@item.Nome</td>
-                                <td>@item.Cadastro.ToShortDateString()</td>
-                                <td><NavLink href="@($"int/categoria/editar/{item.Id}")"><FeatherEdit Size="20" Color="#000" StrokeWidth="1.8f" /></NavLink></td>
-                                <td><NavLink @onclick="async () => await Remover(item.Id)"><FeatherTrash Size="20" Color="#000" StrokeWidth="1.8f" /></NavLink></td>
-                            </tr>
-                        </ItemTemplate>
-                    </Repeater>
-                </tbody>
-            </table>
+            <QuickGrid Items="@categoriasIQueryable" Class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth">
+                <PropertyColumn Property="@(a => a.Id)" Sortable="true" />
+                <PropertyColumn Property="@(a => a.Nome)" Sortable="true" />
+                <PropertyColumn Property="@(a => a.Cadastro)" Format="dd/MM/yyyy" Sortable="true" />
+                <TemplateColumn Title="Ações">
+                    <NavLink href="@($"int/categoria/editar/{context.Id}")"><FeatherEdit Size="20" Color="#000" StrokeWidth="1.8f" /></NavLink>
+                    <NavLink @onclick="async () => await Remover(context.Id)"><FeatherTrash Size="20" Color="#000" StrokeWidth="1.8f" /></NavLink>
+                </TemplateColumn>
+            </QuickGrid>
         </div>
     </PlaceHolder>
     <PlaceHolder Visible="!categorias.Any()">
@@ -58,10 +44,14 @@
 @code {
 
     private IEnumerable<Categoria> categorias;
+    private IQueryable<Categoria> categoriasIQueryable;
 
     protected override async Task OnInitializedAsync()
     {
         categorias = await CategoriaService.BuscarTodas();
+
+        // converte os posts em iqueryable para usar o quickgrid
+        categoriasIQueryable = categorias.AsQueryable();
     }
 
     async Task Remover(Guid id)
