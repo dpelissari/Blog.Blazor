@@ -1,5 +1,4 @@
-﻿@page "/post/{Id}";
-
+﻿@page "/post/{Id}"
 @using Blog.Blazor.Interfaces
 @using Blog.Blazor.Models
 
@@ -17,12 +16,14 @@
         </div>
         <span class="categoria mt-4">@post.Categoria.Nome</span>
         <h1 class="title">@post.Titulo</h1>
-        <p>Publicado @(post.Cadastro.Date == DateTime.Now.Date ? "Hoje ás " + post.Cadastro.ToString("HH:MM") :
-        post.Cadastro.Date == DateTime.Now.Date.AddDays(-1) ? "Ontem ás " + post.Cadastro.ToString("HH:MM") :
-        "em " + post.Cadastro.ToShortDateString() + " ás " + post.Cadastro.ToString("HH:MM")) por @post.Autor.Nome</p>
+        <p>
+            Publicado @(post.Cadastro.Date == DateTime.Now.Date ? "Hoje às " + post.Cadastro.ToString("HH:mm") :
+            post.Cadastro.Date == DateTime.Now.Date.AddDays(-1) ? "Ontem às " + post.Cadastro.ToString("HH:mm") :
+            "em " + post.Cadastro.ToShortDateString() + " às " + post.Cadastro.ToString("HH:mm")) por @post.Autor.Nome
+        </p>
         <p>@((MarkupString)post.Conteudo)</p>
     </div>
-    <NavLink class="button is-black is-medium" href="/">
+    <NavLink class="button is-black is-medium" href="@(returnUrl ?? "/")">
         <FeatherArrowLeft Size="25" Color="#FFF" StrokeWidth="1.8f" />
     </NavLink>
 </div>
@@ -30,12 +31,11 @@
 @code {
 
     [Parameter] public string? Id { get; set; }
-
     private Post post = new();
+    private string? returnUrl;
 
     protected override async Task OnInitializedAsync()
     {
-
         if (!string.IsNullOrEmpty(Id))
         {
             if (Guid.TryParse(Id, out Guid idPost))
@@ -50,6 +50,14 @@
                 // ID inválido, redireciona para listagem de autores
                 NavigationManager.NavigateTo("/");
             }
+        }
+
+        // recupera o target parametro da url
+        var uri = new Uri(NavigationManager.Uri);
+        var queryParams = Microsoft.AspNetCore.WebUtilities.QueryHelpers.ParseQuery(uri.Query);
+        if (queryParams.TryGetValue("tg", out var url))
+        {
+            returnUrl = url.ToString();
         }
     }
 }

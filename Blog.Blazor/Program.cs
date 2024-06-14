@@ -38,6 +38,7 @@ builder.Services.AddScoped<IPostService, PostService>();
 builder.Services.AddScoped<IAutorService, AutorService>();
 builder.Services.AddScoped<ICategoriaService, CategoriaService>();
 builder.Services.AddScoped<IUsuarioService, UsuarioService>();
+builder.Services.AddScoped<NavigationService>();
 builder.Services.AddControllers();
 
 var app = builder.Build();
