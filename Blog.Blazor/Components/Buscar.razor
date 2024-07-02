@@ -1,50 +1,80 @@
-﻿@page "/busca/{query}"
+﻿@page "/busca/{termo}"
 @using Blog.Blazor.Interfaces
 @using Blog.Blazor.Models
 @using Blog.Blazor.Services
 
 @inject IPostService PostService
 @inject IAutorService AutorService
-
+@rendermode InteractiveServer
 
 <div class="container p-4">
-    <h3 class="title">Resultados da Busca: "@query"</h3>
-    <PlaceHolder Visible="resultados != null">
+    <h1 class="title">Resultados da Busca: "@termo"</h1>
+    <PlaceHolder Visible="resultados != null && resultados.Any()">
         <div class="fixed-grid has-4-cols-desktop has-3-cols-tablet has-1-cols-mobile">
             <div class="grid">
-                @foreach (var resultado in resultados)
-                {
-                    <CardPost Post="resultado"></CardPost>
-                }
+                <Repeater DataSource="resultados" Context="item">
+                    <ItemTemplate>
+                        <CardPost Post="item"></CardPost>
+                    </ItemTemplate>
+                </Repeater>
             </div>
         </div>
     </PlaceHolder>
 
     <PlaceHolder Visible="!resultados.Any()">
-        <p>Nenhum resultado encontrado.</p>
+        <h2>Nenhum resultado encontrado com o termo "@termo".</h2>
     </PlaceHolder>
+
+    <PlaceHolder Visible="resultados.Count() > itensPorPagina">
+        <Paginador TotalPaginas="TotalPaginas" PaginaAtual="paginaAtual" OnPaginaSelecionada="OnPageSelected" />
+    </PlaceHolder>
+
 </div>
 
 
 @code {
+    [Parameter]
+    public string termo { get; set; }
+
 
     private int totalPublicacoes;
     private int paginaAtual = 1;
     private int itensPorPagina = 2;
 
-    [Parameter]
-    public string query { get; set; }
+   
 
     private IEnumerable<Post> resultados;
 
+    protected override async Task OnInitializedAsync()
+    {
+        // Carrega a quantidade total de posts que correspondem ao texto da busca
+        totalPublicacoes = await PostService.ObterTotalDePostsPorTexto(termo);
+        await CarregarPostsPaginaAtual();
+    }
+
     protected override async Task OnParametersSetAsync()
     {
-        resultados = await PostService.BuscarPorTexto(query);
+        // Carregar posts da página atual
+        await CarregarPostsPaginaAtual();
+    }
 
-        // alimenta autores
+    private async Task CarregarPostsPaginaAtual()
+    {
+        // Busca posts paginados para a página atual
+        resultados = await PostService.BuscarPostsPorTextoPaginado(termo, paginaAtual, itensPorPagina);
+
+        // Alimenta autores
         foreach (var resultado in resultados)
         {
-            resultado.Autor = await AutorService.BuscarPor(resultado.IdAutor);
+            resultado.Autor = await AutorService.BuscarPorId(resultado.IdAutor);
         }
     }
+
+    private async Task OnPageSelected(int page)
+    {
+        paginaAtual = page;
+        await CarregarPostsPaginaAtual();
+    }
+
+    private int TotalPaginas => (int)Math.Ceiling((double)totalPublicacoes / itensPorPagina);
 }
