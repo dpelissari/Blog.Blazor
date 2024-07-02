@@ -53,12 +53,12 @@
 
     protected override async Task OnInitializedAsync()
     {
-        posts = await PostagemService.BuscarTodos();
+        posts = await PostagemService.BuscarTodosPosts();
 
         foreach (var post in posts)
         {
-            post.Autor = await AutorService.BuscarPor(post.IdAutor);
-            post.Categoria = await CategoriaService.BuscarPor(post.IdCategoria);
+            post.Autor = await AutorService.BuscarPorId(post.IdAutor);
+            post.Categoria = await CategoriaService.BuscarPorId(post.IdCategoria);
         }
 
         // converte os posts em iqueryable para usar o quickgrid
@@ -75,13 +75,13 @@
         if (confirm is false) return;
 
         // se a confirmacao for true logaliza  pelo id
-        var post = await PostagemService.BuscarPor(id);
+        var post = await PostagemService.BuscarPorIdPost(id);
 
         // apaga o post
         await PostagemService.Apagar(post);
 
         // atualiza a lista
-        posts = await PostagemService.BuscarTodos();
+        posts = await PostagemService.BuscarTodosPosts();
 
         StateHasChanged();
     }

@@ -68,7 +68,7 @@
         // alimenta autores
         foreach (var post in todosPosts)
         {
-            post.Autor = await AutorService.BuscarPor(post.IdAutor);
+            post.Autor = await AutorService.BuscarPorId(post.IdAutor);
         }
 
         StateHasChanged();

@@ -8,9 +8,8 @@ namespace Blog.Blazor.Interfaces
         Task Adicionar(Usuario usuario, string senha);
         Task Atualizar(Usuario usuario);
         Task Apagar(Usuario usuario);
-        Task<Usuario> BuscarPor(Guid id);
-        Task<string> HashSenhaAsync(string senha);
-        Task<Usuario> AutenticarUsuario(string email, string senha);
         Task<IEnumerable<Usuario>> BuscarTodos();
+        Task<Usuario> BuscarUsuarioPorId(Guid id);
+        Task<string> HashSenhaAsync(string senha);
     }
 }

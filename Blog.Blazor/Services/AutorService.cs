@@ -16,57 +16,75 @@ namespace Blog.Blazor.Services
             dbContexto = appDbContexto;
         }
 
-        // metodo asincrono para adicionar autores
+        /// <summary>
+        /// Metodo asincrono para adicionar autores
+        /// </summary>
+        /// <param name="Autor"></param>
+        /// <returns></returns>
         public async Task Adicionar(Autor Autor)
         {
             await dbContexto.AddAsync(Autor);
             await dbContexto.SaveChangesAsync();
         }
 
-        // metodo asincrono para atualizar autores
+        /// <summary>
+        /// Metodo asincrono para atualizar autores
+        /// </summary>
+        /// <param name="Autor"></param>
+        /// <returns></returns>
         public async Task Atualizar(Autor Autor)
         {
             dbContexto.Update(Autor);
             await dbContexto.SaveChangesAsync();
         }
 
-        // metodo asincrono para apagar autores
+        /// <summary>
+        /// Metodo asincrono para apagar autores
+        /// </summary>
+        /// <param name="Autor"></param>
+        /// <returns></returns>
         public async Task Apagar(Autor Autor)
         {
             dbContexto.Remove(Autor);
             await dbContexto.SaveChangesAsync();
         }
 
-        // metodo para retornar uma frase com base no id
-        public async Task<Autor> BuscarPor(Guid id)
-        {
-            var Autor = await dbContexto.Autor.FirstOrDefaultAsync(f => f.Id == id);
-            return Autor;
-        }
-
-        // metodo para listar todas autores
+        /// <summary>
+        /// Obitem autores sem nenhum filtro
+        /// </summary>
+        /// <returns></returns>
         public async Task<IEnumerable<Autor>> BuscarTodos()
         {
             return await dbContexto.Autor.ToListAsync();
 
         }
 
-        // metodo para listar todas autores de um autor
-        public async Task<IEnumerable<Autor>> BuscarPorAutorId(Guid autorId)
+        /// <summary>
+        /// Obtem autor pelo id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public async Task<Autor> BuscarPorId(Guid id)
         {
-            return await dbContexto.Autor.Where(f => f.Id == autorId).ToListAsync();
+            var Autor = await dbContexto.Autor.FirstOrDefaultAsync(f => f.Id == id);
+            return Autor;
         }
-
-        public async Task<IEnumerable<Autor>> BuscarPorIdCategoria(Guid categoriaId)
-        {
-            return await dbContexto.Autor.Where(f => f.Id == categoriaId).ToListAsync();
-        }
-
+       
+        /// <summary>
+        /// Obtem autores de forma paginada
+        /// </summary>
+        /// <param name="paginaAtual"></param>
+        /// <param name="itensPorPagina"></param>
+        /// <returns></returns>
         public async Task<IEnumerable<Autor>> BuscarAutoresPaginados(int paginaAtual, int itensPorPagina)
         {
             return await dbContexto.Autor.Skip((paginaAtual - 1) * itensPorPagina).Take(itensPorPagina).ToListAsync();
         }
 
+        /// <summary>
+        /// Obtem o numero total de autores
+        /// </summary>
+        /// <returns></returns>
         public async Task<int> ObterTotalDeAutores()
         {
             return await dbContexto.Autor.CountAsync();

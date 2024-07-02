@@ -37,7 +37,7 @@
         // alimenta posts
         foreach (var categoria in categorias)
         {
-            categoria.Posts = (await PostService.BuscarPorIdCategoria(categoria.Id)).ToList();
+            categoria.Posts = (await PostService.BuscarPostsPorIdCategoria(categoria.Id)).ToList();
         }
     }
 }

@@ -129,7 +129,7 @@
         {
             if (Guid.TryParse(id, out Guid idPost))
             {
-                post = await PostService.BuscarPor(idPost);
+                post = await PostService.BuscarPorIdPost(idPost);
                 modoEdicao = true;
             }
             else
@@ -156,6 +156,6 @@
     async Task AtualizarPost()
     {
         await PostService.Atualizar(post);
-        NavigationManager.NavigateTo("/");
+        NavigationManager.NavigateTo("/int/posts");
     }
 }

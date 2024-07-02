@@ -44,13 +44,13 @@
             if (Guid.TryParse(Id, out Guid IdCategoria))
             {
                 // busca categoria e alimenta os posts
-                categoria = await CategoriaService.BuscarPor(IdCategoria);
-                posts = await PostService.BuscarPorIdCategoria(IdCategoria);
+                categoria = await CategoriaService.BuscarPorId(IdCategoria);
+                posts = await PostService.BuscarPostsPorIdCategoria(IdCategoria);
 
                 // alimenta autor e categoria
                 foreach (var post in posts)
                 {
-                    post.Autor = await AutorService.BuscarPor(post.IdAutor);
+                    post.Autor = await AutorService.BuscarPorId(post.IdAutor);
                     post.Categoria = categoria;
                 }
             }

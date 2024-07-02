@@ -41,9 +41,9 @@
             if (Guid.TryParse(Id, out Guid idPost))
             {
                 // busca post e alimenta autor e categoria
-                post = await PostService.BuscarPor(idPost);
-                post.Categoria = await CategoriaService.BuscarPor(post.IdCategoria);
-                post.Autor = await AutorService.BuscarPor(post.IdAutor);
+                post = await PostService.BuscarPorIdPost(idPost);
+                post.Categoria = await CategoriaService.BuscarPorId(post.IdCategoria);
+                post.Autor = await AutorService.BuscarPorId(post.IdAutor);
             }
             else
             {

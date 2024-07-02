@@ -82,7 +82,7 @@
                                 </NavLink>
                             </NotAuthorized>
                             <Authorized>
-                                <NavLink class="button is-info is-inverted" href="/login/" title="Efetuar logout" @onclick="Logout">
+                                <NavLink class="button is-danger is-inverted" href="/login/" title="Efetuar logout" @onclick="Logout">
                                    SAIR (@context?.User?.Identity?.Name)
                                 </NavLink>
                             </Authorized>
@@ -98,10 +98,10 @@
 
 @code {
 
+    private string termoBuscado = string.Empty;
     private IEnumerable<Categoria>? categorias;
     private async Task ToogleMenu() => await JSRuntime.InvokeVoidAsync("toogleMenu");
     private async Task FecharMenu() => await JSRuntime.InvokeVoidAsync("closeMenu");
-    private string termoBuscado;
 
     protected override async Task OnInitializedAsync()
     {
@@ -113,14 +113,15 @@
         NavigationManager.NavigateTo("/logout/", true);
     }
 
-    private void Buscar()
+    private async void Buscar()
     {
         if (!string.IsNullOrWhiteSpace(termoBuscado))
         {
             // verifica se o navigationmanager está navegando para a url correta
             NavigationManager.NavigateTo($"/busca/{termoBuscado}");
 
-           
+            // fecha o menu mobile
+            await FecharMenu();
         }
     }
 
@@ -129,12 +130,12 @@
         // verifica se a tecla pressionada é a tecla "enter"
         if (e.Key == "Enter")
         {
-            // Verifica se o texto de busca não está vazio ou nulo
             if (!string.IsNullOrWhiteSpace(termoBuscado))
             {
-                // navega para a página de busca com o texto inserido
+                // navega para a página de busca com o termo pesquisado
                 NavigationManager.NavigateTo($"/busca/{termoBuscado}");
 
+                // limpa o termo buscado
                 termoBuscado = string.Empty;
 
                 // fecha o menu mobile

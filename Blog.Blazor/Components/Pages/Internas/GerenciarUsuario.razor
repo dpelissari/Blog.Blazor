@@ -62,7 +62,7 @@
         {
             if (Guid.TryParse(id, out Guid idUsuario))
             {
-                usuario = await UsuarioService.BuscarPor(idUsuario);
+                usuario = await UsuarioService.BuscarUsuarioPorId(idUsuario);
                 modoEdicao = true;
             }
             else

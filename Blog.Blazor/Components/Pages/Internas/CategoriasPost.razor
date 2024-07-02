@@ -64,7 +64,7 @@
         if (confirm is false) return;
 
         // se a confirmacao for true logaliza  pelo id
-        var categoria = await CategoriaService.BuscarPor(id);
+        var categoria = await CategoriaService.BuscarPorId(id);
 
         // apaga o post
         await CategoriaService.Apagar(categoria);

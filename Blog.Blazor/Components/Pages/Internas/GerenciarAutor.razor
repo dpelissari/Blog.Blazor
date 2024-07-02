@@ -63,7 +63,7 @@
 
             if (Guid.TryParse(id, out Guid idAutor))
             {
-                autor = await AutorService.BuscarPor(idAutor);
+                autor = await AutorService.BuscarPorId(idAutor);
                 modoEdicao = true;
             }
             else

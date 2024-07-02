@@ -16,21 +16,33 @@ namespace Blog.Blazor.Services
             dbContexto = appDbContexto;
         }
 
-        // metodo asincrono para adicionar categoria
+        /// <summary>
+        /// Metodo asincrono para adicionar categoria
+        /// </summary>
+        /// <param name="categoria"></param>
+        /// <returns></returns>
         public async Task Adicionar(Categoria categoria)
         {
             await dbContexto.AddAsync(categoria);
             await dbContexto.SaveChangesAsync();
         }
 
-        // metodo asincrono para atualizar categoria
+        /// <summary>
+        /// Metodo asincrono para atualizar categoria
+        /// </summary>
+        /// <param name="categoria"></param>
+        /// <returns></returns>
         public async Task Atualizar(Categoria categoria)
         {
             dbContexto.Update(categoria);
             await dbContexto.SaveChangesAsync();
         }
 
-        // metodo asincrono para apagar categoria
+        /// <summary>
+        /// Metodo asincrono para apagar categoria
+        /// </summary>
+        /// <param name="categoria"></param>
+        /// <returns></returns>
         public async Task Apagar(Categoria categoria)
         {
 
@@ -43,13 +55,20 @@ namespace Blog.Blazor.Services
             await dbContexto.SaveChangesAsync();
         }
 
-        // metodo para retornar um autor com base no id
-        public async Task<Categoria> BuscarPor(Guid id)
+        /// <summary>
+        /// Obtem categoria pelo id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public async Task<Categoria> BuscarPorId(Guid id)
         {
             return await dbContexto.Categoria.FirstOrDefaultAsync(f => f.Id == id);
         }
 
-        // metodo para listar todos categoria
+        /// <summary>
+        /// Obtem todas categorias
+        /// </summary>
+        /// <returns></returns>
         public async Task<IEnumerable<Categoria>> BuscarTodas()
         {
             return await dbContexto.Categoria.ToListAsync();

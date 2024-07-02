@@ -74,7 +74,7 @@
 
             if (Guid.TryParse(id, out Guid idCategoria))
             {
-                categoria = await CategoriaService.BuscarPor(idCategoria);
+                categoria = await CategoriaService.BuscarPorId(idCategoria);
                 modoEdicao = true;
             }
             else
