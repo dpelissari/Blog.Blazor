@@ -68,11 +68,40 @@ namespace Blog.Blazor.Services
             return categoriasPaginadas;
         }
 
+
+        public async Task<IEnumerable<Post>> BuscarPostsPaginados(int paginaAtual, int itensPorPagina)
+        {
+            return await dbContexto.Post.Skip((paginaAtual - 1) * itensPorPagina).Take(itensPorPagina).ToListAsync();
+        }
+
         public async Task<int> ObterTotalDeCategorias()
         {
             var allPosts = await dbContexto.Post.Include(post => post.Categoria).ToListAsync();
             var groupedPosts = allPosts.GroupBy(post => post.Categoria.Nome).Count();
             return groupedPosts;
         }
+
+        // Método de busca por texto
+        public async Task<IEnumerable<Post>> BuscarPorTexto(string texto)
+        {
+            return await dbContexto.Post
+                .Where(p => EF.Functions.Like(p.Titulo, $"%{texto}%") || EF.Functions.Like(p.Conteudo, $"%{texto}%"))
+                .ToListAsync();
+        }
+
+        public async Task<IEnumerable<Post>> BuscarPorTextoPaginado(string texto, int paginaAtual, int itensPorPagina)
+        {
+            return await dbContexto.Post
+                .Where(p => EF.Functions.Like(p.Titulo, $"%{texto}%") || EF.Functions.Like(p.Conteudo, $"%{texto}%"))
+                .Skip((paginaAtual - 1) * itensPorPagina)
+                .Take(itensPorPagina)
+                .ToListAsync();
+        }
+
+        public async Task<int> ObterTotalDePosts()
+        {
+            return await dbContexto.Post.CountAsync();
+        }
+
     }
 }

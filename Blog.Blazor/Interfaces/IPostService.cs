@@ -13,7 +13,14 @@ namespace Blog.Blazor.Interfaces
         Task<IEnumerable<Post>> BuscarPorAutorId(Guid id);
         Task<IEnumerable<Post>> BuscarPorIdCategoria(Guid id);
         Task<IEnumerable<Post>> BuscarTodos();
+        Task<IEnumerable<Post>> BuscarPostsPaginados(int paginaAtual, int itensPorPagina);
         Task<Dictionary<string, List<Post>>> BuscarPostsAgrupadosPorCategoria(int paginaAtual, int categoriasPorPagina);
         Task<int> ObterTotalDeCategorias();
+
+        Task<IEnumerable<Post>> BuscarPorTexto(string texto);
+
+        Task<IEnumerable<Post>> BuscarPorTextoPaginado(string texto, int paginaAtual, int itensPorPagina);
+
+        Task<int> ObterTotalDePosts();
     }
 }

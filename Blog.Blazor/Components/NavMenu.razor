@@ -39,7 +39,6 @@
                     </div>
                 </Authorized>
             </AuthorizeView>
-
             <AuthorizeView Roles="Administrador">
                 <Authorized>
                     <div class="navbar-item has-dropdown is-hoverable">
@@ -55,19 +54,36 @@
             </AuthorizeView>
         </div>
         <div class="navbar-end">
+            <AuthorizeView>
+                <NotAuthorized>
+                    <div class="navbar-item">
+                        <div class="field has-addons">
+                            <div class="control is-expanded">
+                                <input class="input" type="text" placeholder="Pesquisar..." @bind="termoBuscado" @onkeyup="BuscarPressionandoEnter" id="busca">
+                            </div>
+                            <div class="control">
+                                <button class="button is-dark" @onclick="Buscar">
+                                    <span class="icon">
+                                        <FeatherSearch Size="25" Color="#FFF"></FeatherSearch>
+                                    </span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </NotAuthorized>
+            </AuthorizeView>
             <div class="navbar-item">
                 <div class="field is-grouped">
                     <p class="control">
                         <AuthorizeView>
                             <NotAuthorized>
-                                <NavLink class="button is-link" href="/login/" title="Efetuar login">
-                                    <FeatherLogIn Color="#FFF" Size="25"></FeatherLogIn>
+                                <NavLink class="button is-info is-inverted" href="/login/" title="Efetuar login">
+                                    ENTRAR
                                 </NavLink>
                             </NotAuthorized>
                             <Authorized>
-                                <NavLink class="button is-link" href="/login/" title="Efetuar logout" @onclick="Logout">
-                                    <FeatherLogOut Color="#FFF" Size="25"></FeatherLogOut>
-                                    &nbsp; @context.User.Identity.Name
+                                <NavLink class="button is-info is-inverted" href="/login/" title="Efetuar logout" @onclick="Logout">
+                                   SAIR (@context?.User?.Identity?.Name)
                                 </NavLink>
                             </Authorized>
                         </AuthorizeView>
@@ -85,6 +101,7 @@
     private IEnumerable<Categoria>? categorias;
     private async Task ToogleMenu() => await JSRuntime.InvokeVoidAsync("toogleMenu");
     private async Task FecharMenu() => await JSRuntime.InvokeVoidAsync("closeMenu");
+    private string termoBuscado;
 
     protected override async Task OnInitializedAsync()
     {
@@ -94,5 +111,35 @@
     private void Logout()
     {
         NavigationManager.NavigateTo("/logout/", true);
+    }
+
+    private void Buscar()
+    {
+        if (!string.IsNullOrWhiteSpace(termoBuscado))
+        {
+            // verifica se o navigationmanager está navegando para a url correta
+            NavigationManager.NavigateTo($"/busca/{termoBuscado}");
+
+           
+        }
+    }
+
+    private async void BuscarPressionandoEnter(KeyboardEventArgs e)
+    {
+        // verifica se a tecla pressionada é a tecla "enter"
+        if (e.Key == "Enter")
+        {
+            // Verifica se o texto de busca não está vazio ou nulo
+            if (!string.IsNullOrWhiteSpace(termoBuscado))
+            {
+                // navega para a página de busca com o texto inserido
+                NavigationManager.NavigateTo($"/busca/{termoBuscado}");
+
+                termoBuscado = string.Empty;
+
+                // fecha o menu mobile
+                await FecharMenu();
+            }
+        }
     }
 }

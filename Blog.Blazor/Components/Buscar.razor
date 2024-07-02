@@ -1,0 +1,50 @@
+﻿@page "/busca/{query}"
+@using Blog.Blazor.Interfaces
+@using Blog.Blazor.Models
+@using Blog.Blazor.Services
+
+@inject IPostService PostService
+@inject IAutorService AutorService
+
+
+<div class="container p-4">
+    <h3 class="title">Resultados da Busca: "@query"</h3>
+    <PlaceHolder Visible="resultados != null">
+        <div class="fixed-grid has-4-cols-desktop has-3-cols-tablet has-1-cols-mobile">
+            <div class="grid">
+                @foreach (var resultado in resultados)
+                {
+                    <CardPost Post="resultado"></CardPost>
+                }
+            </div>
+        </div>
+    </PlaceHolder>
+
+    <PlaceHolder Visible="!resultados.Any()">
+        <p>Nenhum resultado encontrado.</p>
+    </PlaceHolder>
+</div>
+
+
+@code {
+
+    private int totalPublicacoes;
+    private int paginaAtual = 1;
+    private int itensPorPagina = 2;
+
+    [Parameter]
+    public string query { get; set; }
+
+    private IEnumerable<Post> resultados;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        resultados = await PostService.BuscarPorTexto(query);
+
+        // alimenta autores
+        foreach (var resultado in resultados)
+        {
+            resultado.Autor = await AutorService.BuscarPor(resultado.IdAutor);
+        }
+    }
+}
