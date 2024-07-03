@@ -6,6 +6,7 @@ namespace Blog.Blazor.Interfaces
     public interface IPostService
     {
         Task Adicionar(Post Post);
+        Task<ResultadoOperacao> VerificarUrl(string url);
         Task Atualizar(Post Post);
         Task Apagar(Post Post);
         Task<IEnumerable<Post>> BuscarTodosPosts();

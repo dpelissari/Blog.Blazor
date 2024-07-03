@@ -97,8 +97,13 @@
         </div>
         <div class="field">
             <label class="label">URL</label>
-            <InputTextArea @bind-Value="post.Url" rows="5" class="textarea"></InputTextArea>
+            <InputText @bind-Value="post.Url" class="input" readonly="@(modoEdicao ? true : false)" ></InputText>
             <ValidationMessage For="@(() => post.Url)" />
+            <PlaceHolder Visible="UrlExistente != string.Empty">
+                <div class="notification is-warning is-light mt-4 mb-4">
+                    @UrlExistente
+                </div>
+            </PlaceHolder>
         </div>
         <div class="field">
             <label class="label">Ativo?</label>
@@ -121,6 +126,7 @@
     private IEnumerable<Autor> autores;
     private IEnumerable<Categoria> categorias;
     bool modoEdicao = false;
+    public string UrlExistente { get; set; } = string.Empty;
 
     [Parameter]
 
@@ -153,9 +159,20 @@
 
     async Task CriarPost()
     {
+        // verifica a url
+        var url = await PostService.VerificarUrl(post.Url);
 
-        await PostService.Adicionar(post);
-        NavigationManager.NavigateTo("/");
+        // se url está disponivel grava
+        if (url.Sucesso)
+        {
+
+            post.Url = url.Parametro;
+            await PostService.Adicionar(post);
+            NavigationManager.NavigateTo("/int/posts");
+        } 
+        // mensagem informando que url ja existe
+        else
+            UrlExistente = url.Mensagem;
     }
 
     async Task AtualizarPost()

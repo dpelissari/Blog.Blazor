@@ -22,8 +22,46 @@ namespace Blog.Blazor.Services
         /// <param name="post"></param>
         public async Task Adicionar(Post post)
         {
-            await dbContexto.AddAsync(post);
-            await dbContexto.SaveChangesAsync();
+
+            var urlDisponivel = await VerificarUrl(post.Url);
+
+            if (urlDisponivel.Sucesso)
+            {
+
+                // Adiciona o post ao contexto e salva as mudanças
+                await dbContexto.AddAsync(post);
+                await dbContexto.SaveChangesAsync();
+            }
+        }
+
+        /// <summary>
+        /// Metodo para verificar se uma url já existe
+        /// </summary>
+        /// <param name="post"></param>
+        public async Task<ResultadoOperacao> VerificarUrl(string url)
+        {
+            // ajusta a url
+            var urlDesejada = url.Replace(" ", "-").Trim();
+
+            // obtém todas as urls para comparação de forma assíncrona
+            var urls = await ObterUrlPosts();
+
+            // verifica se a url ja foi usada
+            if (urls.Contains(urlDesejada))
+            {
+                return new ResultadoOperacao
+                {
+                    Sucesso = false,
+                    Mensagem = "A URL já existe. Por favor, escolha outra URL.",
+                };
+            } else
+            {
+                return new ResultadoOperacao
+                {
+                    Sucesso = true,
+                    Parametro = urlDesejada,
+                };
+            }
         }
 
         /// <summary>
@@ -173,6 +211,11 @@ namespace Blog.Blazor.Services
             return await dbContexto.Post
                 .Where(p => EF.Functions.Like(p.Titulo, $"%{texto}%") || EF.Functions.Like(p.Conteudo, $"%{texto}%"))
                 .CountAsync();
+        }
+
+        public async Task<IEnumerable<string>> ObterUrlPosts()
+        {
+            return await dbContexto.Post.Select(post => post.Url).ToListAsync();
         }
     }
 }
