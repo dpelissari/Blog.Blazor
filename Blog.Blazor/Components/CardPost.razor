@@ -3,7 +3,7 @@
 @inject NavigationService NavigationService
 @inject NavigationManager NavigationManager
 
-<NavLink href="@($"post/{Post?.Id}?tg={Uri.EscapeDataString(NavigationManager.Uri)}")" class="card-link">
+<NavLink href="@($"post/{Post.Categoria.Url}/{Post?.Url}/?tg={Uri.EscapeDataString(NavigationManager.Uri)}")" class="card-link">
     <div class="cell">
         <div class="card">
             <div class="card-image">

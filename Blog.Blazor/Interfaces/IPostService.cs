@@ -10,6 +10,7 @@ namespace Blog.Blazor.Interfaces
         Task Apagar(Post Post);
         Task<IEnumerable<Post>> BuscarTodosPosts();
         Task<Post> BuscarPorIdPost(Guid id);
+        Task<Post> BuscarPorUrlPost(string url);
         Task<IEnumerable<Post>> BuscarPostsPorIdAutor(Guid id);
         Task<IEnumerable<Post>> BuscarPostsPorIdCategoria(Guid id);
         Task<Dictionary<string, List<Post>>> BuscarPostsAgrupadosPorCategoria(int paginaAtual, int categoriasPorPagina);

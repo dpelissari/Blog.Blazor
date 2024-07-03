@@ -1,4 +1,4 @@
-﻿@page "/categoria/{Id}"
+﻿@page "/categoria/{Url}"
 
 @using Blog.Blazor.Interfaces
 @using Blog.Blazor.Models
@@ -31,7 +31,7 @@
 </div>
 
 @code {
-    [Parameter] public string? Id { get; set; }
+    [Parameter] public string? Url { get; set; }
 
     private Categoria categoria = new();
     private Autor autor = new();
@@ -39,13 +39,14 @@
 
     protected override async Task OnInitializedAsync()
     {
-        if (!string.IsNullOrEmpty(Id))
+        if (!string.IsNullOrEmpty(Url))
         {
-            if (Guid.TryParse(Id, out Guid IdCategoria))
+            categoria = await CategoriaService.BuscarPorUrl(Url);
+
+            if (Url == categoria.Url)
             {
                 // busca categoria e alimenta os posts
-                categoria = await CategoriaService.BuscarPorId(IdCategoria);
-                posts = await PostService.BuscarPostsPorIdCategoria(IdCategoria);
+                posts = await PostService.BuscarPostsPorIdCategoria(categoria.Id);
 
                 // alimenta autor e categoria
                 foreach (var post in posts)

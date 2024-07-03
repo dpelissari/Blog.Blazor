@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Blog.Blazor.Migrations
 {
     [DbContext(typeof(AplicacaoDbContexto))]
-    [Migration("20240506194152_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20240703134603_CriacaoBanco")]
+    partial class CriacaoBanco
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -86,6 +86,10 @@ namespace Blog.Blazor.Migrations
                         .HasMaxLength(150)
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("Url")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
                     b.HasKey("Id");
 
                     b.ToTable("Categoria");
@@ -135,6 +139,10 @@ namespace Blog.Blazor.Migrations
                     b.Property<DateTime>("UltimaAtualizacao")
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("Url")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
                     b.HasKey("Id");
 
                     b.HasIndex("IdAutor");
@@ -171,8 +179,8 @@ namespace Blog.Blazor.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("98c8e1b0-23c3-4b8c-b266-117d6397006a"),
-                            Cadastro = new DateTime(2024, 5, 6, 16, 41, 50, 991, DateTimeKind.Local).AddTicks(1869),
+                            Id = new Guid("c19ecfd1-fb62-41b9-81e2-8541cc8898c5"),
+                            Cadastro = new DateTime(2024, 7, 3, 10, 46, 2, 219, DateTimeKind.Local).AddTicks(9167),
                             Email = "root",
                             SenhaHash = "0ee484c7d01b93fe9ff6dec76671dda6e08d5d8c8a052f83db29fa898b8bacb1",
                             Tipo = 20

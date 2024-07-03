@@ -40,6 +40,9 @@ namespace Blog.Blazor.Models
 
         public Categoria Categoria { get; set; }
 
+        [Required(ErrorMessage = "O campo url é obrigatório")]
+        public string Url { get; set; } = string.Empty;
+
         [Required(ErrorMessage = "O campo ativo é obrigatório")]
         public bool Ativo { get; set; } = true;
     }

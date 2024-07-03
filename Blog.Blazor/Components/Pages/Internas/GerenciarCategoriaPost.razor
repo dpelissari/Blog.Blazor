@@ -44,6 +44,11 @@
             </div>
         </div>
         <div class="field">
+            <label class="label">URL</label>
+            <InputText @bind-Value="categoria.Url" class="input"></InputText>
+            <ValidationMessage For="@(() => categoria.Url)" />
+        </div>
+        <div class="field">
             <label class="label">Categoria ativa?</label>
             <div class="select">
                 <InputSelect @bind-Value="categoria.Ativo">

@@ -25,7 +25,7 @@
             <NavLink class="navbar-item" href="/autores/" @onclick="FecharMenu">Autores</NavLink>
             <Repeater DataSource="categorias.Where(x => x.ExibirItemMenu == true).OrderBy(x => x.Nome)" Context="item">
                 <ItemTemplate>
-                    <NavLink class="navbar-item" href="@($"/categoria/{item.Id}/")" @onclick="FecharMenu">@item.Nome</NavLink>
+                    <NavLink class="navbar-item" href="@($"/categoria/{item.Url}/")" @onclick="FecharMenu">@item.Nome</NavLink>
                 </ItemTemplate>
             </Repeater>
             <NavLink class="navbar-item" href="/categorias/" @onclick="FecharMenu">Todas categorias</NavLink>
@@ -53,25 +53,21 @@
                 </Authorized>
             </AuthorizeView>
         </div>
-        <div class="navbar-end">
-            <AuthorizeView>
-                <NotAuthorized>
-                    <div class="navbar-item">
-                        <div class="field has-addons">
-                            <div class="control is-expanded">
-                                <input class="input" type="text" placeholder="Pesquisar..." @bind="termoBuscado" @onkeyup="BuscarPressionandoEnter" id="busca">
-                            </div>
-                            <div class="control">
-                                <button class="button is-dark" @onclick="Buscar">
-                                    <span class="icon">
-                                        <FeatherSearch Size="25" Color="#FFF"></FeatherSearch>
-                                    </span>
-                                </button>
-                            </div>
+            <div class="navbar-end">
+                <div class="navbar-item">
+                    <div class="field has-addons">
+                        <div class="control is-expanded">
+                            <input class="input" type="text" placeholder="Pesquisar..." @bind="termoBuscado" @onkeyup="BuscarPressionandoEnter" id="busca">
+                        </div>
+                        <div class="control">
+                            <button class="button is-dark" @onclick="Buscar">
+                                <span class="icon">
+                                    <FeatherSearch Size="25" Color="#FFF"></FeatherSearch>
+                                </span>
+                            </button>
                         </div>
                     </div>
-                </NotAuthorized>
-            </AuthorizeView>
+                </div>
             <div class="navbar-item">
                 <div class="field is-grouped">
                     <p class="control">

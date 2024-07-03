@@ -66,6 +66,16 @@ namespace Blog.Blazor.Services
         }
 
         /// <summary>
+        /// Obtem categoria com base na url
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public async Task<Categoria> BuscarPorUrl(string url)
+        {
+            return await dbContexto.Categoria.FirstOrDefaultAsync(f => f.Url == url);
+        }
+
+        /// <summary>
         /// Obtem todas categorias
         /// </summary>
         /// <returns></returns>

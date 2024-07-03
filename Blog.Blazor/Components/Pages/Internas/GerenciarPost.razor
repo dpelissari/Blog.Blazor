@@ -96,6 +96,11 @@
             <ValidationMessage For="@(() => post.TituloPaginaSEO)" />
         </div>
         <div class="field">
+            <label class="label">URL</label>
+            <InputTextArea @bind-Value="post.Url" rows="5" class="textarea"></InputTextArea>
+            <ValidationMessage For="@(() => post.Url)" />
+        </div>
+        <div class="field">
             <label class="label">Ativo?</label>
             <div class="select">
                 <InputSelect @bind-Value="post.Ativo">

@@ -9,6 +9,7 @@ namespace Blog.Blazor.Interfaces
         Task Atualizar(Categoria categoria);
         Task Apagar(Categoria categoria);
         Task<Categoria> BuscarPorId(Guid id);
+        Task<Categoria> BuscarPorUrl(string url);
         Task<IEnumerable<Categoria>> BuscarTodas();
     }
 }

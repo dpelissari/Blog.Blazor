@@ -25,7 +25,7 @@
                 </div>
             </ItemTemplate>
         </Repeater>
-        <Paginador TotalPaginas="TotalPaginas" PaginaAtual="paginaAtual" OnPaginaSelecionada="OnPageSelected" />
+        <Paginador TotalPaginas="TotalPaginas" PaginaAtual="paginaAtual" OnPaginaSelecionada="OnPageSelected" Visivel="categoriasPorPagina < totalCategorias" />
     </PlaceHolder>
     <PlaceHolder Visible="postsCategorizados != null && !postsCategorizados.Any()">
         <article class="message is-warning">

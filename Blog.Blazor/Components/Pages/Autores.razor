@@ -33,13 +33,15 @@
             </div>
         </article>
     </PlaceHolder>
-    <Paginador TotalPaginas="TotalPaginas" PaginaAtual="paginaAtual" OnPaginaSelecionada="OnPageSelected" />
+    <PlaceHolder Visible="itensPorPagina < TotalPaginas">
+        <Paginador TotalPaginas="TotalPaginas" PaginaAtual="paginaAtual" OnPaginaSelecionada="OnPageSelected" />
+    </PlaceHolder>
 </div>
 
 @code {
     private IEnumerable<Autor> autoresPaginaAtual;
     private int paginaAtual = 1;
-    private int itensPorPagina = 2;
+    private int itensPorPagina = 8;
     private int totalAutores;
 
     protected override async Task OnInitializedAsync()

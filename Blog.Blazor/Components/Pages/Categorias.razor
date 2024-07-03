@@ -8,12 +8,12 @@
 @inject IPostService PostService;
 
 <div class="container p-4"> 
-    <Repeater DataSource="categorias.Where(x => x.Posts.Count() > 0)" Context="item">
+    <Repeater DataSource="categorias" Context="item">
         <ItemTemplate>
-            <NavLink href="@($"categoria/{item.Id}")">
+            <NavLink href="@($"categoria/{item.Url}")">
                 <div class="box mt-4">
-                    <h3 class="title">@item.Nome (@(item.Posts.Count > 0 ? item.Posts.Count() : ""))</h3>
-                    <p class="subtitle">@item.Descricao</p>
+                    <h3 class="title">@item?.Nome (@(item?.Posts?.Count()))</h3>
+                    <p class="subtitle">@item?.Descricao</p>
                 </div>
             </NavLink>
         </ItemTemplate>

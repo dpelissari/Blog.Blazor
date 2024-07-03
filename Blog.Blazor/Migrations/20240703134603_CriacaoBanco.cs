@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Blog.Blazor.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreate : Migration
+    public partial class CriacaoBanco : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -38,6 +38,7 @@ namespace Blog.Blazor.Migrations
                     DescricaoSEO = table.Column<string>(type: "TEXT", maxLength: 250, nullable: false),
                     TituloPaginaSEO = table.Column<string>(type: "TEXT", maxLength: 150, nullable: false),
                     ExibirItemMenu = table.Column<bool>(type: "INTEGER", nullable: false),
+                    Url = table.Column<string>(type: "TEXT", nullable: false),
                     Ativo = table.Column<bool>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
@@ -74,6 +75,7 @@ namespace Blog.Blazor.Migrations
                     CaminhoImagem = table.Column<string>(type: "TEXT", nullable: false),
                     IdAutor = table.Column<Guid>(type: "TEXT", nullable: false),
                     IdCategoria = table.Column<Guid>(type: "TEXT", nullable: false),
+                    Url = table.Column<string>(type: "TEXT", nullable: false),
                     Ativo = table.Column<bool>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
@@ -96,7 +98,7 @@ namespace Blog.Blazor.Migrations
             migrationBuilder.InsertData(
                 table: "Usuario",
                 columns: new[] { "Id", "Cadastro", "Email", "SenhaHash", "Tipo" },
-                values: new object[] { new Guid("98c8e1b0-23c3-4b8c-b266-117d6397006a"), new DateTime(2024, 5, 6, 16, 41, 50, 991, DateTimeKind.Local).AddTicks(1869), "root", "0ee484c7d01b93fe9ff6dec76671dda6e08d5d8c8a052f83db29fa898b8bacb1", 20 });
+                values: new object[] { new Guid("c19ecfd1-fb62-41b9-81e2-8541cc8898c5"), new DateTime(2024, 7, 3, 10, 46, 2, 219, DateTimeKind.Local).AddTicks(9167), "root", "0ee484c7d01b93fe9ff6dec76671dda6e08d5d8c8a052f83db29fa898b8bacb1", 20 });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Post_IdAutor",

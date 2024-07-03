@@ -32,6 +32,9 @@ namespace Blog.Blazor.Models
         [Required(ErrorMessage = "O campo exibir item no menu é obrigatório")]
         public bool ExibirItemMenu { get; set; } = true;
 
+        [Required(ErrorMessage = "O campo url é obrigatório")]
+        public string Url { get; set; } = string.Empty;
+
         [Required(ErrorMessage = "O campo ativo é obrigatório")]
         public bool Ativo { get; set; } = true;
     }

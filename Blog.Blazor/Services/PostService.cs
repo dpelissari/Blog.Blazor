@@ -64,6 +64,17 @@ namespace Blog.Blazor.Services
             return await dbContexto.Post.FirstOrDefaultAsync(f => f.Id == id);
         }
 
+
+        /// <summary>
+        /// Obtem uma publicacao com base na url
+        /// </summary>
+        /// <param name="url"></param>
+        /// <returns></returns>
+        public async Task<Post> BuscarPorUrlPost(string url)
+        {
+            return await dbContexto.Post.FirstOrDefaultAsync(f => f.Url == url);
+        }
+
         /// <summary>
         /// Obtem todas publicações/posts de um autor
         /// </summary>

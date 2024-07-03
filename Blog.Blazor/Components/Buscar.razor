@@ -25,10 +25,7 @@
         <h2>Nenhum resultado encontrado com o termo "@termo".</h2>
     </PlaceHolder>
 
-    <PlaceHolder Visible="resultados.Count() > itensPorPagina">
-        <Paginador TotalPaginas="TotalPaginas" PaginaAtual="paginaAtual" OnPaginaSelecionada="OnPageSelected" />
-    </PlaceHolder>
-
+    <Paginador TotalPaginas="TotalPaginas" PaginaAtual="paginaAtual" OnPaginaSelecionada="OnPageSelected" Visivel="resultados.Count() > itensPorPagina" />
 </div>
 
 

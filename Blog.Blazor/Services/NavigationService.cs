@@ -20,7 +20,7 @@ namespace Blog.Blazor.Services
         {
             var currentUri = _navigationManager.Uri;
             var encodedCurrentUri = Uri.EscapeDataString(currentUri);
-            _navigationManager.NavigateTo($"{uri}?tg={encodedCurrentUri}");
+            _navigationManager.NavigateTo($"{uri}/?tg={encodedCurrentUri}");
         }
 
         public string GetReturnUrl()
