@@ -129,8 +129,8 @@
     public string UrlExistente { get; set; } = string.Empty;
 
     [Parameter]
-
     public string id { get; set; }
+
     protected override async Task OnInitializedAsync()
     {
         autores = await AutorService.BuscarTodos();

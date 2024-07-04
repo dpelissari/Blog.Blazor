@@ -45,8 +45,13 @@
         </div>
         <div class="field">
             <label class="label">URL</label>
-            <InputText @bind-Value="categoria.Url" class="input"></InputText>
+            <InputText @bind-Value="categoria.Url" class="input" readonly="@(modoEdicao ? true : false)"></InputText>
             <ValidationMessage For="@(() => categoria.Url)" />
+            <PlaceHolder Visible="UrlExistente != string.Empty">
+                <div class="notification is-warning is-light mt-4 mb-4">
+                    @UrlExistente
+                </div>
+            </PlaceHolder>
         </div>
         <div class="field">
             <label class="label">Categoria ativa?</label>
@@ -66,8 +71,8 @@
 
     [SupplyParameterFromForm]
     private Categoria? categoria { get; set; } = new();
-
     bool modoEdicao = false;
+    public string UrlExistente { get; set; } = string.Empty;
 
     [Parameter]
     public string? id { get; set; }
@@ -92,8 +97,19 @@
 
     async Task CriarCategoria()
     {
-        await CategoriaService.Adicionar(categoria);
-        NavigationManager.NavigateTo("/categorias", true);
+        // verifica a url
+        var url = await CategoriaService.VerificarUrl(categoria.Url);
+
+        // se url está disponivel grava
+        if (url.Sucesso)
+        {
+            categoria.Url = url.Parametro;
+            await CategoriaService.Adicionar(categoria);
+            NavigationManager.NavigateTo("/categorias", true);
+        }
+        // mensagem informando que url ja existe
+        else
+            UrlExistente = url.Mensagem;
     }
 
     async Task AtualizarCategoria()

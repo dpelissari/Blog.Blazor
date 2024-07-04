@@ -41,7 +41,7 @@ namespace Blog.Blazor.Services
         public async Task<ResultadoOperacao> VerificarUrl(string url)
         {
             // ajusta a url
-            var urlDesejada = url.Replace(" ", "-").Trim();
+            var urlDesejada = url.ToLower().Replace(" ", "-").Trim();
 
             // obtém todas as urls para comparação de forma assíncrona
             var urls = await ObterUrlPosts();
