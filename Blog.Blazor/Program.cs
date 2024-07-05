@@ -5,6 +5,7 @@ using Blog.Blazor.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Win32;
 using Radzen;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -39,6 +40,12 @@ builder.Services.AddScoped<IAutorService, AutorService>();
 builder.Services.AddScoped<ICategoriaService, CategoriaService>();
 builder.Services.AddScoped<IUsuarioService, UsuarioService>();
 builder.Services.AddScoped<NavigationService>();
+builder.Services.AddScoped<IUrlService, UrlService>();
+
+// classes concretas para casos específicos
+builder.Services.AddScoped<PostService>();
+builder.Services.AddScoped<CategoriaService>();
+
 builder.Services.AddControllers();
 
 var app = builder.Build();
