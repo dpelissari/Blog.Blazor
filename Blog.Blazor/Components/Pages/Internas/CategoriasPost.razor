@@ -43,8 +43,8 @@
 
 @code {
 
-    private IEnumerable<Categoria> categorias;
-    private IQueryable<Categoria> categoriasIQueryable;
+    private IEnumerable<Categoria>? categorias;
+    private IQueryable<Categoria>? categoriasIQueryable;
 
     protected override async Task OnInitializedAsync()
     {
@@ -58,7 +58,7 @@
     {
 
         // exibe um alerta de confirmacao
-        bool confirm = await JSRuntime.InvokeAsync<bool>("confirm", "Tem certeza que deseja excluir esse post?");
+        bool confirm = await JSRuntime.InvokeAsync<bool>("confirm", "Tem certeza que deseja excluir essa categoria?");
 
         // se a confirmacao for false para por aqui
         if (confirm is false) return;
@@ -71,6 +71,9 @@
 
         // atualiza a lista
         categorias = await CategoriaService.BuscarTodas();
+
+        // atribui a categoriasIQueryable para atualizar o quickgrid
+        categoriasIQueryable = categorias.AsQueryable();
 
         StateHasChanged();
     }

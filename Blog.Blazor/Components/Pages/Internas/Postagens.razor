@@ -48,8 +48,8 @@
 
     private Categoria categoria = new();
     private Autor Autor = new();
-    private IEnumerable<Post> posts;
-    private IQueryable<Post> postsIQueryable;
+    private IEnumerable<Post>? posts;
+    private IQueryable<Post>? postsIQueryable;
 
     protected override async Task OnInitializedAsync()
     {
@@ -82,6 +82,9 @@
 
         // atualiza a lista
         posts = await PostagemService.BuscarTodosPosts();
+
+        // atribui a postsIQueryable para atualizar o quickgrid
+        postsIQueryable = posts.AsQueryable();
 
         StateHasChanged();
     }

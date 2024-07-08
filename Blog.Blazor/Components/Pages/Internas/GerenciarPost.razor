@@ -11,6 +11,7 @@
 @inject IAutorService AutorService
 @inject ICategoriaService CategoriaService
 @inject IPostService PostService
+@inject IUrlService UrlService
 
 @attribute [Authorize(Roles = "Administrador, Editor")]
 <div class="container p-4">
@@ -97,7 +98,7 @@
         </div>
         <div class="field">
             <label class="label">URL</label>
-            <InputText @bind-Value="post.Url" class="input" readonly="@(modoEdicao ? true : false)" ></InputText>
+            <InputText @bind-Value="post.Url" class="input" readonly="@(modoEdicao ? true : false)"></InputText>
             <ValidationMessage For="@(() => post.Url)" />
             <PlaceHolder Visible="UrlExistente != string.Empty">
                 <div class="notification is-warning is-light mt-4 mb-4">
@@ -123,8 +124,8 @@
 
 @code {
     Post post = new();
-    private IEnumerable<Autor> autores;
-    private IEnumerable<Categoria> categorias;
+    private IEnumerable<Autor>? autores;
+    private IEnumerable<Categoria>? categorias;
     bool modoEdicao = false;
     public string UrlExistente { get; set; } = string.Empty;
 
@@ -160,12 +161,11 @@
     async Task CriarPost()
     {
         // verifica a url
-        var url = await PostService.VerificarUrl(post.Url);
+        var url = await UrlService.VerificarUrl(url: post.Url, ehUrlCategoria: false);
 
-        // se url está disponivel grava
+        // se disponivel grava
         if (url.Sucesso)
         {
-
             post.Url = url.Parametro;
             await PostService.Adicionar(post);
             NavigationManager.NavigateTo("/int/posts");

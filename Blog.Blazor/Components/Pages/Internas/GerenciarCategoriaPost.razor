@@ -8,6 +8,7 @@
 @rendermode InteractiveServer
 @inject NavigationManager NavigationManager
 @inject ICategoriaService CategoriaService
+@inject IUrlService UrlService
 
 @attribute [Authorize(Roles = "Administrador")]
 <div class="container p-3">
@@ -69,8 +70,8 @@
 
 @code {
 
-    [SupplyParameterFromForm]
-    private Categoria? categoria { get; set; } = new();
+
+    Categoria categoria = new();
     bool modoEdicao = false;
     public string UrlExistente { get; set; } = string.Empty;
 
@@ -90,7 +91,7 @@
             else
             {
                 // id inválido, redireciona para listagem de autores
-                NavigationManager.NavigateTo("/categorias");
+                NavigationManager.NavigateTo("int/categorias");
             }
         }
     }
@@ -98,14 +99,14 @@
     async Task CriarCategoria()
     {
         // verifica a url
-        var url = await CategoriaService.VerificarUrl(categoria.Url);
+        var url = await UrlService.VerificarUrl(url:categoria.Url, ehUrlCategoria:true);
 
-        // se url está disponivel grava
+        // se disponivel grava
         if (url.Sucesso)
         {
             categoria.Url = url.Parametro;
             await CategoriaService.Adicionar(categoria);
-            NavigationManager.NavigateTo("/categorias", true);
+            NavigationManager.NavigateTo("int/categorias");
         }
         // mensagem informando que url ja existe
         else

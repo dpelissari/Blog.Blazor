@@ -4,6 +4,6 @@ namespace Blog.Blazor.Interfaces
 {
     public interface IUrlService
     {
-        Task<ResultadoOperacao> VerificarUrl(string? urlPost, string? urlCategoria, bool ehUrlCategoria);
+        Task<ResultadoOperacao> VerificarUrl(string url, bool ehUrlCategoria);
     }
 }

@@ -28,37 +28,6 @@ namespace Blog.Blazor.Services
         }
 
         /// <summary>
-        /// Metodo para verificar se uma url já existe
-        /// </summary>
-        /// <param name="post"></param>
-        public async Task<ResultadoOperacao> VerificarUrl(string url)
-        {
-            // ajusta a url
-            var urlDesejada = url.ToLower().Replace(" ", "-").Trim();
-
-            // obtém todas as urls para comparação de forma assíncrona
-            var urls = await ObterUrlCategorias();
-
-            // verifica se a url ja foi usada
-            if (urls.Contains(urlDesejada))
-            {
-                return new ResultadoOperacao
-                {
-                    Sucesso = false,
-                    Mensagem = "A URL já existe. Por favor, escolha outra URL.",
-                };
-            }
-            else
-            {
-                return new ResultadoOperacao
-                {
-                    Sucesso = true,
-                    Parametro = urlDesejada,
-                };
-            }
-        }
-
-        /// <summary>
         /// Metodo asincrono para atualizar categoria
         /// </summary>
         /// <param name="categoria"></param>

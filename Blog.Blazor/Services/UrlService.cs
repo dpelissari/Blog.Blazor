@@ -1,11 +1,4 @@
-﻿using Blog.Blazor.Data;
-using Blog.Blazor.Interfaces;
-using Blog.Blazor.Models;
-using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Blog.Blazor.Interfaces;
 
 namespace Blog.Blazor.Services
 {
@@ -14,69 +7,47 @@ namespace Blog.Blazor.Services
         private readonly PostService postService;
         private readonly CategoriaService categoriaService;
 
-        // Construtor para injeção de dependência
+        // construtor para injeção de dependência
         public UrlService(PostService postService, CategoriaService categoriaService)
         {
             this.postService = postService ?? throw new ArgumentNullException(nameof(postService));
             this.categoriaService = categoriaService ?? throw new ArgumentNullException(nameof(categoriaService));
         }
 
-        public async Task<ResultadoOperacao>VerificarUrl(string urlPost, string urlCategoria, bool ehUrlCategoria)
+        public async Task<ResultadoOperacao>VerificarUrl(string url, bool ehUrlCategoria)
         {
-            if (!string.IsNullOrWhiteSpace(urlPost) || !string.IsNullOrWhiteSpace(urlCategoria))
+            if (!string.IsNullOrWhiteSpace(url))
             {
-                string urlDesejada;
-                HashSet<string> urlsExistentes = new HashSet<string>();
-
-                // Obter URLs de categorias
-                var urlsCategorias = await categoriaService.ObterUrlCategorias();
-                urlsExistentes.UnionWith(urlsCategorias.Select(url => url.ToLower().Trim()));
+                // ajusta a url removendo espaços e deixando tudo minúsculo
+                string urlDesejada = $"{url.ToLower().Replace(" ", "-").Trim().Normalize()}";
 
                 if (!ehUrlCategoria)
                 {
-                    // Ajusta a URL removendo espaços e deixando tudo minúsculo
-                    urlDesejada = $"{urlCategoria.ToLower().Trim()}/{urlPost.ToLower().Replace(" ", "-").Trim()}";
+                    // obtem url de posts já existentes
+                    var urlsPostsExistentes = await postService.ObterUrlPosts();
 
-                    // Obter URLs de posts
-                    var urlsPosts = await postService.ObterUrlPosts();
-
-                    // Compor a lista de URLs compostas por categoria e post
-                    var urlsCompostas = urlsCategorias.SelectMany(categoria =>
-                        urlsPosts.Select(post => $"{categoria}/{post.ToLower().Replace(" ", "-")}"));
-
-                    // Adicionar URLs compostas à lista de URLs existentes
-                    urlsExistentes.UnionWith(urlsCompostas.Select(url => url.ToLower().Trim()));
+                    if (!urlsPostsExistentes.Contains(urlDesejada))
+                        // retorna a url
+                        return new ResultadoOperacao { Sucesso = true, Parametro = urlDesejada };
+                    else
+                        return new ResultadoOperacao { Sucesso = false, Mensagem = "A URL fornecida não está disponivel, pois já existe outra publicação com a mesma URL." };
                 }
                 else
                 {
-                    // Ajusta a URL de categoria removendo espaços e deixando tudo minúsculo
-                    urlDesejada = urlCategoria.ToLower().Replace(" ", "-").Trim();
-                }
+                    // obtem url existentes
+                    var urlsCategoriasExistentes = await categoriaService.ObterUrlCategorias();
 
-                // Verifica se a URL já foi usada
-                if (urlsExistentes.Contains(urlDesejada))
-                {
-                    return new ResultadoOperacao
-                    {
-                        Sucesso = false,
-                        Mensagem = "A URL já existe. Por favor, escolha outra URL."
-                    };
-                }
-                else
-                {
-                    return new ResultadoOperacao
-                    {
-                        Sucesso = true,
-                        Parametro = urlDesejada
-                    };
+                    // se a url não existir
+                    if (!urlsCategoriasExistentes.Contains(urlDesejada))
+                        // retorna a url
+                        return new ResultadoOperacao { Sucesso = true, Parametro = urlDesejada };
+                    else
+                        // retorna a mensagem que a url já existe
+                        return new ResultadoOperacao { Sucesso = false, Mensagem = "A URL fornecida não está disponivel, pois já existe outra categoria com a mesma URL." };
                 }
             }
-
-            return new ResultadoOperacao
-            {
-                Sucesso = false,
-                Mensagem = "A URL fornecida é inválida."
-            };
+            else
+                return new ResultadoOperacao { Sucesso = false, Mensagem = "A URL fornecida é inválida" };
         }
     }
 }

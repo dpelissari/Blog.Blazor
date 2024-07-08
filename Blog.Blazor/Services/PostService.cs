@@ -23,15 +23,10 @@ namespace Blog.Blazor.Services
         public async Task Adicionar(Post post)
         {
 
-            var urlDisponivel = await VerificarUrl(post.Url);
-
-            if (urlDisponivel.Sucesso)
-            {
-
-                // Adiciona o post ao contexto e salva as mudanças
-                await dbContexto.AddAsync(post);
-                await dbContexto.SaveChangesAsync();
-            }
+            // Adiciona o post ao contexto e salva as mudanças
+            await dbContexto.AddAsync(post);
+            await dbContexto.SaveChangesAsync();
+            
         }
 
         /// <summary>

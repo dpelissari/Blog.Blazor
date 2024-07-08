@@ -6,7 +6,6 @@ namespace Blog.Blazor.Interfaces
     {
         // assinatura dos metodos a serem implementados pela classe Categoria
         Task Adicionar(Categoria categoria);
-        Task<ResultadoOperacao> VerificarUrl(string url);
         Task Atualizar(Categoria categoria);
         Task Apagar(Categoria categoria);
         Task<Categoria> BuscarPorId(Guid id);
