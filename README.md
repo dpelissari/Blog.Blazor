@@ -1,6 +1,5 @@
 # BlogBlazor: Um Blog Criado com Blazor e .NET 8 (EM ANDAMENTO)
 
-
 ### Principais Funcionalidades
 - **Componente Personalizado para Upload de Imagens**
 - **Componente personalizado para páginação**: Traz os dados de forma páginada
@@ -24,7 +23,8 @@
 ![](https://raw.githubusercontent.com/dpelissari/Blog.Blazor/Desenvolvimento/Blog.Blazor/wwwroot/prints/post.png?token=GHSAT0AAAAAACXJLYHQS5OFJAJWF45LCNCCZXAITAA)
 
 - **Autores**: Lista todos os autores cadastrados no sistema.
-![Listagem de autores](https://raw.githubusercontent.com/dpelissari/Blog.Blazor/Desenvolvimento/Blog.Blazor/wwwroot/prints/autores.png?token=GHSAT0AAAAAACXJLYHQEQWOWGFEQG7RHX4UZXAIUBQ "Listagem de autores")
+
+![](https://raw.githubusercontent.com/dpelissari/Blog.Blazor/Desenvolvimento/Blog.Blazor/wwwroot/prints/autores.png?token=GHSAT0AAAAAACXJLYHRV2SNWQ4PQWHU7RI2ZXAI7JQ)
 
 - **Categorias**: Mostra uma lista de categorias disponíveis.
 
@@ -37,4 +37,4 @@
 - **Gerenciamento de Categorias**: Interface para criar, editar e excluir categorias.
 - **Gerenciamento de Usuários**: Interface para administração de usuários, permitindo a criação de novos perfis, a edição de informações existentes, a modificação dos níveis de acesso e a exclusão de contas.
 
-![Gerenciamento](https://raw.githubusercontent.com/dpelissari/Blog.Blazor/Desenvolvimento/Blog.Blazor/wwwroot/prints/gerenciamento.jpg?token=GHSAT0AAAAAACXJLYHQHATZKMIILC2QHOLQZXAIWDQ "Gerenciamento")
+![](https://raw.githubusercontent.com/dpelissari/Blog.Blazor/Desenvolvimento/Blog.Blazor/wwwroot/prints/gerenciamento.jpg?token=GHSAT0AAAAAACXJLYHR6BNGE7AHC4CRXXZYZXAJABQ)
