@@ -1,0 +1,142 @@
+﻿@using Blog.Blazor.Interfaces
+@using Blog.Blazor.Models
+@using Blog.Blazor.Services
+
+@rendermode InteractiveServer
+@inject ICategoriaService CategoriaService
+@inject NavigationManager NavigationManager
+@inject AuthenticationStateProvider _autenticacao
+
+<nav class="navbar is-transparent">
+    <div class="navbar-brand">
+        <NavLink class="navbar-item" href="/">
+            <img src="imagens/logo.svg" alt="logo" width="100" />
+        </NavLink>
+        <button role="button" class="navbar-burger" data-target="navMenu" aria-label="menu" aria-expanded="false" @onclick="ToogleMenu">
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+        </button>
+    </div>
+    <div class="navbar-menu">
+        <div class="navbar-start">
+            <NavLink class="navbar-item" href="/" @onclick="FecharMenu">Publicações</NavLink>
+            <NavLink class="navbar-item" href="/autores/" @onclick="FecharMenu">Autores</NavLink>
+            <Repeater DataSource="categorias.Where(x => x.ExibirItemMenu == true).OrderBy(x => x.Nome)" Context="item">
+                <ItemTemplate>
+                    <NavLink class="navbar-item" href="@($"/categoria/{item.Url}/")" @onclick="FecharMenu">@item.Nome</NavLink>
+                </ItemTemplate>
+            </Repeater>
+            <NavLink class="navbar-item" href="/categorias/" @onclick="FecharMenu">Todas categorias</NavLink>
+            <AuthorizeView Roles="Editor">
+                <Authorized>
+                    <div class="navbar-item has-dropdown is-hoverable">
+                        <a class="navbar-link is-arrowless">Gerenciar</a>
+                        <div class="navbar-dropdown">
+                            <NavLink href="/int/posts/" class="navbar-item" @onclick="FecharMenu">Publicações</NavLink>
+                        </div>
+                    </div>
+                </Authorized>
+            </AuthorizeView>
+            <AuthorizeView Roles="Administrador">
+                <Authorized>
+                    <div class="navbar-item has-dropdown is-hoverable">
+                        <a class="navbar-link is-arrowless">Gerenciar</a>
+                        <div class="navbar-dropdown">
+                            <NavLink href="/int/posts/" class="navbar-item" @onclick="FecharMenu">Publicações</NavLink>
+                            <NavLink href="/int/autores/" class="navbar-item" @onclick="FecharMenu">Autores</NavLink>
+                            <NavLink href="int/categorias/" class="navbar-item" @onclick="FecharMenu">Categorias</NavLink>
+                            <NavLink href="int/usuarios/" class="navbar-item" @onclick="FecharMenu">Usuários</NavLink>
+                        </div>
+                    </div>
+                </Authorized>
+            </AuthorizeView>
+        </div>
+            <div class="navbar-end">
+                <div class="navbar-item">
+                    <div class="field has-addons">
+                        <div class="control is-expanded">
+                            <input class="input" type="text" placeholder="Pesquisar..." @bind="termoBuscado" @onkeyup="BuscarPressionandoEnter" id="busca">
+                        </div>
+                        <div class="control">
+                            <button class="button is-dark" @onclick="Buscar">
+                                <span class="icon">
+                                    <FeatherSearch Size="25" Color="#FFF"></FeatherSearch>
+                                </span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            <div class="navbar-item">
+                <div class="field is-grouped">
+                    <p class="control">
+                        <AuthorizeView>
+                            <NotAuthorized>
+                                <NavLink class="button is-info is-inverted" href="/login/" title="Efetuar login">
+                                    ENTRAR
+                                </NavLink>
+                            </NotAuthorized>
+                            <Authorized>
+                                <NavLink class="button is-danger is-inverted" href="/login/" title="Efetuar logout" @onclick="Logout">
+                                   SAIR (@context?.User?.Identity?.Name)
+                                </NavLink>
+                            </Authorized>
+                        </AuthorizeView>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>
+
+@inject IJSRuntime JSRuntime
+
+@code {
+
+    private string termoBuscado = string.Empty;
+    private IEnumerable<Categoria>? categorias;
+    private async Task ToogleMenu() => await JSRuntime.InvokeVoidAsync("toogleMenu");
+    private async Task FecharMenu() => await JSRuntime.InvokeVoidAsync("closeMenu");
+
+    protected override async Task OnInitializedAsync()
+    {
+        categorias = await CategoriaService.BuscarTodas();
+    }
+
+    private void Logout()
+    {
+        NavigationManager.NavigateTo("/logout/", true);
+    }
+
+    private async void Buscar()
+    {
+        if (!string.IsNullOrWhiteSpace(termoBuscado))
+        {
+            // verifica se o navigationmanager está navegando para a url correta
+            NavigationManager.NavigateTo($"/busca/{termoBuscado}");
+
+            // fecha o menu mobile
+            await FecharMenu();
+        }
+    }
+
+    private async void BuscarPressionandoEnter(KeyboardEventArgs e)
+    {
+        // verifica se a tecla pressionada é a tecla "enter"
+        if (e.Key == "Enter")
+        {
+            if (!string.IsNullOrWhiteSpace(termoBuscado))
+            {
+                // navega para a página de busca com o termo pesquisado
+                NavigationManager.NavigateTo($"/busca/{termoBuscado}");
+
+                // limpa o termo buscado
+                termoBuscado = string.Empty;
+
+                // fecha o menu mobile
+                await FecharMenu();
+            }
+        }
+    }
+}

@@ -1,0 +1,88 @@
+﻿@page "/int/autor/editar/{id?}"
+@page "/int/autor/novo/"
+
+﻿@using Blog.Blazor.Interfaces
+@using Blog.Blazor.Models
+@using Microsoft.AspNetCore.Authorization
+
+@rendermode InteractiveServer
+@inject NavigationManager NavigationManager
+@inject IAutorService AutorService
+@attribute [Authorize(Roles = "Administrador")]
+
+<div class="container p-4">
+    <h1 class="title">@(modoEdicao ? "Editar" : "Incluir") autor</h1>
+    <EditForm Model="@autor" OnValidSubmit="modoEdicao ? AtualizarAutor : CriarAutor" FormName="autor" Enhance>
+        <DataAnnotationsValidator />
+        <div class="field">
+            <ImagemUpload Modelo="autor" DiretorioImagem="autores" LarguraImagem="120" AlturaImagem="120"></ImagemUpload>
+            <ValidationMessage For="@(() => autor.CaminhoImagem)" />
+        </div>
+        <div class="field">
+            <label class="label">Nome</label>
+            <InputText @bind-Value="autor.Nome" class="input"></InputText>
+            <ValidationMessage For="@(() => autor.Nome)" />
+        </div>
+        <div class="field">
+            <label class="label">Biografia</label>
+            <InputTextArea @bind-Value="autor.Biografia" rows="5" class="textarea"></InputTextArea>
+            <ValidationMessage For="@(() => autor.Biografia)" />
+        </div>
+        <div class="field">
+            <label class="label">Autor ativo?</label>
+            <div class="select">
+                <InputSelect @bind-Value="autor.Ativo">
+                    <option value="true">Sim</option>
+                    <option value="false">Não</option>
+                </InputSelect>
+            </div>
+            <ValidationMessage For="@(() => autor.Ativo)" />
+        </div>
+        <div>
+            <NavLink href="/int/autores/" class="button is-danger">CANCELAR</NavLink>
+            <button class="button is-success" type="submit">SALVAR</button>
+        </div>
+    </EditForm>
+
+</div>
+
+@code {
+
+    [SupplyParameterFromForm]
+    private Autor? autor { get; set; } = new();
+
+    bool modoEdicao = false;
+
+    [Parameter]
+    public string? id { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (!string.IsNullOrEmpty(id))
+        {
+
+            if (Guid.TryParse(id, out Guid idAutor))
+            {
+                autor = await AutorService.BuscarPorId(idAutor);
+                modoEdicao = true;
+            }
+            else
+            {
+                // id inválido, redireciona
+                NavigationManager.NavigateTo("/autores");
+            }
+        }
+    }
+
+    async Task CriarAutor()
+    {
+        await AutorService.Adicionar(autor);
+        NavigationManager.NavigateTo("/int/autores");
+    }
+
+    async Task AtualizarAutor()
+    {
+        await AutorService.Atualizar(autor);
+        NavigationManager.NavigateTo("/int/autores");
+    }
+}

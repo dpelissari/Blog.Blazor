@@ -1,0 +1,183 @@
+﻿@using Microsoft.AspNetCore.Components.Forms
+@inject IWebHostEnvironment _ambiente
+@using System.Drawing
+
+<div>
+    <PlaceHolder Visible="!ExibeImagem">
+        <div class="file">
+            <label class="file-label">
+                <InputFile OnChange="HandleFileSelection" class="file-input" />
+                <input class="file-input" type="file" name="resume" />
+                <span class="file-cta">
+                    <span class="file-icon">
+                        <FeatherFile Size="36" Color="#000" StrokeWidth="1.8f" />
+                    </span>
+                    <span class="file-label">@TextoLabel </span>
+                </span>
+            </label>
+        </div>
+    </PlaceHolder>
+
+    <PlaceHolder Visible="ExibeImagem">
+        <div>
+            <img src="@CaminhoImagem" />
+        </div>
+    </PlaceHolder>
+
+    <div>
+        <PlaceHolder Visible="ExibeBotaoUpload">
+            <button class="button is-warning" @onclick="EnviarImagem">UPLOAD</button>
+        </PlaceHolder>
+
+        <PlaceHolder Visible="ExibeBotaoRemover">
+            <button class="button is-danger" @onclick="RemoverImagem">REMOVER</button>
+        </PlaceHolder>
+    </div>
+
+    <PlaceHolder Visible="!string.IsNullOrEmpty(Erro)">
+        <div>
+            <p>@Erro</p>
+        </div>
+    </PlaceHolder>
+</div>
+
+@code {
+
+    // propriedade para armazenar o objeto que contém a propriedade "caminhoimagem"
+    [Parameter]
+    public object Modelo { get; set; }
+
+    // diretório onde as imagens serão salvas
+    [Parameter]
+    public string DiretorioImagem { get; set; } = string.Empty;
+
+    // largura padrão para redimensionamento da imagem
+    [Parameter]
+    public int LarguraImagem { get; set; } = 150;
+    
+    [Parameter]
+    public int AlturaImagem { get; set; } = 0;
+
+    // texto exibido no botão de envio de imagem
+    [Parameter]
+    public string TextoLabel { get; set; } = "Enviar imagem";
+
+    // mensagem de erro que pode ser exibida
+    public string Erro { get; set; } = string.Empty;
+
+    // armazena o arquivo selecionado pelo usuário
+    private IBrowserFile Arquivo { get; set; }
+
+    // obtém o caminho da imagem do modelo, se disponível
+    public string CaminhoImagem => Modelo != null ? Modelo.GetType().GetProperty("CaminhoImagem")?.GetValue(Modelo)?.ToString() : null;
+
+    // indica se deve exibir a imagem na interface do usuário
+    public bool ExibeImagem => !string.IsNullOrEmpty(CaminhoImagem);
+
+    // indica se o botão de upload deve ser exibido
+    public bool ExibeBotaoUpload => !ExibeImagem && Arquivo != null;
+
+    // indica se o botão de remover deve ser exibido
+    public bool ExibeBotaoRemover => ExibeImagem;
+
+    // verifica se o arquivo é uma imagem com extensão permitida
+    private bool ArquivoEhImagem(IBrowserFile file)
+    {
+        var extensoesPermitidas = new[] { ".jpg", ".jpeg", ".png" };
+        var extensaoArquivo = Path.GetExtension(file.Name);
+        return extensoesPermitidas.Contains(extensaoArquivo?.ToLower());
+    }
+
+    // manipula a seleção de arquivo pelo usuário
+    private async Task HandleFileSelection(InputFileChangeEventArgs e)
+    {
+        Arquivo = e.File;
+    }
+
+    // envia a imagem, redimensiona e salva no diretório especificado
+    private async Task EnviarImagem()
+    {
+        if (Arquivo != null && ArquivoEhImagem(Arquivo))
+        {
+            using (var memoryStream = new MemoryStream())
+            {
+                await Arquivo.OpenReadStream().CopyToAsync(memoryStream);
+
+                // Abre a imagem para verificar suas dimensões
+                using (var image = Image.FromStream(memoryStream))
+                {
+                    int novaAltura;
+                    // Verifica se a altura é passada como parâmetro
+                    if (AlturaImagem != 0)
+                    {
+                        novaAltura = AlturaImagem;
+                    }
+                    else
+                    {
+                        // Calcula a altura proporcionalmente à largura desejada
+                        var proporcao = (double)LarguraImagem / image.Width;
+                        novaAltura = (int)(image.Height * proporcao);
+                    }
+
+                    // Combina o caminho do diretório com um nome único para a imagem
+                    var diretorio = Path.Combine(_ambiente.WebRootPath, DiretorioImagem);
+                    var nomeUnico = $"{Guid.NewGuid()}{Path.GetExtension(Arquivo.Name)}";
+                    var caminhoArquivo = Path.Combine(diretorio, nomeUnico);
+
+                    // cria o diretório se não existir
+                    if (!Directory.Exists(diretorio)) Directory.CreateDirectory(diretorio);
+
+                    // redimensiona a imagem
+                    using (var resizedImage = new Bitmap(image, new Size(LarguraImagem, novaAltura)))
+                    {
+                        // salva a imagem redimensionada no caminho especificado
+                        await Task.Run(() => resizedImage.Save(caminhoArquivo));
+                    }
+
+                    // define a propriedade "caminhoimagem" do modelo com o caminho da imagem salva
+                    Modelo.GetType().GetProperty("CaminhoImagem")?.SetValue(Modelo, $"/{DiretorioImagem}/{nomeUnico}");
+                    Erro = string.Empty;
+                }
+            }
+        }
+        else
+        {
+            // exibe mensagem de erro se o arquivo não for válido
+            Erro = "Arquivo não selecionado ou inválido (Arquivos aceitos: .jpg e .png)";
+        }
+    }
+
+
+
+    // remove a imagem do modelo
+    private async Task RemoverImagem()
+    {
+        if (ExibeImagem)
+        {
+            // obtém o caminho do arquivo a ser removido
+            var caminhoArquivo = Path.Combine(_ambiente.WebRootPath, CaminhoImagem.TrimStart('/'));
+
+            // remove a propriedade "caminhoimagem" do modelo
+            Modelo.GetType().GetProperty("CaminhoImagem")?.SetValue(Modelo, null);
+
+            // limpa o arquivo
+            Arquivo = null;
+
+            // verifica se o arquivo existe antes de tentar excluí-lo
+            if (File.Exists(caminhoArquivo))
+            {
+                try
+                {
+                    // exclui o arquivo
+                    File.Delete(caminhoArquivo);
+                }
+                catch (Exception ex)
+                {
+                    // lida com possíveis exceções durante a exclusão do arquivo (pode ser personalizado conforme necessário)
+                    Erro = $"Erro ao excluir o arquivo: {ex.Message}";
+                }
+            }
+        }
+    }
+
+}

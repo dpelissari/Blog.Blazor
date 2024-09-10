@@ -1,0 +1,43 @@
+﻿@page "/categorias/";
+
+@using Blog.Blazor.Interfaces
+@using Blog.Blazor.Models
+@using Blog.Blazor.Services
+
+@inject ICategoriaService CategoriaService;
+@inject IPostService PostService;
+
+<div class="container p-4"> 
+    <Repeater DataSource="categorias" Context="item">
+        <ItemTemplate>
+            <NavLink href="@($"categoria/{item.Url}")">
+                <div class="box mt-4">
+                    <h3 class="title">@item?.Nome (@(item?.Posts?.Count()))</h3>
+                    <p class="subtitle">@item?.Descricao</p>
+                </div>
+            </NavLink>
+        </ItemTemplate>
+    </Repeater>
+    <PlaceHolder Visible="!categorias.Any()">
+        <article class="message is-warning">
+            <div class="message-body">
+                No momento, não há categorias disponíveis para exibição.
+            </div>
+        </article>
+    </PlaceHolder>
+</div>
+
+@code{
+    private IEnumerable<Categoria> categorias;
+
+    protected override async Task OnInitializedAsync()
+    {
+        categorias = await CategoriaService.BuscarTodas();
+
+        // alimenta posts
+        foreach (var categoria in categorias)
+        {
+            categoria.Posts = (await PostService.BuscarPostsPorIdCategoria(categoria.Id)).ToList();
+        }
+    }
+}

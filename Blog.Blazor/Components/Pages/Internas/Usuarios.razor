@@ -1,0 +1,77 @@
+﻿@page "/int/usuarios/";
+
+@using Blog.Blazor.Interfaces
+@using Blog.Blazor.Models
+@using Microsoft.AspNetCore.Authorization
+
+@rendermode InteractiveServer
+@inject IJSRuntime JSRuntime;
+@inject IUsuarioService UsuarioService;
+@attribute [Authorize(Roles = "Administrador")]
+
+<div class="container p-4">
+    <h1 class="title">Gerenciar usuários</h1>
+    <PlaceHolder Visible="usuarios != null && usuarios.Any()">
+        <div class="table-container">
+            <NavLink class="button is-dark is-normal is-responsive mt-4 mb-4" href="/int/usuario/novo">
+                <FeatherPlusCircle Size="20" Color="#FFF" StrokeWidth="1.8f" />&nbsp; NOVO USUÁRIO
+            </NavLink>
+            <QuickGrid Items="@usuariosIQueryable" Class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth">
+                <PropertyColumn Property="@(a => a.Id)" Sortable="true" />
+                <PropertyColumn Property="@(a => a.Email)" Sortable="true" />
+                <PropertyColumn Property="@(a => a.Tipo)" Sortable="true" />
+                <PropertyColumn Property="@(a => a.Cadastro)" Format="dd/MM/yyyy" Sortable="true" />
+                <TemplateColumn Title="Ações">
+                    <NavLink href="@($"int/usuario/editar/{context.Id}")"><FeatherEdit Size="20" Color="#000" StrokeWidth="1.8f" /></NavLink>
+                    <NavLink @onclick="async () => await Remover(context.Id)"><FeatherTrash Size="20" Color="#000" StrokeWidth="1.8f" /></NavLink>
+                </TemplateColumn>
+            </QuickGrid>
+        </div>
+    </PlaceHolder>
+    <PlaceHolder Visible="!usuarios.Any()">
+        <article class="message is-warning">
+            <div class="message-body">
+                No momento, não há usuários disponíveis para exibição.
+                <div class="block mt-3 mb-3">
+                    <NavLink href="/int/usuario/novo" class="button is-info">
+                        <FeatherPlusCircle Size="20" Color="#000" StrokeWidth="1.8f" />&nbsp;Novo usuário
+                    </NavLink>
+                </div>
+            </div>
+        </article>
+    </PlaceHolder>
+</div>
+
+@code {
+    private IEnumerable<Usuario> usuarios;
+    private IQueryable<Usuario> usuariosIQueryable;
+
+    protected override async Task OnInitializedAsync()
+    {
+        usuarios = await UsuarioService.BuscarTodos();
+
+        // converte os usuarios em iqueryable para usar o quickgrid
+        usuariosIQueryable = usuarios.AsQueryable();
+    }
+
+    async Task Remover(Guid id)
+    {
+
+        // exibe um alerta de confirmacao
+        bool confirm = await JSRuntime.InvokeAsync<bool>("confirm", "Tem certeza que deseja excluir esse usuário?");
+
+        // se a confirmacao for false para por aqui
+        if (confirm is false) return;
+
+        // se a confirmacao for true logaliza  pelo id
+        var usuario = await UsuarioService.BuscarUsuarioPorId(id);
+
+        // apaga o usuario
+        await UsuarioService.Apagar(usuario);
+
+        // atualiza a lista
+        usuarios = await UsuarioService.BuscarTodos();
+
+        StateHasChanged();
+    }
+}

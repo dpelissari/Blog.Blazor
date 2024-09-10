@@ -1,0 +1,77 @@
+﻿@page "/int/autores/";
+
+@using Blog.Blazor.Components.Layout
+@using Blog.Blazor.Interfaces
+@using Blog.Blazor.Models
+@using Microsoft.AspNetCore.Authorization
+
+@rendermode InteractiveServer
+@inject IJSRuntime JSRuntime;
+@inject IAutorService AutorService;
+@attribute [Authorize(Roles = "Administrador")]
+
+<div class="container p-4">
+    <h1 class="title">Gerenciar autores</h1>
+    <PlaceHolder Visible="autores != null && autores.Any()">
+        <div class="table-container">
+            <NavLink class="button is-dark is-normal is-responsive mt-4 mb-4" href="/int/autor/novo">
+                <FeatherPlusCircle Size="20" Color="#FFF" StrokeWidth="1.8f" />&nbsp; NOVO AUTOR
+            </NavLink>
+            <QuickGrid Items="@autoresIQueryable" Class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth">
+                <PropertyColumn Property="@(a => a.Id)" Sortable="true" />
+                <PropertyColumn Property="@(a => a.Nome)" Sortable="true" />
+                <PropertyColumn Property="@(a => a.Biografia)" Sortable="true" />
+                <PropertyColumn Property="@(a => a.Cadastro)" Format="dd/MM/yyyy" Sortable="true" />
+                    <TemplateColumn Title="Ações">
+                        <NavLink href="@($"int/autor/editar/{context.Id}")"><FeatherEdit Size="20" Color="#000" StrokeWidth="1.8f" /></NavLink>
+                        <NavLink @onclick="async () => await Remover(context.Id)"><FeatherTrash Size="20" Color="#000" StrokeWidth="1.8f" /></NavLink>
+                    </TemplateColumn>
+            </QuickGrid>
+        </div>
+    </PlaceHolder>
+    <PlaceHolder Visible="!autores.Any()">
+        <article class="message is-warning">
+            <div class="message-body">
+                No momento, não há autores disponíveis para exibição.
+                <div class="block mt-3 mb-3">
+                    <NavLink href="/int/autor/novo" class="button is-info">
+                        <FeatherPlusCircle Size="20" Color="#000" StrokeWidth="1.8f" />&nbsp;Novo autor
+                    </NavLink>
+                </div>
+            </div>
+        </article>
+    </PlaceHolder>
+</div>
+
+@code {
+    private IEnumerable<Autor> autores;
+    IQueryable<Autor> autoresIQueryable;
+
+    protected override async Task OnInitializedAsync()
+    {
+        autores = await AutorService.BuscarTodos();
+
+        // converte os autores em iqueryable para usar o quickgrid
+        autoresIQueryable = autores.AsQueryable();
+    }
+
+    async Task Remover(Guid id)
+    {
+        // exibe um alerta de confirmacao
+        bool confirm = await JSRuntime.InvokeAsync<bool>("confirm", "Tem certeza que deseja excluir esse autor? Posts deste autor, tambem serão removidos.");
+
+        // se a confirmacao for false para por aqui
+        if (confirm is false) return;
+
+        // se a confirmacao for true logaliza  pelo id
+        var autor = await AutorService.BuscarPorId(id);
+
+        // apaga o autor
+        await AutorService.Apagar(autor);
+
+        // atualiza a lista
+        autores = await AutorService.BuscarTodos();
+
+        StateHasChanged();
+    }
+}

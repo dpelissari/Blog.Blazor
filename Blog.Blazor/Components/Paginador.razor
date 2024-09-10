@@ -1,0 +1,38 @@
+﻿
+<PlaceHolder Visible="Visivel">
+    <div class="pagination is-rounded" role="navigation" aria-label="pagination">
+        <button @onclick="() => SelecionarPagina(PaginaAtual - 1)" class="pagination-previous" disabled="@(PaginaAtual == 1)">Anterior</button>
+        <button @onclick="() => SelecionarPagina(PaginaAtual + 1)" class="pagination-next" disabled="@(PaginaAtual == TotalPaginas)">Próxima</button>
+        <ul class="pagination-list">
+            @for (int i = 1; i <= TotalPaginas; i++)
+            {
+                int pagina = i; 
+                <li>
+                    <button class="pagination-link @(PaginaAtual == pagina ? "is-current" : "")" aria-label="Ir para página @pagina" @onclick="() => SelecionarPagina(pagina)">@pagina</button>
+                </li>
+            }
+        </ul>
+    </div>
+</PlaceHolder>
+
+@code {
+    [Parameter]
+    public int TotalPaginas { get; set; }
+
+    [Parameter]
+    public int PaginaAtual { get; set; }
+
+    [Parameter]
+    public bool Visivel { get; set; }
+
+    [Parameter]
+    public EventCallback<int> OnPaginaSelecionada { get; set; }
+
+    private async Task SelecionarPagina(int pagina)
+    {
+        if (pagina >= 1 && pagina <= TotalPaginas)
+        {
+            await OnPaginaSelecionada.InvokeAsync(pagina);
+        }
+    }
+}

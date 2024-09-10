@@ -1,10 +1,52 @@
 using Blog.Blazor.Components;
+using Blog.Blazor.Data;
+using Blog.Blazor.Interfaces;
+using Blog.Blazor.Services;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Win32;
+using Radzen;
 
 var builder = WebApplication.CreateBuilder(args);
 
+
 // Add services to the container.
-builder.Services.AddRazorComponents()
-    .AddInteractiveServerComponents();
+builder.Services.AddRazorComponents().AddInteractiveServerComponents();
+
+// conection string
+var connectionString = builder.Configuration.GetConnectionString("Blog") ?? "Data Source=Blog.db";
+
+builder.Services.AddRadzenComponents();
+
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(options =>
+    {
+        options.Cookie.Name = "auth_token";
+        options.LoginPath = "/login/";
+        options.Cookie.MaxAge = TimeSpan.FromMinutes(30);
+        options.AccessDeniedPath = "/acesso-negado/";
+    });
+
+builder.Services.AddAuthentication();
+builder.Services.AddCascadingAuthenticationState();
+
+// sqlite
+builder.Services.AddSqlite<AplicacaoDbContexto>(connectionString);
+
+// configurando a injeção de dependencia dos nossos serviços
+builder.Services.AddScoped<IPostService, PostService>();
+builder.Services.AddScoped<IAutorService, AutorService>();
+builder.Services.AddScoped<ICategoriaService, CategoriaService>();
+builder.Services.AddScoped<IUsuarioService, UsuarioService>();
+builder.Services.AddScoped<NavigationService>();
+builder.Services.AddScoped<IUrlService, UrlService>();
+
+// classes concretas para casos específicos
+builder.Services.AddScoped<PostService>();
+builder.Services.AddScoped<CategoriaService>();
+
+builder.Services.AddControllers();
 
 var app = builder.Build();
 
@@ -19,9 +61,14 @@ if (!app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseStaticFiles();
-app.UseAntiforgery();
 
-app.MapRazorComponents<App>()
-    .AddInteractiveServerRenderMode();
+app.UseAntiforgery();
+app.UseAuthentication();
+app.UseAuthorization();
+
+app.UseStatusCodePagesWithRedirects("/404");
+
+app.MapRazorComponents<App>().DisableAntiforgery().AddInteractiveServerRenderMode();
+app.MapControllers();
 
 app.Run();

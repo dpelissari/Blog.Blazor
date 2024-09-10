@@ -1,0 +1,65 @@
+﻿@page "/autores/"
+
+@using Blog.Blazor.Interfaces
+@using Blog.Blazor.Models
+@inject IAutorService AutorService
+@inject IPostService PostService
+@rendermode InteractiveServer
+<div class="container p-4">
+    <PlaceHolder Visible="autoresPaginaAtual != null && autoresPaginaAtual.Any()">
+        <h1 class="title">Autores</h1>
+        <div class="fixed-grid has-4-cols-desktop has-3-cols-tablet has-1-cols-mobile">
+            <div class="grid">
+                <Repeater DataSource="autoresPaginaAtual" Context="item">
+                    <ItemTemplate>
+                        <div class="cell">
+                            <div class="box is-flex is-flex-direction-column is-align-items-center">
+                                <figure class="image">
+                                    <img class="is-rounded" src="@item.CaminhoImagem" alt="@item.Nome" />
+                                </figure>
+                                <h3 class="title is-5">@item.Nome</h3>
+                                <h4 class="subtitle is-6">@item.Biografia</h4>
+                            </div>
+                        </div>
+                    </ItemTemplate>
+                </Repeater>
+            </div>
+        </div>
+    </PlaceHolder>
+    <PlaceHolder Visible="!autoresPaginaAtual.Any()">
+        <article class="message is-warning">
+            <div class="message-body">
+                No momento, não há autores disponíveis para exibição.
+            </div>
+        </article>
+    </PlaceHolder>
+    <PlaceHolder Visible="itensPorPagina < TotalPaginas">
+        <Paginador TotalPaginas="TotalPaginas" PaginaAtual="paginaAtual" OnPaginaSelecionada="OnPageSelected" />
+    </PlaceHolder>
+</div>
+
+@code {
+    private IEnumerable<Autor> autoresPaginaAtual;
+    private int paginaAtual = 1;
+    private int itensPorPagina = 8;
+    private int totalAutores;
+
+    protected override async Task OnInitializedAsync()
+    {
+        totalAutores = await AutorService.ObterTotalDeAutores();
+        await CarregarAutoresPaginaAtual();
+    }
+
+    private async Task CarregarAutoresPaginaAtual()
+    {
+        autoresPaginaAtual = await AutorService.BuscarAutoresPaginados(paginaAtual, itensPorPagina);
+    }
+
+    private async Task OnPageSelected(int page)
+    {
+        paginaAtual = page;
+        await CarregarAutoresPaginaAtual();
+    }
+
+    private int TotalPaginas => (int)Math.Ceiling((double)totalAutores / itensPorPagina);
+}

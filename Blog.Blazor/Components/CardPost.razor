@@ -1,0 +1,47 @@
+﻿@using Blog.Blazor.Models
+@using Blog.Blazor.Services
+@inject NavigationService NavigationService
+@inject NavigationManager NavigationManager
+
+<NavLink href="@($"post/{Post.Categoria.Url}/{Post?.Url}/?tg={Uri.EscapeDataString(NavigationManager.Uri)}")" class="card-link">
+    <div class="cell">
+        <div class="card">
+            <div class="card-image">
+                <figure class="image">
+                    <img src="@Post?.CaminhoImagem" alt="@Post?.Titulo" />
+                </figure>
+            </div>
+            <div class="card-content">
+                <div class="media">
+                    <div class="media-content">
+                        <p class="title is-5">@Post?.Titulo</p>
+                    </div>
+                </div>
+                <p class="is-flex is-align-items-center">
+                    <FeatherCalendar Color="#404040" Size="20"></FeatherCalendar>&nbsp;
+                    @(Post?.Cadastro.Date == DateTime.Now.Date ? "Hoje às " + Post?.Cadastro.ToString("HH:mm") :
+                        Post?.Cadastro.Date == DateTime.Now.Date.AddDays(-1) ? "Ontem às " + Post?.Cadastro.ToString("HH:mm") :
+                        Post?.Cadastro.ToShortDateString() + " às " + Post?.Cadastro.ToString("HH:mm"))
+                </p>
+                <p class="mt-1 is-flex is-align-items-center">
+                    <FeatherUser Color="#404040" Size="20"></FeatherUser>&nbsp;
+                    @Post?.Autor.Nome
+                </p>
+            </div>
+        </div>
+    </div>
+</NavLink>
+
+@code {
+    [Parameter] public Post? Post { get; set; }
+
+    private void NavigateToPost(Guid? postId)
+    {
+        if (postId.HasValue)
+        {
+            // converte guid para string antes de passar para a url
+            var postIdString = postId.Value.ToString();
+            NavigationService.NavigateToWithReturn($"post/{postIdString}");
+        }
+    }
+}

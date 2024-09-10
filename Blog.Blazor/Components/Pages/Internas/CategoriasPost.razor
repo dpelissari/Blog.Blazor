@@ -1,0 +1,81 @@
+﻿@page "/int/categorias/";
+
+@using Blog.Blazor.Interfaces
+@using Blog.Blazor.Models
+@using Microsoft.AspNetCore.Authorization
+
+@rendermode InteractiveServer
+@inject IJSRuntime JSRuntime;
+@inject ICategoriaService CategoriaService;
+@attribute [Authorize(Roles = "Administrador")]
+
+<div class="container p-4">
+    <h1 class="title">Gerenciar categorias</h1>
+    <PlaceHolder Visible="categorias != null && categorias.Any()">
+        <div class="table-container">
+            <NavLink class="button is-dark is-normal is-responsive mt-4 mb-4" href="/int/categoria/nova">
+                <FeatherPlusCircle Size="20" Color="#FFF" StrokeWidth="1.8f" />&nbsp; NOVA CATEGORIA
+            </NavLink>
+            <QuickGrid Items="@categoriasIQueryable" Class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth">
+                <PropertyColumn Property="@(a => a.Id)" Sortable="true" />
+                <PropertyColumn Property="@(a => a.Nome)" Sortable="true" />
+                <PropertyColumn Property="@(a => a.Cadastro)" Format="dd/MM/yyyy" Sortable="true" />
+                <TemplateColumn Title="Ações">
+                    <NavLink href="@($"int/categoria/editar/{context.Id}")"><FeatherEdit Size="20" Color="#000" StrokeWidth="1.8f" /></NavLink>
+                    <NavLink @onclick="async () => await Remover(context.Id)"><FeatherTrash Size="20" Color="#000" StrokeWidth="1.8f" /></NavLink>
+                </TemplateColumn>
+            </QuickGrid>
+        </div>
+    </PlaceHolder>
+    <PlaceHolder Visible="!categorias.Any()">
+        <article class="message is-warning">
+            <div class="message-body">
+                No momento, não há categorias disponíveis para exibição.
+                <div class="block mt-3 mb-3">
+                    <NavLink href="/int/categoria/nova" class="button is-info">
+                        <FeatherPlusCircle Size="20" Color="#000" StrokeWidth="1.8f" />&nbsp;Nova categoria
+                    </NavLink>
+                </div>
+            </div>
+        </article>
+    </PlaceHolder>
+</div>
+
+@code {
+
+    private IEnumerable<Categoria>? categorias;
+    private IQueryable<Categoria>? categoriasIQueryable;
+
+    protected override async Task OnInitializedAsync()
+    {
+        categorias = await CategoriaService.BuscarTodas();
+
+        // converte os posts em iqueryable para usar o quickgrid
+        categoriasIQueryable = categorias.AsQueryable();
+    }
+
+    async Task Remover(Guid id)
+    {
+
+        // exibe um alerta de confirmacao
+        bool confirm = await JSRuntime.InvokeAsync<bool>("confirm", "Tem certeza que deseja excluir essa categoria?");
+
+        // se a confirmacao for false para por aqui
+        if (confirm is false) return;
+
+        // se a confirmacao for true logaliza  pelo id
+        var categoria = await CategoriaService.BuscarPorId(id);
+
+        // apaga o post
+        await CategoriaService.Apagar(categoria);
+
+        // atualiza a lista
+        categorias = await CategoriaService.BuscarTodas();
+
+        // atribui a categoriasIQueryable para atualizar o quickgrid
+        categoriasIQueryable = categorias.AsQueryable();
+
+        StateHasChanged();
+    }
+
+}

@@ -1,0 +1,65 @@
+﻿@page "/categoria/{Url}"
+
+@using Blog.Blazor.Interfaces
+@using Blog.Blazor.Models
+@using Blog.Blazor.Services
+
+@inject NavigationManager NavigationManager
+@inject IPostService PostService
+@inject ICategoriaService CategoriaService
+@inject IAutorService AutorService
+
+<div class="container p-4">
+    <h1 class="title">@categoria.Nome</h1>
+    <h2 class="subtitle">@categoria.Descricao</h2>
+    <div class="fixed-grid has-4-cols-desktop has-3-cols-tablet has-1-cols-mobile">
+        <div class="grid">
+            <Repeater DataSource="posts" Context="item">
+                <ItemTemplate>
+                    <CardPost Post="item" />
+                </ItemTemplate>
+            </Repeater>
+        </div>
+    </div>
+    <PlaceHolder Visible="!posts.Any()">
+        <article class="message is-warning">
+            <div class="message-body">
+                No momento, não há publicações disponíveis para esta categoria.
+            </div>
+        </article>
+    </PlaceHolder>
+</div>
+
+@code {
+    [Parameter] public string? Url { get; set; }
+
+    private Categoria categoria = new();
+    private Autor autor = new();
+    private IEnumerable<Post> posts;
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (!string.IsNullOrEmpty(Url))
+        {
+            categoria = await CategoriaService.BuscarPorUrl(Url);
+
+            if (Url == categoria.Url)
+            {
+                // busca categoria e alimenta os posts
+                posts = await PostService.BuscarPostsPorIdCategoria(categoria.Id);
+
+                // alimenta autor e categoria
+                foreach (var post in posts)
+                {
+                    post.Autor = await AutorService.BuscarPorId(post.IdAutor);
+                    post.Categoria = categoria;
+                }
+            }
+            else
+            {
+                // id inválido, redireciona para listagem de categorias
+                NavigationManager.NavigateTo("/categorias/");
+            }
+        }
+    }
+}

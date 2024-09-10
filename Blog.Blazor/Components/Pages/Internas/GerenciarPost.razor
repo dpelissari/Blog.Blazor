@@ -1,0 +1,183 @@
+﻿@page "/int/post/editar/{id?}"
+@page "/int/post/novo/"
+
+﻿@using Blog.Blazor.Interfaces
+@using Blog.Blazor.Models
+@using Blog.Blazor.Services
+@using Microsoft.AspNetCore.Authorization
+
+@rendermode InteractiveServer
+@inject NavigationManager NavigationManager
+@inject IAutorService AutorService
+@inject ICategoriaService CategoriaService
+@inject IPostService PostService
+@inject IUrlService UrlService
+
+@attribute [Authorize(Roles = "Administrador, Editor")]
+<div class="container p-4">
+
+    <h1 class="title">@(modoEdicao ? "Editar" : "Incluir") post</h1>
+
+    <EditForm Model="@post" OnValidSubmit="modoEdicao ? AtualizarPost : CriarPost" FormName="post" Enhance>
+        <DataAnnotationsValidator />
+        <div class="field">
+            <label class="label">Categoria</label>
+            <div class="select">
+                <InputSelect @bind-Value="post.IdCategoria" class="input">
+                    <Repeater DataSource="categorias" Context="c">
+                        <ItemTemplate>
+                            <option value="@c.Id">@c.Nome</option>
+                        </ItemTemplate>
+                    </Repeater>
+                </InputSelect>
+                <ValidationMessage For="@(() => post.Categoria)" />
+            </div>
+        </div>
+        <div class="field">
+            <label class="label">Autor</label>
+            <div class="select">
+                <InputSelect @bind-Value="post.IdAutor">
+                    <Repeater DataSource="autores" Context="a">
+                        <ItemTemplate>
+                            <option value="@a.Id">@a.Nome</option>
+                        </ItemTemplate>
+                    </Repeater>
+                </InputSelect>
+                <ValidationMessage For="@(() => post.Autor)" />
+            </div>
+        </div>
+        <div class="field">
+            <label class="label">Imagem</label>
+            <ImagemUpload Modelo="post" DiretorioImagem="posts" LarguraImagem="600" AlturaImagem="150"></ImagemUpload>
+            <ValidationMessage For="@(() => post.CaminhoImagem)" />
+        </div>
+        <div class="field">
+            <label class="label">Titulo</label>
+            <InputTextArea @bind-Value="post.Titulo" rows="5" class="textarea"></InputTextArea>
+            <ValidationMessage For="@(() => post.Titulo)" />
+        </div>
+        <div class="field">
+            <label class="label">Conteudo</label>
+            <RadzenHtmlEditor @bind-Value="post.Conteudo" UploadUrl="upload/image" style="height:600px;" >
+                <RadzenHtmlEditorBold />
+                <RadzenHtmlEditorItalic />
+                <RadzenHtmlEditorUnderline />
+                <RadzenHtmlEditorStrikeThrough />
+                <RadzenHtmlEditorIndent />
+                <RadzenHtmlEditorAlignLeft />
+                <RadzenHtmlEditorAlignCenter />
+                <RadzenHtmlEditorAlignRight />
+                <RadzenHtmlEditorJustify />
+                <RadzenHtmlEditorFontSize />
+                <RadzenHtmlEditorColor />
+                <RadzenHtmlEditorLink />
+                <RadzenHtmlEditorOrderedList />
+                <RadzenHtmlEditorUnorderedList />
+                <RadzenHtmlEditorRemoveFormat />
+                <RadzenHtmlEditorImage
+                    SelectText="Selecionar" 
+                    CancelText="Cancelar" 
+                    HeightText="Altura"
+                    WidthText="Tamanho"
+                    OkText="OK"
+                    UrlText="Inserir link da web" AltText="Texto imagem" Title="Inserir imagem" UploadChooseText="Procurar"
+                />
+            </RadzenHtmlEditor>
+            <RadzenDialog />
+            <ValidationMessage For="@(() => post.Conteudo)" />
+        </div>
+        <div class="field">
+            <label class="label">Descrição SEO</label>
+            <InputTextArea @bind-Value="post.DescricaoSEO" rows="5" class="textarea"></InputTextArea>
+            <ValidationMessage For="@(() => post.DescricaoSEO)" />
+        </div>
+        <div class="field">
+            <label class="label">Tittle SEO</label>
+            <InputTextArea @bind-Value="post.TituloPaginaSEO" rows="5" class="textarea"></InputTextArea>
+            <ValidationMessage For="@(() => post.TituloPaginaSEO)" />
+        </div>
+        <div class="field">
+            <label class="label">URL</label>
+            <InputText @bind-Value="post.Url" class="input" readonly="@(modoEdicao ? true : false)"></InputText>
+            <ValidationMessage For="@(() => post.Url)" />
+            <PlaceHolder Visible="UrlExistente != string.Empty">
+                <div class="notification is-warning is-light mt-4 mb-4">
+                    @UrlExistente
+                </div>
+            </PlaceHolder>
+        </div>
+        <div class="field">
+            <label class="label">Ativo?</label>
+            <div class="select">
+                <InputSelect @bind-Value="post.Ativo">
+                    <option value="true">Sim</option>
+                    <option value="false">Não</option>
+                </InputSelect>
+            </div>
+        </div>
+        <div>
+            <NavLink href="/int/posts/" class="button is-danger">CANCELAR</NavLink>
+            <button class="button is-success" type="submit">SALVAR</button>
+        </div>
+    </EditForm>
+</div>
+
+@code {
+    Post post = new();
+    private IEnumerable<Autor>? autores;
+    private IEnumerable<Categoria>? categorias;
+    bool modoEdicao = false;
+    public string UrlExistente { get; set; } = string.Empty;
+
+    [Parameter]
+    public string id { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        autores = await AutorService.BuscarTodos();
+        categorias = await CategoriaService.BuscarTodas();
+
+        if (!string.IsNullOrEmpty(id))
+        {
+            if (Guid.TryParse(id, out Guid idPost))
+            {
+                post = await PostService.BuscarPorIdPost(idPost);
+                modoEdicao = true;
+            }
+            else
+            {
+                // ID inválido, redireciona para listagem de posts
+                NavigationManager.NavigateTo("/");
+            }
+        }
+        else
+        {
+            // Define valores iniciais para autor e categoria
+            post.IdAutor = autores.FirstOrDefault()?.Id ?? Guid.Empty;
+            post.IdCategoria = categorias.FirstOrDefault()?.Id ?? Guid.Empty;
+        }
+    }
+
+    async Task CriarPost()
+    {
+        // verifica a url
+        var url = await UrlService.VerificarUrl(url: post.Url, ehUrlCategoria: false);
+
+        // se disponivel grava
+        if (url.Sucesso)
+        {
+            post.Url = url.Parametro;
+            await PostService.Adicionar(post);
+            NavigationManager.NavigateTo("/int/posts");
+        } 
+        // mensagem informando que url ja existe
+        else
+            UrlExistente = url.Mensagem;
+    }
+
+    async Task AtualizarPost()
+    {
+        await PostService.Atualizar(post);
+        NavigationManager.NavigateTo("/int/posts");
+    }
+}

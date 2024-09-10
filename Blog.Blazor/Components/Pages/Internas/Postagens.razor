@@ -1,0 +1,91 @@
+﻿@page "/int/posts/";
+
+@using Blog.Blazor.Interfaces
+@using Blog.Blazor.Models
+@using Microsoft.AspNetCore.Authorization
+
+@rendermode InteractiveServer
+@inject IJSRuntime JSRuntime;
+@inject IPostService PostagemService;
+@inject ICategoriaService CategoriaService;
+@inject IAutorService AutorService;
+@attribute [Authorize(Roles = "Administrador, Editor")]
+
+<div class="container p-4">
+    <h1 class="title">Gerenciar posts</h1>
+    <PlaceHolder Visible="posts != null && posts.Any()">
+        <div class="table-container">
+            <NavLink class="button is-dark is-normal is-responsive mt-4 mb-4" href="/int/post/novo">
+                <FeatherPlusCircle Size="20" Color="#FFF" StrokeWidth="1.8f" />&nbsp; NOVO POST
+            </NavLink>
+            <QuickGrid Items="@postsIQueryable" Class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth">
+                <PropertyColumn Property="@(a => a.Id)" Sortable="true" />
+                <PropertyColumn Property="@(a => a.Titulo)" Sortable="true" />
+                <PropertyColumn Property="@(a => a.Categoria.Nome)" Sortable="true" />
+                <PropertyColumn Property="@(a => a.Cadastro)" Format="dd/MM/yyyy" Sortable="true" />
+                <TemplateColumn Title="Ações">
+                    <NavLink href="@($"int/post/editar/{context.Id}")"><FeatherEdit Size="20" Color="#000" StrokeWidth="1.8f" /></NavLink>
+                    <NavLink @onclick="async () => await RemoverPost(context.Id)"><FeatherTrash Size="20" Color="#000" StrokeWidth="1.8f" /></NavLink>
+                </TemplateColumn>
+            </QuickGrid>
+        </div>
+    </PlaceHolder>
+    <PlaceHolder Visible="!posts.Any()">
+        <article class="message is-warning">
+            <div class="message-body">
+                No momento, não há publicações disponíveis para exibição.
+                <div class="block mt-3 mb-3">
+                    <NavLink href="/int/post/novo" class="button is-info">
+                        <FeatherPlusCircle Size="20" Color="#000" StrokeWidth="1.8f" />&nbsp;Nova publicação
+                    </NavLink>
+                </div>
+            </div>
+        </article>
+    </PlaceHolder>
+</div>
+
+@code {
+
+    private Categoria categoria = new();
+    private Autor Autor = new();
+    private IEnumerable<Post>? posts;
+    private IQueryable<Post>? postsIQueryable;
+
+    protected override async Task OnInitializedAsync()
+    {
+        posts = await PostagemService.BuscarTodosPosts();
+
+        foreach (var post in posts)
+        {
+            post.Autor = await AutorService.BuscarPorId(post.IdAutor);
+            post.Categoria = await CategoriaService.BuscarPorId(post.IdCategoria);
+        }
+
+        // converte os posts em iqueryable para usar o quickgrid
+        postsIQueryable = posts.AsQueryable();
+    }
+
+    async Task RemoverPost(Guid id)
+    {
+
+        // exibe um alerta de confirmacao
+        bool confirm = await JSRuntime.InvokeAsync<bool>("confirm", "Tem certeza que deseja excluir esse post?");
+
+        // se a confirmacao for false para por aqui
+        if (confirm is false) return;
+
+        // se a confirmacao for true logaliza  pelo id
+        var post = await PostagemService.BuscarPorIdPost(id);
+
+        // apaga o post
+        await PostagemService.Apagar(post);
+
+        // atualiza a lista
+        posts = await PostagemService.BuscarTodosPosts();
+
+        // atribui a postsIQueryable para atualizar o quickgrid
+        postsIQueryable = posts.AsQueryable();
+
+        StateHasChanged();
+    }
+}

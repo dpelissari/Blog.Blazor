@@ -1,0 +1,84 @@
+﻿@page "/";
+@using Blog.Blazor.Interfaces
+@using Blog.Blazor.Models
+@using Microsoft.AspNetCore.Authorization
+
+@rendermode InteractiveServer
+@inject IPostService PostService;
+@inject IAutorService AutorService;
+@inject ICategoriaService CategoriaService;
+
+<div class="container p-4">
+    <PlaceHolder Visible="postsCategorizados != null && postsCategorizados.Any()">
+        <Repeater DataSource="postsCategorizados.OrderBy(x => x.Key)" Context="item">
+            <ItemTemplate>
+                <h3 class="title">@item.Key</h3>
+                <div class="splide">
+                    <div class="splide__track">
+                        <ul class="splide__list">
+                            @foreach (var post in item.Value)
+                            {
+                                <li class="splide__slide"><CardPost Post="post" /></li>
+                            }
+                        </ul>
+                    </div>
+                </div>
+            </ItemTemplate>
+        </Repeater>
+        <Paginador TotalPaginas="TotalPaginas" PaginaAtual="paginaAtual" OnPaginaSelecionada="OnPageSelected" Visivel="categoriasPorPagina < totalCategorias" />
+    </PlaceHolder>
+    <PlaceHolder Visible="postsCategorizados != null && !postsCategorizados.Any()">
+        <article class="message is-warning">
+            <div class="message-body">
+                No momento, não há publicações disponíveis para exibição.
+            </div>
+        </article>
+    </PlaceHolder>
+</div>
+
+@inject IJSRuntime JSRuntime
+
+@code {
+    private Dictionary<string, List<Post>> postsCategorizados = new Dictionary<string, List<Post>>();
+    private int paginaAtual = 1;
+    private int categoriasPorPagina = 2;
+    private int totalCategorias;
+
+    protected override async Task OnInitializedAsync()
+    {
+        totalCategorias = await PostService.ObterTotalDeCategorias();
+        await CarregarCategoriasPaginadas();
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+            await JSRuntime.InvokeVoidAsync("splideFunctions.initializeSplide", "splide");
+        else
+            await JSRuntime.InvokeVoidAsync("splideFunctions.refreshSplide", "splide");
+    }
+
+    private async Task CarregarCategoriasPaginadas()
+    {
+        postsCategorizados = await PostService.BuscarPostsAgrupadosPorCategoria(paginaAtual, categoriasPorPagina);
+
+        // todos posts categorizados
+        var todosPosts = postsCategorizados.SelectMany(categoria => categoria.Value);
+
+        // alimenta autores
+        foreach (var post in todosPosts)
+        {
+            post.Autor = await AutorService.BuscarPorId(post.IdAutor);
+        }
+
+        StateHasChanged();
+    }
+
+    private async Task OnPageSelected(int pagina)
+    {
+        paginaAtual = pagina;
+        await CarregarCategoriasPaginadas();
+    }
+
+    private int TotalPaginas => (int)Math.Ceiling((double)totalCategorias / categoriasPorPagina);
+}
